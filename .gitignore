@@ -1,0 +1,12 @@
+.vs
+.vscode
+.main_cache
+
+build
+out
+build_result
+subproject
+packages
+
+CMakeSettings.json
+*.pdb
