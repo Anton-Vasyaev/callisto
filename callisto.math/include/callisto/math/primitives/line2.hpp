@@ -1,7 +1,6 @@
 #pragma once
 
-#include "alg_tuple2.hpp"
-
+#include <callisto/math/primitives/alg_tuple2.hpp>
 
 namespace callisto::math
 {
@@ -9,9 +8,8 @@ namespace callisto::math
 // imports
 namespace
 {
-    namespace c_f = callisto::framework;
+namespace c_f = callisto::framework;
 }
-
 
 template<typename _value_type>
 struct line2
@@ -20,46 +18,75 @@ struct line2
 
     using point_type = point2<value_type>;
 
+    value_type x1;
+    value_type y1;
+    value_type x2;
+    value_type y2;
 
-    point_type start;
-
-    point_type end;
-
-
-    static inline constexpr line2 empty() { return line2(0, 0, 0, 0); }
+    inline static constexpr line2 empty() noexcept { return line2(0, 0, 0, 0); }
 
 #pragma region construct_and_destruct
 
-    inline constexpr line2() { }
+    inline constexpr line2() {}
 
-    template<
-        typename start_x_type,
-        typename start_y_type,
-        typename end_x_type,
-        typename end_y_type
-    >
-    inline constexpr line2(
-        start_x_type start_x, 
-        start_y_type start_y, 
-        end_x_type end_x, 
-        end_y_type end_y
-    )
+    template<typename type_x1, typename type_y1, typename type_x2, typename type_y2>
+    inline constexpr line2(type_x1 x1, type_y1 y1, type_x2 x2, type_y2 y2) noexcept
     {
-        this->start.x = start_x;
-        this->start.y = start_y;
-        
-        this->end.x = end_x;
-        this->end.y = end_y;
+        this->x1 = x1;
+        this->y1 = y1;
+
+        this->x2 = x2;
+        this->y2 = y2;
     }
 
     template<typename start_type, typename end_type>
-    inline constexpr line2(
-        const start_type& start,
-        const end_type&   end
-    )
+    inline constexpr line2(const start_type& start, const end_type& end) noexcept
     {
-        this->start = start;
-        this->end   = end;
+        x1 = start.x;
+        y1 = start.y;
+
+        x2 = end.x;
+        y2 = end.y;
+    }
+
+    template<typename other_line2_can_type>
+    inline constexpr line2(const other_line2_can_type& other_line) noexcept
+    {
+        x1 = other_line.x1;
+        y1 = other_line.y1;
+
+        x2 = other_line.x2;
+        y2 = other_line.y2;
+    }
+
+#pragma endregion
+
+#pragma region methods
+
+    inline constexpr auto first() const noexcept { return point2<value_type>(x1, y1); }
+
+    inline constexpr auto second() const noexcept { return point2<value_type>(x2, y2); }
+
+    inline constexpr auto center() const noexcept
+    {
+        auto x_c = (x1 + x2) / 2.0;
+        auto y_c = (y1 + y2) / 2.0;
+
+        return point2<value_type>(x_c, y_c);
+    }
+
+    template<typename point_type>
+    inline constexpr void set_first(const point_type& point) noexcept
+    {
+        x1 = point.x;
+        y1 = point.y;
+    }
+
+    template<typename point_type>
+    inline constexpr void set_second(const point_type& point) noexcept
+    {
+        x2 = point.x;
+        y2 = point.y;
     }
 
 #pragma endregion
@@ -67,41 +94,29 @@ struct line2
 #pragma region operators
 
     template<typename other_type>
-    inline constexpr bool operator==(const line2<other_type>& other_line)
+    inline constexpr bool operator==(const line2<other_type>& other_line) const noexcept
     {
-        return this->start == other_line.start && this->end == other_line.end;
+        return this->x1 == other_line.x1 && this->x2 == other_line.x2 && this->y1 == other_line.y1
+               && this->y2 == other_line.y2;
     }
 
     template<typename other_type>
-    inline constexpr bool operator!=(const line2<other_type>& other_line)
+    inline constexpr bool operator!=(const line2<other_type>& other_line) const noexcept
     {
-        return this->start != other_line.start || this->end != other_line.end;
+        return this->x1 == other_line.x1 || this->x2 == other_line.x2 || this->y1 == other_line.y1
+               || this->y2 == other_line.y2;
     }
 
 #pragma endregion
-
 };
 
-template<
-    typename start_x_type,
-    typename start_y_type,
-    typename end_x_type,
-    typename end_y_type
->
-line2(start_x_type, start_y_type, end_x_type, end_y_type) -> line2<
-    c_f::senior_conversion_t<start_x_type, start_y_type, end_x_type, end_y_type>
->;
+template<typename start_x_type, typename start_y_type, typename end_x_type, typename end_y_type>
+line2(start_x_type, start_y_type, end_x_type, end_y_type)
+    -> line2<c_f::senior_conversion_t<start_x_type, start_y_type, end_x_type, end_y_type>>;
 
 template<typename start_type, typename end_type>
 line2(start_type, end_type) -> line2<
-    c_f::senior_conversion_t<
-        typename start_type::value_type, 
-        typename end_type::value_type
-    >
->;
-
-
-
+    c_f::senior_conversion_t<typename start_type::value_type, typename end_type::value_type>>;
 
 using line2i = line2<int32_t>;
 
@@ -111,4 +126,4 @@ using line2f = line2<float>;
 
 using line2d = line2<double>;
 
-}
+} // namespace callisto::math

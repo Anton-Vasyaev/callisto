@@ -20,13 +20,12 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 
-
 # collects source to target ***********************************************************************
 file(GLOB_RECURSE CALLISTO_MATH_SRC "src/*.c" "src/*.cpp")
 add_library(${TARGET_NAME} ${LIBRARY_TYPE} ${CALLISTO_MATH_SRC})
 target_include_directories(${TARGET_NAME} PUBLIC  include)
 target_include_directories(${TARGET_NAME} PRIVATE src)
-target_link_libraries(${TARGET_NAME} PUBLIC ${CONAN_LIBS})
+
 
 # Dependencies
 

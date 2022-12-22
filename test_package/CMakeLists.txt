@@ -7,10 +7,10 @@ set(TARGET_NAME callisto_test)
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 set(CMAKE_CXX_STANDARD     20)
 
-
-#if(NOT DEFINED CMAKE_BUILD_TYPE)
-#    set(CMAKE_BUILD_TYPE "Debug")
-#endif()
+if(MSVC)
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
 
 # conan settings **********************************************************************************
 set(CONAN_DIR "")
@@ -62,7 +62,7 @@ if(NOT DEFINED CREATE_PACKAGE)
         endif()
     endmacro()
 
-    set(TEST_PACKAGE_LINK_LIBRARIES framework math)
+    set(TEST_PACKAGE_LINK_LIBRARIES framework math opencv)
     foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
         link_local(${lib_name1})
     endforeach()
@@ -70,6 +70,7 @@ else()
     find_package(Callisto)
     target_link_libraries(${TARGET_NAME} PRIVATE Callisto::framework)
     target_link_libraries(${TARGET_NAME} PRIVATE Callisto::math)
+    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::opencv)
 endif()
 
 

@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 
 class CallistoConan(ConanFile):
     name = 'callisto'
-    version = '0.6.1'
+    version = '0.1.0'
     license = 'BSD'
     settings = 'os', 'compiler', 'build_type', 'arch'
     generators = 'cmake', 'cmake_find_package_multi'

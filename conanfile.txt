@@ -2,11 +2,17 @@
 libcpuid/0.5.1
 gtest/1.8.1
 boost/1.71.0
+nameof/0.10.1
+opencv/4.5.3
+freetype/2.10.0
+zlib/1.2.12
 
 [options]
 libcpuid:shared = True
 gtest:shared    = True
 boost:shared    = True
+opencv:shared   = True
+freetype:shared = True
 
 [generators]
 cmake
