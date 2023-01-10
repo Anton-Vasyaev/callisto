@@ -6,9 +6,9 @@
 #include <opencv2/opencv.hpp>
 
 #include <callisto/math/primitives/alg_tuple2.hpp>
-#include <callisto/math/primitives/alg_tuple3_can.hpp>
-#include <callisto/math/primitives/line2_can.hpp>
-#include <callisto/math/primitives/bbox2_can.hpp>
+#include <callisto/math/primitives/alg_tuple3.hpp>
+#include <callisto/math/primitives/line2.hpp>
+#include <callisto/math/primitives/bbox2.hpp>
 
 namespace callisto::opencv
 {

@@ -32,7 +32,7 @@ target_include_directories(${TARGET_NAME} PRIVATE src)
 # callisto.framework
 if(NOT TARGET callisto_framework)
     add_subdirectory(
-        ${CMAKE_SOURCE_DIR}/../callisto.framework 
+        ${CMAKE_CURRENT_LIST_DIR}/../callisto.framework 
         ${CMAKE_CURRENT_BINARY_DIR}/callisto.framework
     )
 endif()

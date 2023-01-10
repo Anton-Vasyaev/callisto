@@ -19,17 +19,23 @@ class CallistoConan(ConanFile):
 
     libraries = [
         'framework',
-        'math'
+        'math',
+        'opencv'
     ]
 
 
     def requirements(self):
-        self.requires("libcpuid/0.5.1")
-        self.requires("boost/1.71.0")
+        self.requires('zlib/1.2.12', override=True)
+        self.requires('libcpuid/0.5.1')
+        self.requires('boost/1.71.0')
+        self.requires('opencv/4.5.3')
 
 
     def configure(self):
-        self.options['boost'].shared = self.options.shared
+        self.options['zlib'].shared     = self.options.shared
+        self.options['boost'].shared    = self.options.shared
+        self.options['libcpuid'].shared = self.options.shared
+        self.options['opencv'].shared   = self.options.shared
 
 
     def build(self):
@@ -70,3 +76,11 @@ class CallistoConan(ConanFile):
 
         # math
         self.cpp_info.components['math'].requires = ['framework']
+
+        # opencv
+        self.cpp_info.components['opencv'].requires = [
+            'boost::filesystem',
+            'opencv::opencv',
+            'framework',
+            'math'
+        ]

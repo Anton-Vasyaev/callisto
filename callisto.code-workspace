@@ -10,6 +10,9 @@
 			"path": "callisto.opencv"
 		},
 		{
+			"path": "callisto.graphics"
+		}
+		{
 			"path": "test_package"
 		},
 		{

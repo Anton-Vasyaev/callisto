@@ -15,13 +15,18 @@ else()
     set(LIBRARY_TYPE STATIC)
 endif()
 
+# ToDo before set conan
+message("before CONAN DIR:${CONAN_DIR}")
+message("before CMAKE PREFIX PATH: ${CMAKE_PREFIX_PATH}")
+message("before CMAKE MODULE PATH: ${CMAKE_MODULE_PATH}")
+message("before cmake source dir:${CMAKE_CURRENT_LIST_DIR}")
+
 # conan settings **********************************************************************************
 set(CONAN_DIR "")
 if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR}/..)
-    message($"CONAN CREATE CONAN DIR:${CONAN_DIR}")
 else()
-    set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
+    set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.19)
 
 # configure project *******************************************************************************
-project(callisto.opencv)
-set(TARGET_NAME callisto_opencv)
+project(callisto.graphics)
+set(TARGET_NAME callisto_graphics)
 
-option(CALLISTO_OPENCV_SHARED "Build the shared library" ON)
+option(CALLISTO_GRAPHICS_SHARED "Build the shared library" ON)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(CALLISTO_OPENCV_SHARED)
+if(CALLISTO_GRAPHICS_SHARED)
     set(LIBRARY_TYPE SHARED)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
@@ -20,7 +20,6 @@ endif()
 set(CONAN_DIR "")
 if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR}/..)
-    message($"CONAN CREATE CONAN DIR:${CONAN_DIR}")
 else()
     set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
@@ -29,8 +28,8 @@ set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
 
 # collects source to target ***********************************************************************
-file(GLOB_RECURSE CALLISTO_OPENCV_SRC "src/*.c" "src/*.cpp")
-add_library(${TARGET_NAME} ${LIBRARY_TYPE} ${CALLISTO_OPENCV_SRC})
+file(GLOB_RECURSE TARGET_SRC "src/*.c" "src/*.cpp")
+add_library(${TARGET_NAME} ${LIBRARY_TYPE} ${TARGET_SRC})
 target_include_directories(${TARGET_NAME} PUBLIC  include)
 target_include_directories(${TARGET_NAME} PRIVATE src)
 
@@ -55,10 +54,18 @@ add_subdirectory(
 endif()
 target_link_libraries(${TARGET_NAME} PUBLIC callisto_math)
 
-# Conan
-find_package(cpuid)
-find_package(Boost)
-find_package(opencv)
+# callisto.opencv
+if(NOT TARGET callisto_opencv)
+add_subdirectory(
+    ${CMAKE_CURRENT_LIST_DIR}/../callisto.opencv
+    ${CMAKE_CURRENT_BINARY_DIR}/callisto.opencv
+)
+endif()
+target_link_libraries(${TARGET_NAME} PUBLIC callisto_opencv)
 
-target_link_libraries(${TARGET_NAME} PUBLIC opencv::opencv)
-target_link_libraries(${TARGET_NAME} PUBLIC Boost::filesystem)
+# Conan
+find_package(freetype PATHS ${CONAN_DIR})
+find_package(nameof PATHS ${CONAN_DIR})
+
+target_link_libraries(${TARGET_NAME} PUBLIC freetype::freetype)
+target_link_libraries(${TARGET_NAME} PUBLIC nameof::nameof)
