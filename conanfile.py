@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 
 class CallistoConan(ConanFile):
     name = 'callisto'
-    version = '0.1.0'
+    version = '0.1.1'
     license = 'BSD'
     settings = 'os', 'compiler', 'build_type', 'arch'
     generators = 'cmake', 'cmake_find_package_multi'
@@ -24,6 +24,10 @@ class CallistoConan(ConanFile):
     ]
 
 
+    def __get_option_from_bool(self, flag : bool) -> str:
+        return "ON" if flag else "OFF"
+
+
     def requirements(self):
         self.requires('zlib/1.2.12', override=True)
         self.requires('libcpuid/0.5.1')
@@ -41,7 +45,7 @@ class CallistoConan(ConanFile):
     def build(self):
         for lib in self.libraries:
             cmake = CMake(self)
-            cmake.definitions[f'CALLISTO_{lib.upper()}_SHARED'] = self.options.shared
+            cmake.definitions[f'CALLISTO_{lib.upper()}_SHARED'] = self.__get_option_from_bool(self.options.shared)
             cmake.definitions['CREATE_PACKAGE'] = '1'
             cmake.configure(source_folder=f'callisto.{lib}', build_folder=f'callisto.{lib}.build')
             cmake.build()
