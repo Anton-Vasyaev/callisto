@@ -15,10 +15,13 @@ namespace c_cv = callisto::opencv;
 
 class typing_garniture
 {
-    // data
-    std::unordered_map<int64_t, font_symbol_data> _symbols_data;
+public:
+    // alias
+    using symbols_data_type = std::unordered_map<uint64_t, font_symbol_data>;
 
-    c_cv::image_type _image_type;
+private:
+    // data
+    symbols_data_type _symbols_data;
 
     int32_t _render_height_size;
 
@@ -61,6 +64,10 @@ public:
     int32_t get_space_hori_advance() const;
 
     int32_t get_space_vert_advance() const;
+
+    symbols_data_type& get_symbols_data();
+
+    const symbols_data_type& get_symbols_data() const;
 
     // operators
     const typing_garniture& operator=(typing_garniture&& garniture);

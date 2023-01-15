@@ -40,12 +40,8 @@ typing_garniture::typing_garniture(typing_garniture&& garniture)
 
 typing_garniture typing_garniture::clone() const
 {
-    auto new_garniture = typing_garniture(
-        _image_type,
-        _render_height_size,
-        _space_hori_advance,
-        _space_vert_advance
-    );
+    auto new_garniture
+        = typing_garniture(_render_height_size, _space_hori_advance, _space_vert_advance);
 
     for (auto& item : _symbols_data) { new_garniture.add_symbol(item.first, item.second.clone()); }
 
@@ -81,6 +77,13 @@ int32_t typing_garniture::get_render_height_size() const { return _render_height
 int32_t typing_garniture::get_space_hori_advance() const { return _space_hori_advance; }
 
 int32_t typing_garniture::get_space_vert_advance() const { return _space_vert_advance; }
+
+typing_garniture::symbols_data_type& typing_garniture::get_symbols_data() { return _symbols_data; }
+
+const typing_garniture::symbols_data_type& typing_garniture::get_symbols_data() const
+{
+    return _symbols_data;
+}
 
 #pragma endregion
 
