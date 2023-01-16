@@ -13,20 +13,21 @@ if(MSVC)
 endif()
 
 # conan settings **********************************************************************************
-
 set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
-message("CONAN DIR:${CONAN_DIR}")
-
-
 # collect source and linked libraries to executable file ******************************************
 file(GLOB_RECURSE TARGET_SRC "src/*.c" "src/*.cpp")
+
+
 add_executable(${TARGET_NAME} ${TARGET_SRC})
 target_include_directories(${TARGET_NAME} PRIVATE src)
 
-
+# ToDo
+message("CONAN DIR:${CONAN_DIR}")
+message("CMAKE_PREFIX_PATH:${CMAKE_PREFIX_PATH}")
+message("CMAKE_MODULE_PATH:${CMAKE_MODULE_PATH}")
 # 3rd party 
 
 # link with family libraries

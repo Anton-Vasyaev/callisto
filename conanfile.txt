@@ -4,10 +4,10 @@ gtest/1.8.1
 boost/1.71.0
 nameof/0.10.1
 opencv/4.5.3
-freetype/2.10.0
+freetype/2.10.4
 zlib/1.2.12
-glew/2.1.0
 glfw/3.3.2
+glew/2.1.0
 glm/0.9.9.5
 imgui/1.74
 nameof/0.10.1
@@ -18,8 +18,8 @@ gtest:shared    = True
 boost:shared    = True
 opencv:shared   = True
 freetype:shared = True
-glew:shared     = True
 glfw:shared     = True
+glew:shared     = True
 imgui:shared    = True
 
 [generators]

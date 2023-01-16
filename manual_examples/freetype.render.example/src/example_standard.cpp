@@ -17,7 +17,7 @@ namespace c_g  = callisto::graphics;
 void call_example_standard()
 {
 
-    auto key_type = c_g::key_type::back_slash();
+    auto key_type = c_g::key_type::kp_equal();
 
     std::cout << "key_type:" << key_type.str() << std::endl;
 
