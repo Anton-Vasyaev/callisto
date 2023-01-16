@@ -12,34 +12,36 @@
 #include "data/window_options.hpp"
 #include "data/window_state.hpp"
 
+namespace callisto::graphics
+{
+
+namespace
+{
 
 namespace c_f = callisto::framework;
+
 namespace c_m = callisto::math;
 
-namespace t_inp = terramagnia::input;
-
-
-namespace terramagnia::graphics
-{
+} // namespace
 
 class i_window_context
 {
 public:
     // handlers
-    virtual c_f::signal<void(t_inp::key_event)>& key_event_signal() = 0;
+    virtual c_f::signal<void(key_event)>& key_event_signal() = 0;
 
-    virtual c_f::signal<void(t_inp::mouse_button_event)>& mouse_button_event_signal() = 0;
+    virtual c_f::signal<void(mouse_button_event)>& mouse_button_event_signal() = 0;
 
-    virtual c_f::signal<void(t_inp::cursor_event)>& cursor_event_signal() = 0;
+    virtual c_f::signal<void(cursor_event)>& cursor_event_signal() = 0;
 
     virtual c_f::signal<void(c_m::point2i)>& change_position_signal() = 0;
 
-    virtual c_f::signal<void(c_m::size2i)>&	resize_signal() = 0;
+    virtual c_f::signal<void(c_m::size2i)>& resize_signal() = 0;
 
     virtual c_f::signal<void(i_window_context&)>& processing_signal() = 0;
 
     // construct and destruct
-    virtual ~i_window_context() { };
+    virtual ~i_window_context() {};
 
     // methods
     virtual c_m::rectangle_i get_area() const = 0;
@@ -55,4 +57,4 @@ public:
     virtual void stop_processing() = 0;
 };
 
-}
+} // namespace callisto::graphics

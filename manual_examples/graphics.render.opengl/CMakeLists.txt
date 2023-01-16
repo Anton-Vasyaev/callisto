@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.19)
 
 # configure project *******************************************************************************
-project(freetype.render.example CXX)
-set(TARGET_NAME freetype_render_example)
+project(graphics.render.opengl CXX)
+set(TARGET_NAME graphics_render_opengl)
 
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 set(CMAKE_CXX_STANDARD     20)
@@ -54,6 +54,7 @@ foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
 endforeach()
 
 find_package(Boost)
+
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::program_options)
 
 # copy dlls if platform is windows ****************************************************************

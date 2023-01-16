@@ -1,5 +1,5 @@
 // parent header
-#include <terramagnia/graphics/opengl/bindings/gl_texture2d.hpp>
+#include <callisto/graphics/visual/opengl/bindings/gl_texture2d.hpp>
 // 3rd party
 #include <callisto/opencv/auxiliary.hpp>
 
@@ -47,4 +47,4 @@ gl_texture2d::gl_texture2d(const cv::Mat& img, c_cv::image_type img_type)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

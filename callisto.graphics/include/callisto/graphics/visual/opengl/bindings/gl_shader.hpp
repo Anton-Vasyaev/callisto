@@ -8,10 +8,15 @@
 #include <callisto/framework/string.hpp>
 // project
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
-#include "enum/gl_shader_type.hpp"
+#include <callisto/graphics/visual/opengl/data.hpp>
 
 namespace callisto::graphics
 {
+
+namespace
+{
+namespace c_f = callisto::framework;
+}
 
 class gl_shader
 {
@@ -34,14 +39,14 @@ public:
 #pragma region static_methods
 
     template<typename str_type>
-    static gl_shader load_from_file(str_type& shader_path, GLenum shader_type)
+    static gl_shader load_from_file(str_type& shader_path, gl_shader_type shader_type)
     {
         std::fstream file(shader_path);
 
         if (!file.is_open())
         {
-            throw c_f::exception() 
-                << c_f::error_tag_message(c_f::_wbs("failed to open file with shader:", shader_path));
+            throw c_f::exception(
+            ) << c_f::error_tag_message(c_f::_wbs("failed to open file with shader:", shader_path));
         }
         std::stringstream ss;
         ss << file.rdbuf();
@@ -61,7 +66,7 @@ public:
 
     inline gl_shader(gl_shader&& shader) { this->move_from(std::move(shader)); }
 
-    gl_shader(const char* source, GLenum shader_type);
+    gl_shader(const char* source, gl_shader_type shader_type);
 
     inline ~gl_shader() { this->destruct(); }
 
@@ -80,4 +85,4 @@ public:
     }
 };
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

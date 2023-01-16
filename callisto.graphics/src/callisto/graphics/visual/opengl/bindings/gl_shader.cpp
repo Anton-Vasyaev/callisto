@@ -1,14 +1,14 @@
 // parent header
-#include <terramagnia/graphics/opengl/bindings/gl_shader.hpp>
+#include <callisto/graphics/visual/opengl/bindings/gl_shader.hpp>
 // 3rd party
 #include <callisto/framework/string.hpp>
 
 namespace callisto::graphics
 {
 
-gl_shader::gl_shader(const char* source, GLenum shader_type)
+gl_shader::gl_shader(const char* source, gl_shader_type shader_type)
 {
-    this->handler = glCreateShader(shader_type);
+    this->handler = glCreateShader(shader_type.original());
     glShaderSource(this->handler, 1, &source, nullptr);
     glCompileShader(this->handler);
 
@@ -20,9 +20,9 @@ gl_shader::gl_shader(const char* source, GLenum shader_type)
     {
         glGetShaderInfoLog(this->handler, INFO_LOG_SIZE, nullptr, info_log);
         throw c_f::exception() << c_f::error_tag_message(
-            c_f::_bs("Failed to compilation, ", gl_shader_type_str(type), " shader:", info_log, ".")
+            c_f::_bs("Failed to compilation, ", shader_type.str(), " shader:", info_log, ".")
         );
     }
 }
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

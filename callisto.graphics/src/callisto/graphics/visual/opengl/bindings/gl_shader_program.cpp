@@ -1,5 +1,5 @@
 // parent header
-#include <callisto/graphics/opengl/bindings/gl_shader_program.hpp>
+#include <callisto/graphics/visual/opengl/bindings/gl_shader_program.hpp>
 // 3rd party
 #include <callisto/framework/string.hpp>
 
@@ -28,4 +28,4 @@ gl_shader_program::gl_shader_program(gl_shader& vertex_shader, gl_shader& fragme
     }
 }
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

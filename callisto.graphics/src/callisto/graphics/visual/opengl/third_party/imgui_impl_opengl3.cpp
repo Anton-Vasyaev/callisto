@@ -75,7 +75,7 @@
 #endif
 
 #include "imgui.h"
-#include <callisto/graphics/opengl/third_party/imgui_impl_opengl3.hpp>
+#include <callisto/graphics/visual/opengl/third_party/imgui_impl_opengl3.hpp>
 #include <stdio.h>
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
     #include <stddef.h>                   // intptr_t

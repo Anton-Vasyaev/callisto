@@ -9,8 +9,8 @@
 #include <callisto/framework/string.hpp>
 #include <callisto/opencv.hpp>
 // project
-#include <terramagnia/graphics/visual/opengl/third_party/include_gl.hpp>
-#include <terramagnia/graphics/visual/opengl/error.hpp>
+#include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
+#include <callisto/graphics/visual/opengl/error.hpp>
 
 namespace callisto::graphics
 {
@@ -121,4 +121,4 @@ public:
     }
 };
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

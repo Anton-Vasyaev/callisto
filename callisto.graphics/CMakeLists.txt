@@ -66,6 +66,17 @@ target_link_libraries(${TARGET_NAME} PUBLIC callisto_opencv)
 # Conan
 find_package(Freetype PATHS ${CONAN_DIR})
 find_package(nameof PATHS ${CONAN_DIR})
+find_package(Boost PATHS ${CONAN_DIR})
+find_package(GLEW)
+find_package(glfw3)
+find_package(imgui)
+find_package(glm)
+
 
 target_link_libraries(${TARGET_NAME} PUBLIC Freetype::Freetype)
 target_link_libraries(${TARGET_NAME} PUBLIC nameof::nameof)
+target_link_libraries(${TARGET_NAME} PUBLIC Boost::headers)
+target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew)
+target_link_libraries(${TARGET_NAME} PUBLIC glfw::glfw)
+target_link_libraries(${TARGET_NAME} PUBLIC imgui::imgui)
+target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)

@@ -4,17 +4,15 @@
 #include <callisto/math/primitives.hpp>
 #include <callisto/graphics/input/data.hpp>
 
-
-namespace terramagnia::graphics
+namespace callisto::graphics
 {
 
 namespace
 {
-    namespace c_f = callisto::framework;
-    
-    namespace c_m = callisto::math;
-}
+namespace c_f = callisto::framework;
 
+namespace c_m = callisto::math;
+} // namespace
 
 class i_window_context;
 
@@ -40,4 +38,4 @@ public:
     virtual void on_resize(c_m::size2i size);
 };
 
-} // namespace terramagnia::graphics
+} // namespace callisto::graphics

@@ -8,7 +8,6 @@
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 #include "gl_shader.hpp"
 
-
 namespace callisto::graphics
 {
 
@@ -54,11 +53,6 @@ public:
 
     inline GLint get_uniform_location(const char* uniform_name)
     {
-        // ToDo
-        std::cout << "ptr:" << (int)&glGetUniformLocation << std::endl;
-
-        std::cout << "shader ptr:" << (int)&glCreateProgram << std::endl;
-
         return glGetUniformLocation(this->handler, uniform_name);
     }
 
@@ -142,4 +136,4 @@ public:
     }
 };
 
-}; // namespace terramagnia::graphics
+}; // namespace callisto::graphics
