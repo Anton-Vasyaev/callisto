@@ -74,4 +74,21 @@ inline constexpr auto max(value_type value, max_type max) noexcept
     return value > max ? value : max;
 }
 
+
+template<
+    c_f::concept_fundamental value_type,
+    c_f::concept_fundamental mod_type
+>
+inline constexpr auto tmod(value_type value, mod_type module) noexcept
+{
+    if constexpr(std::is_floating_point_v<c_f::senior_conversion_t<value_type, mod_type>>)
+    {
+        return std::fmod(value, module);
+    }
+    else
+    {
+        return value % module;
+    }
+}
+
 }

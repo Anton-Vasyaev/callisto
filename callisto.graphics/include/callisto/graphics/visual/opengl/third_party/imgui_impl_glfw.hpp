@@ -1,5 +1,8 @@
 #pragma once
 
+// 3rd party
+#include <imgui.h>
+
 struct GLFWwindow;
 
 IMGUI_IMPL_API bool     ImGui_ImplGlfw_InitForOpenGL(GLFWwindow* window, bool install_callbacks);

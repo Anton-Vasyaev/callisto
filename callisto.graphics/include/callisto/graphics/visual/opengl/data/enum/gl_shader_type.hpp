@@ -10,14 +10,14 @@ namespace callisto::graphics
 
 // clang-format off
 
-#define CALLISTO GL_SHADER_TYPE_FUNCTIONS                                   \
-    inline static constexpr gl_shader_type from_original(GLenum value);     \
-                                                                            \
-    inline constexpr GLenum original();                                     \
+#define CALLISTO_GL_SHADER_TYPE_FUNCTIONS                                           \
+    inline static constexpr gl_shader_type from_original(GLenum value) noexcept;    \
+                                                                                    \
+    inline constexpr GLenum original() const noexcept;                              
 
 CALLISTO_DEFINE_OBJECT_ENUM(
     gl_shader_type,
-    GL_SHADER_TYPE_FUNCTIONS,
+    CALLISTO_GL_SHADER_TYPE_FUNCTIONS,
     (unknown),
     (vertex),
     (fragment)
@@ -25,7 +25,7 @@ CALLISTO_DEFINE_OBJECT_ENUM(
 
 // clang-format on
 
-inline static constexpr gl_shader_type gl_shader_type::from_original(GLenum value)
+inline constexpr gl_shader_type gl_shader_type::from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -35,7 +35,7 @@ inline static constexpr gl_shader_type gl_shader_type::from_original(GLenum valu
     }
 }
 
-inline constexpr GLenum gl_shader_type::original()
+inline constexpr GLenum gl_shader_type::original() const noexcept
 {
     switch (_enum_data)
     {

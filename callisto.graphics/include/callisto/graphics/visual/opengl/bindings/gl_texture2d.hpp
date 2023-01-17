@@ -10,7 +10,7 @@
 #include <callisto/opencv.hpp>
 // project
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
-#include <callisto/graphics/visual/opengl/error.hpp>
+#include <callisto/graphics/visual/opengl/exception.hpp>
 
 namespace callisto::graphics
 {
@@ -43,7 +43,7 @@ class gl_texture2d
             case c_cv::image_type::grayscale : return { GL_RED, GL_RED };
 
             default :
-                throw opengl_error() << c_f::error_tag_message(
+                throw opengl_exception() << c_f::error_tag_message(
                     c_f::_bs("invalid img type for generate gl_texture2d:", c_cv::image_type_str(t))
                 ) << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION);
         }

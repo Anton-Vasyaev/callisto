@@ -48,7 +48,7 @@ macro(link_local lib_name)
     endif()
 endmacro()
 
-set(TEST_PACKAGE_LINK_LIBRARIES graphics)
+set(TEST_PACKAGE_LINK_LIBRARIES opencv graphics)
 foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
     link_local(${lib_name1})
 endforeach()

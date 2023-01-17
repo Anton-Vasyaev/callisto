@@ -10,14 +10,14 @@ namespace callisto::graphics
 
 // clang-format off
 
-#define CALLISTO GL_DEBUG_TYPE_FUNCTIONS                                    \
-    inline static constexpr gl_debug_type from_original(GLenum value);      \
-                                                                            \
-    inline constexpr GLenum original();                                     \
+#define CALLISTO_GL_DEBUG_TYPE_FUNCTIONS                                        \
+    inline static constexpr gl_debug_type from_original(GLenum value) noexcept; \
+                                                                                \
+    inline constexpr GLenum original() const noexcept;                          
 
 CALLISTO_DEFINE_OBJECT_ENUM(
     gl_debug_type,
-    GL_DEBUG_TYPE_FUNCTIONS,
+    CALLISTO_GL_DEBUG_TYPE_FUNCTIONS,
     (unknown),
     (error),
     (deprecated_behavior),
@@ -27,12 +27,12 @@ CALLISTO_DEFINE_OBJECT_ENUM(
     (marker),
     (push_group),
     (pop_group),
-    (other),
+    (other)
 );
 
 // clang-format on
 
-inline constexpr gl_debug_type gl_debug_type::from_original(int value)
+inline constexpr gl_debug_type gl_debug_type::from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -50,7 +50,7 @@ inline constexpr gl_debug_type gl_debug_type::from_original(int value)
     }
 }
 
-inline constexpr GLenum gl_debug_type::original()
+inline constexpr GLenum gl_debug_type::original() const noexcept
 {
     switch (_enum_data)
     {

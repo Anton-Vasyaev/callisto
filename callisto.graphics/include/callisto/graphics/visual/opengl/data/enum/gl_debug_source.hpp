@@ -10,14 +10,14 @@ namespace callisto::graphics
 
 // clang-format off
 
-#define CALLISTO GL_DEBUG_SOURCE_FUNCTIONS                                  \
-    inline static constexpr gl_debug_source from_original(GLenum value);    \
-                                                                            \
-    inline constexpr GLenum original();                                     \
+#define CALLISTO_GL_DEBUG_SOURCE_FUNCTIONS                                          \
+    inline static constexpr gl_debug_source from_original(GLenum value) noexcept;   \
+                                                                                    \
+    inline constexpr GLenum original() const noexcept;                                                
 
 CALLISTO_DEFINE_OBJECT_ENUM(
     gl_debug_source,
-    GL_DEBUG_SOURCE_FUNCTIONS,
+    CALLISTO_GL_DEBUG_SOURCE_FUNCTIONS,
     (unknown),
     (api),
     (window_system),
@@ -29,7 +29,7 @@ CALLISTO_DEFINE_OBJECT_ENUM(
 
 // clang-format on
 
-inline constexpr gl_debug_source gl_debug_source::from_original(GLenum value)
+inline constexpr gl_debug_source gl_debug_source::from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -44,7 +44,7 @@ inline constexpr gl_debug_source gl_debug_source::from_original(GLenum value)
     }
 }
 
-inline constexpr GLenum gl_debug_source::original()
+inline constexpr GLenum gl_debug_source::original() const noexcept
 {
     switch (_enum_data)
     {

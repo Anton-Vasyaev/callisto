@@ -1,5 +1,7 @@
 #pragma once
 
+// std
+#include <cstdint>
 // project
 #include <callisto/framework/configuration/object_enum.hpp>
 
@@ -10,20 +12,21 @@ namespace callisto::graphics
 
 // clang-format off
 
-#define CALLISTO GL_DEBUG_SEVERITY_FUNCTIONS                                                \
-    inline static constexpr gl_debug_severity from_original(GLenum value) const noexcept;   \
+#define CALLISTO_GL_DEBUG_SEVERITY_FUNCTIONS                                                \
+    inline static constexpr gl_debug_severity from_original(GLenum value) noexcept;         \
                                                                                             \
-    inline constexpr GLenum original() const noexcept;                                      \
+    inline constexpr GLenum original() const noexcept;                                      
 
 CALLISTO_DEFINE_OBJECT_ENUM(
     gl_debug_severity,
-    GL_DEBUG_SEVERITY_FUNCTIONS,
+    CALLISTO_GL_DEBUG_SEVERITY_FUNCTIONS,
     (unknown),
     (high),
     (medium),
     (low),
     (notification)
 );
+
 
 // clang-format on
 
@@ -40,7 +43,7 @@ inline constexpr gl_debug_severity gl_debug_severity::from_original(GLenum value
     }
 }
 
-inline constexpr GLenum gl_debug_severity::original() noexcept
+inline constexpr GLenum gl_debug_severity::original() const noexcept
 {
     switch (_enum_data)
     {

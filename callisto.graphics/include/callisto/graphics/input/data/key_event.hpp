@@ -13,7 +13,7 @@ struct key_event
 
     int32_t scan_code;
 
-    input_action input_action;
+    input_action action;
 };
 
 }

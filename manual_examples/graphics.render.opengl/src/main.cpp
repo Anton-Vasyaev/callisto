@@ -1,13 +1,24 @@
 // std
 #include <iostream>
+// 3rd party
+#include <boost/exception/all.hpp>
 // project
-#include <callisto/graphics/visual.hpp>
+#include "examples.hpp"
 
-namespace c_g = callisto::graphics;
 
-int main()
+int main(int argc, char* argv[])
 {  
-    c_g::graphics_context context;
-
+    try
+    {
+        example_triangle(argc, argv);
+    }
+    catch(boost::exception& e)
+    {
+        std::cerr << boost::diagnostic_information(e);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
     
 }

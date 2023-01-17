@@ -11,15 +11,16 @@ namespace c_cv = callisto::opencv;
 namespace c_ft = callisto::graphics::freetype;
 namespace c_g  = callisto::graphics;
 
+
 // ToDo
 #include <callisto/graphics/data/input.hpp>
 
 void call_example_standard()
 {
 
-    auto key_type = c_g::key_type::kp_equal();
+    auto num_type = c_f::numeric_type::float32();
 
-    std::cout << "key_type:" << key_type.str() << std::endl;
+    std::cout << "key_type:" << num_type.str() << std::endl;
 
     c_ft::library lib;
 

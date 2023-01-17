@@ -5,10 +5,13 @@
 // 3rd party
 #include <imgui.h>
 // project
+#include <callisto/framework/exception.hpp>
+
 #include <callisto/graphics/input/data.hpp>
 
 #include <callisto/graphics/visual/opengl/third_party/imgui_impl_glfw.hpp>
 #include <callisto/graphics/visual/opengl/third_party/imgui_impl_opengl3.hpp>
+#include <callisto/graphics/visual/opengl/data.hpp>
 
 #include <callisto/graphics/visual/opengl/auxiliary/input_auxiliary.hpp>
 
@@ -34,11 +37,10 @@ void GLAPIENTRY opengl_debug_message_callback(
 )
 {
     std::cout << "GL CALLBACK ["
-              << "source:" << gl_debug_source_str(gl_debug_source_from_original(source)) << "; "
-              << "type:" << gl_debug_type_str(gl_debug_type_from_original(type)) << "; "
-              << "siverity:" << gl_debug_severity_str(gl_debug_severity_from_original(severity))
-              << "; "
-              << "id:" << id << "]: " << message << std::endl;
+              << "source:" << gl_debug_source::from_original(source).str() << "; "
+              << "type:" << gl_debug_type::from_original(type).str() << "; "
+              << "siverity:" << gl_debug_severity::from_original(severity).str() << "; "
+              << "id:" << id << "]: " << message << "\n";
 }
 
 #pragma endregion
@@ -241,14 +243,20 @@ void gl_window_context::set_processor(std::shared_ptr<a_window_processor> proces
 
 void gl_window_context::start_processing()
 {
-    if (this->window_handler == nullptr) throw std::runtime_error("GLFW window is not initialized");
 
+    if (this->window_handler == nullptr) throw std::runtime_error("GLFW window is not initialized");
     {
         std::lock_guard<std::mutex> locker(call_functions_mutex);
         call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
             this->window_handler,
             this
         ));
+    }
+
+    if(this->window_processor == nullptr)
+    {
+        throw c_f::runtime_exception()
+            << c_f::error_tag_message("Window processor is not setted.");
     }
 
     glfwMakeContextCurrent(this->window_handler);
@@ -278,8 +286,8 @@ void gl_window_context::start_processing()
     ImGui_ImplGlfw_InitForOpenGL(this->window_handler, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // glEnable(GL_DEBUG_OUTPUT);
-    // glDebugMessageCallback(opengl_debug_message_callback, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(opengl_debug_message_callback, nullptr);
 
     glfwSetKeyCallback(this->window_handler, gl_window_context::context_key_callback);
     glfwSetCursorPosCallback(
