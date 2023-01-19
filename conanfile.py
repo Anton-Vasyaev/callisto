@@ -45,7 +45,7 @@ class CallistoConan(ConanFile):
     def build(self):
         for lib in self.libraries:
             cmake = CMake(self)
-            cmake.definitions[f'CALLISTO_{lib.upper()}_SHARED'] = self.__get_option_from_bool(self.options.shared)
+            cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
             cmake.definitions['CREATE_PACKAGE'] = '1'
             cmake.configure(source_folder=f'callisto.{lib}', build_folder=f'callisto.{lib}.build')
             cmake.build()

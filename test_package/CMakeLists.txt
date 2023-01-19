@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.test CXX)
 set(TARGET_NAME callisto_test)
 
+option(CALLISTO_SHARED "Build the shared library" ON)
+
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 set(CMAKE_CXX_STANDARD     20)
 

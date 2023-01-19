@@ -13,9 +13,13 @@ class TestConanCallisto(ConanFile):
     requires        = 'gtest/1.8.1'
     default_options = 'gtest:shared=True'
 
+    def __get_option_from_bool(self, flag : bool) -> str:
+        return "ON" if flag else "OFF"
+
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options['callisto'].shared)
         cmake.definitions['CREATE_PACKAGE'] = '1'
         cmake.configure()
         cmake.build()
