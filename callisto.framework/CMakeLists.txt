@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.framework)
 set(TARGET_NAME callisto_framework)
 
-option(CALLISTO_SHARED "Build the shared library" ON)
+option(CALLISTO_SHARED "Build the shared library" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 

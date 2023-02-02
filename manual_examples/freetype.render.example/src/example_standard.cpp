@@ -12,12 +12,8 @@ namespace c_ft = callisto::graphics::freetype;
 namespace c_g  = callisto::graphics;
 
 
-// ToDo
-#include <callisto/graphics/data/input.hpp>
-
 void call_example_standard()
 {
-
     auto num_type = c_f::numeric_type::float32();
 
     std::cout << "key_type:" << num_type.str() << std::endl;
