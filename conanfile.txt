@@ -18,9 +18,9 @@ gtest:shared    = True
 boost:shared    = True
 opencv:shared   = True
 freetype:shared = True
-glew.shared     = True
-glfw.shared     = True
-imgui.shared    = True
+glew:shared     = True
+glfw:shared     = True
+imgui:shared    = True
 
 [generators]
 cmake
@@ -29,7 +29,7 @@ cmake_find_package_multi
 [imports]
 bin, *.dll      -> ./bin # Copies all dll files from packages bin folder to my "bin" folder
 bin, *.dylib*   -> ./bin
-bin, *.so       -> ./bin
+bin, *.so*      -> ./bin
 lib, *.dll      -> ./bin
 lib, *.dylib*   -> ./bin # Copies all dylib files from packages lib folder to my "bin" folder
-lib, *.so       -> ./bin
+lib, *.so*      -> ./bin
