@@ -143,6 +143,7 @@ class CallistoConan(ConanFile):
         
         # Append 3rd party requires
         self.dependency_graph.append_require('libcpuid',    'libcpuid/0.5.1')
+        self.dependency_graph.append_require('nameof',      'nameof/0.10.1')
         self.dependency_graph.append_require('boost',       'boost/1.71.0')
         self.dependency_graph.append_require('opencv',      'opencv/4.5.3')
         self.dependency_graph.append_require('freetype',    'freetype/2.10.4')
@@ -179,8 +180,9 @@ class CallistoConan(ConanFile):
             'graphics',
             ['framework', 'math', 'opencv'],
             [
+                'nameof::nameof',
                 'freetype::freetype', 
-                'glfw:glfw', 
+                'glfw::glfw', 
                 'glew::glew', 
                 'glm::glm', 
                 'imgui::imgui'
@@ -198,15 +200,13 @@ class CallistoConan(ConanFile):
         if not self.options.build_graphics:
             self.dependency_graph.disable_library('graphics')
 
-        not_shared_requires = ['glm']
+        not_shared_requires = ['glm', 'nameof']
 
         self.options['zlib'].shared = self.options.shared
 
         requires = self.dependency_graph.form_requires()
 
         for require_name, _ in requires:
-            # ToDo
-            print(f'!require:{require_name}')
             if not require_name in not_shared_requires: 
                 self.options[require_name].shared = self.options.shared
 
@@ -254,7 +254,7 @@ class CallistoConan(ConanFile):
 
         libraries = self.dependency_graph.form_libraries()
         for lib_module in libraries:
-            lib_name = lib_module
+            lib_name = lib_module.name
 
             self.cpp_info.components[lib_name].names['cmake_find_package']       = lib_name
             self.cpp_info.components[lib_name].names['cmake_find_package_multi'] = lib_name

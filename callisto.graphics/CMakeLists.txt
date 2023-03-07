@@ -76,7 +76,14 @@ find_package(glm)
 target_link_libraries(${TARGET_NAME} PUBLIC Freetype::Freetype)
 target_link_libraries(${TARGET_NAME} PUBLIC nameof::nameof)
 target_link_libraries(${TARGET_NAME} PUBLIC Boost::headers)
-target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew)
+
+if(CALLISTO_SHARED)
+    target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew)
+else()
+    target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew_s)
+endif()
+
+
 target_link_libraries(${TARGET_NAME} PUBLIC glfw::glfw)
 target_link_libraries(${TARGET_NAME} PUBLIC imgui::imgui)
 target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)

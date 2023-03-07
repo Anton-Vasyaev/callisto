@@ -10,26 +10,14 @@ glfw/3.3.2
 glew/2.1.0
 glm/0.9.9.5
 imgui/1.74
-nameof/0.10.1
-
-[options]
-libcpuid:shared = True
-gtest:shared    = True
-boost:shared    = True
-opencv:shared   = True
-freetype:shared = True
-glfw:shared     = True
-glew:shared     = True
-imgui:shared    = True
 
 [generators]
-cmake
 cmake_find_package_multi
 
 [imports]
 bin, *.dll      -> ./bin # Copies all dll files from packages bin folder to my "bin" folder
 bin, *.dylib*   -> ./bin
-bin, *.so*      -> ./bin
+bin, *.so       -> ./bin
 lib, *.dll      -> ./bin
 lib, *.dylib*   -> ./bin # Copies all dylib files from packages lib folder to my "bin" folder
-lib, *.so*      -> ./bin
+lib, *.so       -> ./bin
