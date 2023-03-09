@@ -58,7 +58,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC callisto_math)
 # Conan
 find_package(cpuid)
 find_package(Boost)
-find_package(opencv)
+find_package(OpenCV)
 
 target_link_libraries(${TARGET_NAME} PUBLIC opencv::opencv)
 target_link_libraries(${TARGET_NAME} PUBLIC Boost::filesystem)

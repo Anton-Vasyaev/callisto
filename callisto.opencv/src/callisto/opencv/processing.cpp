@@ -1,5 +1,3 @@
-#pragma once
-
 // parent header
 #include <callisto/opencv/processing.hpp>
 

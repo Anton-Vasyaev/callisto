@@ -68,7 +68,7 @@ public:
 
     inline void set_image_type(image_type img_type) { this->img_type = img_type; }
 
-    inline image_type image_type() const { return this->img_type; }
+    inline image_type get_image_type() const { return this->img_type; }
 };
 
 } // namespace callisto::opencv

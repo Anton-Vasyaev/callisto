@@ -21,6 +21,15 @@ void* mem_aligned_alloc(size_t size, size_t aligned_size) noexcept;
 /// @param pointer Pointer To align-allocated memory.
 void mem_aligned_free(void* pointer) noexcept;
 
+/// @brief Frees of aligned type-present memory.
+/// @tparam value_type Basic data type of memory present.
+/// @param ptr Pointer to align-allocated type-present memory.
+template<typename value_type>
+void aligned_free(value_type* ptr) noexcept
+{
+    mem_aligned_free((void*)ptr);
+}
+
 template<typename value_type, typename other_type>
 unique_memory_type<value_type> cast_unique_memory(unique_memory_type<other_type>& memory)
 {
@@ -43,14 +52,6 @@ value_type* aligned_alloc(size_t size, size_t aligned_size)
     return (value_type*)ptr;
 }
 
-/// @brief Frees of aligned type-present memory.
-/// @tparam value_type Basic data type of memory present.
-/// @param ptr Pointer to align-allocated type-present memory.
-template<typename value_type>
-void aligned_free(value_type* ptr) noexcept
-{
-    mem_aligned_free((void*)ptr);
-}
 
 /// @brief Allocates aligned type-memory and wrap to unique pointer.
 /// @tparam value_type Basic data type of memory.

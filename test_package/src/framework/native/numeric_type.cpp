@@ -10,7 +10,7 @@ namespace c_f = callisto::framework;
 using nt = c_f::numeric_type;
 
 #define PRINT_TYPE_INFO(type)                              \
-    auto n_##type = c_f::numeric_type::instance<##type>(); \
+    auto n_##type = c_f::numeric_type::instance<type>(); \
     c_f::gtest_console::print_line(                        \
         "c type:",                                         \
         #type,                                             \

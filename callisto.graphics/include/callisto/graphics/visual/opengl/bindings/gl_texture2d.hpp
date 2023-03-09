@@ -78,7 +78,7 @@ public:
     {
         holder.validate(BOOST_CURRENT_FUNCTION);
 
-        gl_texture2d(holder.mat(), holder.image_type());
+        gl_texture2d(holder.mat(), holder.get_image_type());
     }
 
     inline ~gl_texture2d() { this->destruct(); }

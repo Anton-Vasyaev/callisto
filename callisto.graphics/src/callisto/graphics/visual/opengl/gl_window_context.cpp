@@ -2,6 +2,7 @@
 #include <callisto/graphics/visual/opengl/gl_window_context.hpp>
 // std
 #include <iostream>
+#include <exception>
 // 3rd party
 #include <imgui.h>
 // project
@@ -262,7 +263,7 @@ void gl_window_context::start_processing()
     glfwMakeContextCurrent(this->window_handler);
 
     glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) { throw std::exception("Failed to initialize glew"); }
+    if (glewInit() != GLEW_OK) { throw std::runtime_error("Failed to initialize glew"); }
     std::cout << "Vendor name:" << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Version:" << glGetString(GL_VERSION) << std::endl;
 
