@@ -23,8 +23,8 @@ namespace callisto::opencv
 namespace
 {
 namespace b_fs = boost::filesystem;
-namespace c_f = callisto::framework;
-}
+namespace c_f  = callisto::framework;
+} // namespace
 
 cv::Mat imdecode(const void* buffer_ptr, size_t buffer_size, int flags = cv::IMREAD_UNCHANGED);
 
@@ -81,7 +81,7 @@ void imwrite(path_type* path, const cv::Mat& img)
     auto channels = type_channels(mat_type);
 
     std::vector<uint8_t> encoded_data;
-    auto                 reserve_size = img.cols * img.rows * img.channels() * num_type.size();
+    auto reserve_size = img.cols * img.rows * img.channels() * c_f::numeric_type_size(num_type);
     encoded_data.reserve(reserve_size);
 
     cv::imencode(ext, img, encoded_data);

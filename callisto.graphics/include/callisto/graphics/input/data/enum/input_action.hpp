@@ -6,17 +6,27 @@
 namespace callisto::graphics
 {
 
-// clang-format off
+enum class input_action
+{
+    unknown,
 
-CALLISTO_DEFINE_OBJECT_ENUM(
-    input_action,
-    ,
-    (unknown),
-    (press),
-    (repeat),
-    (release)
-);
+    press,
 
-// clang-format on
+    repeat,
+
+    release
+};
+
+inline constexpr const char* input_action_str(input_action action)
+{
+    switch (action)
+    {
+        case input_action::press : return "press";
+        case input_action::repeat : return "repeat";
+        case input_action::release : return "release";
+
+        default : return "unknown";
+    }
+}
 
 } // namespace callisto::graphics

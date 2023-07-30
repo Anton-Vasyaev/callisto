@@ -13,13 +13,13 @@ struct input_types_auxiliary
     {
         switch (code)
         {
-            case GLFW_PRESS : return input_action::press();
+            case GLFW_PRESS : return input_action::press;
 
-            case GLFW_REPEAT : return input_action::repeat();
+            case GLFW_REPEAT : return input_action::repeat;
 
-            case GLFW_RELEASE : return input_action::release();
+            case GLFW_RELEASE : return input_action::release;
 
-            default : return input_action::unknown();
+            default : return input_action::unknown;
         }
     }
 };

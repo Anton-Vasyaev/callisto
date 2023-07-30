@@ -37,10 +37,13 @@ void GLAPIENTRY opengl_debug_message_callback(
     const void*   userParam
 )
 {
+    auto debug_source   = gl_debug_source_from_original(source);
+    auto debug_type     = gl_debug_type_from_original(type);
+    auto debug_severity = gl_debug_severity_from_original(severity);
     std::cout << "GL CALLBACK ["
-              << "source:" << gl_debug_source::from_original(source).str() << "; "
-              << "type:" << gl_debug_type::from_original(type).str() << "; "
-              << "siverity:" << gl_debug_severity::from_original(severity).str() << "; "
+              << "source:" << gl_debug_source_str(debug_source) << "; "
+              << "type:" << gl_debug_type_str(debug_type) << "; "
+              << "siverity:" << gl_debug_severity_str(debug_severity) << "; "
               << "id:" << id << "]: " << message << "\n";
 }
 
@@ -254,16 +257,18 @@ void gl_window_context::start_processing()
         ));
     }
 
-    if(this->window_processor == nullptr)
+    if (this->window_processor == nullptr)
     {
-        throw c_f::runtime_exception()
-            << c_f::error_tag_message("Window processor is not setted.");
+        throw c_f::runtime_exception() << c_f::error_tag_message("Window processor is not setted.");
     }
 
     glfwMakeContextCurrent(this->window_handler);
 
     glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) { throw std::runtime_error("Failed to initialize glew"); }
+    if (glewInit() != GLEW_OK)
+    {
+        throw std::runtime_error("Failed to initialize glew");
+    }
     std::cout << "Vendor name:" << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Version:" << glGetString(GL_VERSION) << std::endl;
 

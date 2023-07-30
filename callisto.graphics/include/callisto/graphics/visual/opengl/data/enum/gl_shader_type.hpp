@@ -8,40 +8,41 @@
 namespace callisto::graphics
 {
 
-// clang-format off
+enum class gl_shader_type
+{
+    unknown,
+    vertex,
+    fragment
+};
 
-#define CALLISTO_GL_SHADER_TYPE_FUNCTIONS                                           \
-    inline static constexpr gl_shader_type from_original(GLenum value) noexcept;    \
-                                                                                    \
-    inline constexpr GLenum original() const noexcept;                              
-
-CALLISTO_DEFINE_OBJECT_ENUM(
-    gl_shader_type,
-    CALLISTO_GL_SHADER_TYPE_FUNCTIONS,
-    (unknown),
-    (vertex),
-    (fragment)
-);
-
-// clang-format on
-
-inline constexpr gl_shader_type gl_shader_type::from_original(GLenum value) noexcept
+inline constexpr gl_shader_type gl_shader_type_from_original(GLenum value) noexcept
 {
     switch (value)
     {
-        case GL_VERTEX_SHADER : return gl_shader_type::vertex();
-        case GL_FRAGMENT_SHADER : return gl_shader_type::fragment();
-        default : return gl_shader_type::unknown();
+        case GL_VERTEX_SHADER : return gl_shader_type::vertex;
+        case GL_FRAGMENT_SHADER : return gl_shader_type::fragment;
+        default : return gl_shader_type::unknown;
     }
 }
 
-inline constexpr GLenum gl_shader_type::original() const noexcept
+inline constexpr GLenum gl_shader_type_to_original(gl_shader_type shader_type) noexcept
 {
-    switch (_enum_data)
+    switch (shader_type)
     {
-        case inner::vertex : return GL_VERTEX_SHADER;
-        case inner::fragment : return GL_FRAGMENT_SHADER;
+        case gl_shader_type::vertex : return GL_VERTEX_SHADER;
+        case gl_shader_type::fragment : return GL_FRAGMENT_SHADER;
         default : return 0;
+    }
+}
+
+inline constexpr const char* gl_shader_type_str(gl_shader_type shader_type) noexcept
+{
+    switch (shader_type)
+    {
+        case gl_shader_type::fragment : return "fragment";
+        case gl_shader_type::vertex : return "vertex";
+
+        default : return "unknown";
     }
 }
 

@@ -50,7 +50,7 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
     }
     stride = bitmap.pitch;
 
-    auto mat_type = c_cv::make_type(c_f::numeric_type::uint8(), img_type);
+    auto mat_type = c_cv::make_type(c_f::numeric_type::uint8, img_type);
 
     auto present_mat = cv::Mat(height, width, mat_type, data_ptr, stride);
 

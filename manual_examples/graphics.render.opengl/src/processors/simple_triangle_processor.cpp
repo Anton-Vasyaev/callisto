@@ -3,44 +3,42 @@
 // std
 #include <vector>
 
-const char* vertex_shader_source = 
-"   #version 330 core                                                       \n"
-"   layout(location = 0) in vec2 a_position;                                \n"
-"   layout(location = 1) in vec3 a_color;                                   \n"
-"                                                                           \n"
-"   out vec3 our_color;                                                     \n"
-"                                                                           \n"
-"   uniform float rotate_stage;                                             \n"
-"   uniform vec2  offset;                                                   \n"
-"                                                                           \n"
-"   void main()                                                             \n"
-"   {                                                                       \n"
-"       float angle = radians(rotate_stage * 360.0);                        \n"
-"       float a_cos = cos(angle);                                           \n"
-"       float a_sin = sin(angle);                                           \n"
-"                                                                           \n"
-"       float x = a_position.x;                                             \n"
-"       float y = a_position.y;                                             \n"
-"                                                                           \n"
-"       float x_rot = x * a_cos - y * a_sin + offset.x;                     \n"
-"       float y_rot = x * a_sin + y * a_cos + offset.y;                     \n"
-"       gl_Position = vec4(x_rot, y_rot, 0.0, 1.0);                         \n"
-"       our_color   = a_color;                                              \n"
-"   }                                                                       \n";
+const char* vertex_shader_source
+    = "   #version 330 core                                                       \n"
+      "   layout(location = 0) in vec2 a_position;                                \n"
+      "   layout(location = 1) in vec3 a_color;                                   \n"
+      "                                                                           \n"
+      "   out vec3 our_color;                                                     \n"
+      "                                                                           \n"
+      "   uniform float rotate_stage;                                             \n"
+      "   uniform vec2  offset;                                                   \n"
+      "                                                                           \n"
+      "   void main()                                                             \n"
+      "   {                                                                       \n"
+      "       float angle = radians(rotate_stage * 360.0);                        \n"
+      "       float a_cos = cos(angle);                                           \n"
+      "       float a_sin = sin(angle);                                           \n"
+      "                                                                           \n"
+      "       float x = a_position.x;                                             \n"
+      "       float y = a_position.y;                                             \n"
+      "                                                                           \n"
+      "       float x_rot = x * a_cos - y * a_sin + offset.x;                     \n"
+      "       float y_rot = x * a_sin + y * a_cos + offset.y;                     \n"
+      "       gl_Position = vec4(x_rot, y_rot, 0.0, 1.0);                         \n"
+      "       our_color   = a_color;                                              \n"
+      "   }                                                                       \n";
 
-
-const char* fragment_shader_source = 
-"   #version 330 core                                                       \n"
-"                                                                           \n"
-"   in vec3 our_color;                                                      \n"
-"                                                                           \n"
-"   out vec4 frag_color;                                                    \n"
-"                                                                           \n"
-"   void main()                                                             \n"
-"   {                                                                       \n"
-"       frag_color = vec4(our_color, 1.0);                                  \n"
-"   }                                                                       \n";
-
+const char* fragment_shader_source
+    = "   #version 330 core                                                       \n"
+      "                                                                           \n"
+      "   in vec3 our_color;                                                      \n"
+      "                                                                           \n"
+      "   out vec4 frag_color;                                                    \n"
+      "                                                                           \n"
+      "   void main()                                                             \n"
+      "   {                                                                       \n"
+      "       frag_color = vec4(our_color, 1.0);                                  \n"
+      "   }                                                                       \n";
 
 #pragma region private_methods
 
@@ -60,10 +58,7 @@ void simple_triangle_processor::process_control()
 
 #pragma region construct_and_destruct
 
-simple_triangle_processor::~simple_triangle_processor()
-{
-
-}
+simple_triangle_processor::~simple_triangle_processor() {}
 
 #pragma endregion
 
@@ -79,7 +74,7 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
     _offset_position.x = 0.0f;
     _offset_position.y = 0.0f;
 
-    auto vertex_shader   = c_g::gl_shader(vertex_shader_source,   c_g::gl_shader_type::vertex());
+    auto vertex_shader   = c_g::gl_shader(vertex_shader_source, c_g::gl_shader_type::vertex());
     auto fragment_shader = c_g::gl_shader(fragment_shader_source, c_g::gl_shader_type::fragment());
 
     _shader_program = c_g::gl_shader_program(vertex_shader, fragment_shader);
@@ -87,15 +82,10 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
     _rotate_stage_location = _shader_program.get_uniform_location("rotate_stage");
     _offset_location       = _shader_program.get_uniform_location("offset");
 
-    auto data = std::vector<float> {
-        0.0f, 0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f
-    };
+    auto data = std::vector<float> { 0.0f, 0.5f, 1.0f,  0.0f,  0.0f, 0.5f, -0.5f, 0.0f,
+                                     1.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f };
 
-    auto indices = std::vector<uint32_t> {
-        0, 1, 2
-    };
+    auto indices = std::vector<uint32_t> { 0, 1, 2 };
 
     GLuint vao, vbo, ebo;
 
@@ -106,12 +96,7 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        data.size() * sizeof(float),
-        data.data(),
-        GL_STATIC_DRAW
-    );
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(
@@ -138,6 +123,7 @@ void simple_triangle_processor::process(c_g::i_window_context& context)
 
     process_control();
 
+    // opengl drawing
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -150,6 +136,7 @@ void simple_triangle_processor::process(c_g::i_window_context& context)
     glBindVertexArray(_vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    // Dear ImGui drawing
     ImGui::Begin("Settings");
     {
         ImGui::SliderFloat("rotate speed", &_rotate_speed, -1.0, 1.0);
@@ -163,27 +150,14 @@ void simple_triangle_processor::on_key_event(c_g::key_event data)
 {
     if (data.action == c_g::input_action::press()) _pressed_keys[data.key] = true;
     else if (data.action == c_g::input_action::release()) _pressed_keys[data.key] = false;
-    
 }
 
-void simple_triangle_processor::on_mouse_button_event(c_g::mouse_button_event data)
-{
+void simple_triangle_processor::on_mouse_button_event(c_g::mouse_button_event data) {}
 
-}
+void simple_triangle_processor::on_cursor_event(c_g::cursor_event data) {}
 
-void simple_triangle_processor::on_cursor_event(c_g::cursor_event data)
-{
+void simple_triangle_processor::on_change_position(c_m::point2i position) {}
 
-}
-
-void simple_triangle_processor::on_change_position(c_m::point2i position) 
-{
-
-}
-
-void simple_triangle_processor::on_resize(c_m::size2i size) 
-{
-
-}
+void simple_triangle_processor::on_resize(c_m::size2i size) {}
 
 #pragma endregion

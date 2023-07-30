@@ -6,12 +6,23 @@
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>
 
-
 namespace callisto::math
 {
 namespace
 {
-    namespace c_f = callisto::framework;
+namespace c_f = callisto::framework;
+}
+
+template<c_f::concept_fundamental value_type, c_f::concept_fundamental min_type>
+inline constexpr auto min(value_type value, min_type min) noexcept
+{
+    return value < min ? value : min;
+}
+
+template<c_f::concept_fundamental value_type, c_f::concept_fundamental max_type>
+inline constexpr auto max(value_type value, max_type max) noexcept
+{
+    return value > max ? value : max;
 }
 
 /// @brief Clamps value.
@@ -19,23 +30,16 @@ namespace
 /// @tparam min_type Type of min value of clamping.
 /// @tparam max_type Type of max value of clamping.
 /// @param value Clamping value.
-/// @param min min value of clamping.
-/// @param max max value of clamping.
+/// @param min_val min value of clamping.
+/// @param max_val max value of clamping.
 /// @return Clamped value.
 template<
     c_f::concept_fundamental value_type,
     c_f::concept_fundamental min_type,
-    c_f::concept_fundamental max_type
->
-inline constexpr auto clamp(value_type value, min_type min, max_type max) noexcept
+    c_f::concept_fundamental max_type>
+inline constexpr auto clamp(value_type value, min_type min_val, max_type max_val) noexcept
 {
-    using senior_type = c_f::senior_conversion_t<value_type, min_type, max_type>;
-
-    senior_type value_cast = value;
-    senior_type min_cast   = min;
-    senior_type max_cast   = max;
-
-    return std::clamp(value_cast, min_cast, max_cast);
+    return min(max_val, max(min_val, value));
 }
 
 /// @brief Calculates normalized value (from 0.0 to 1.0) on range.
@@ -49,39 +53,16 @@ inline constexpr auto clamp(value_type value, min_type min, max_type max) noexce
 template<
     c_f::concept_fundamental value_type,
     c_f::concept_fundamental left_type,
-    c_f::concept_fundamental right_type
->
+    c_f::concept_fundamental right_type>
 inline constexpr auto norm_on_range(value_type value, left_type left, right_type right) noexcept
 {
     return left + value * (right - left);
 }
 
-template<
-    c_f::concept_fundamental value_type,
-    c_f::concept_fundamental min_type
->
-inline constexpr auto min(value_type value, min_type min) noexcept
-{
-    return value < min ? value : min;
-}
-
-template<
-    c_f::concept_fundamental value_type,
-    c_f::concept_fundamental max_type
->
-inline constexpr auto max(value_type value, max_type max) noexcept
-{
-    return value > max ? value : max;
-}
-
-
-template<
-    c_f::concept_fundamental value_type,
-    c_f::concept_fundamental mod_type
->
+template<c_f::concept_fundamental value_type, c_f::concept_fundamental mod_type>
 inline constexpr auto tmod(value_type value, mod_type module) noexcept
 {
-    if constexpr(std::is_floating_point_v<c_f::senior_conversion_t<value_type, mod_type>>)
+    if constexpr (std::is_floating_point_v<c_f::senior_conversion_t<value_type, mod_type>>)
     {
         return std::fmod(value, module);
     }
@@ -91,4 +72,4 @@ inline constexpr auto tmod(value_type value, mod_type module) noexcept
     }
 }
 
-}
+} // namespace callisto::math

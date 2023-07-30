@@ -64,7 +64,7 @@ endif()
 target_link_libraries(${TARGET_NAME} PUBLIC callisto_opencv)
 
 # Conan
-find_package(freetype PATHS ${CONAN_DIR})
+find_package(Freetype PATHS ${CONAN_DIR})
 find_package(nameof PATHS ${CONAN_DIR})
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GLEW)

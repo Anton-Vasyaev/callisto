@@ -3,56 +3,55 @@
 // std
 #include <cstdint>
 // project
-#include <callisto/framework/configuration/object_enum.hpp>
-
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics
 {
+enum class gl_debug_severity
+{
+    unknown,
+    high,
+    medium,
+    low,
+    notification
+};
 
-// clang-format off
-
-#define CALLISTO_GL_DEBUG_SEVERITY_FUNCTIONS                                                \
-    inline static constexpr gl_debug_severity from_original(GLenum value) noexcept;         \
-                                                                                            \
-    inline constexpr GLenum original() const noexcept;                                      
-
-CALLISTO_DEFINE_OBJECT_ENUM(
-    gl_debug_severity,
-    CALLISTO_GL_DEBUG_SEVERITY_FUNCTIONS,
-    (unknown),
-    (high),
-    (medium),
-    (low),
-    (notification)
-);
-
-
-// clang-format on
-
-inline constexpr gl_debug_severity gl_debug_severity::from_original(GLenum value) noexcept
+inline constexpr gl_debug_severity gl_debug_severity_from_original(GLenum value) noexcept
 {
     switch (value)
     {
-        case GL_DEBUG_SEVERITY_HIGH : return gl_debug_severity::high();
-        case GL_DEBUG_SEVERITY_MEDIUM : return gl_debug_severity::medium();
-        case GL_DEBUG_SEVERITY_LOW : return gl_debug_severity::low();
-        case GL_DEBUG_SEVERITY_NOTIFICATION : return gl_debug_severity::notification();
+        case GL_DEBUG_SEVERITY_HIGH : return gl_debug_severity::high;
+        case GL_DEBUG_SEVERITY_MEDIUM : return gl_debug_severity::medium;
+        case GL_DEBUG_SEVERITY_LOW : return gl_debug_severity::low;
+        case GL_DEBUG_SEVERITY_NOTIFICATION : return gl_debug_severity::notification;
 
-        default : return gl_debug_severity::unknown();
+        default : return gl_debug_severity::unknown;
     }
 }
 
-inline constexpr GLenum gl_debug_severity::original() const noexcept
+inline constexpr GLenum gl_debug_severity_to_original(gl_debug_severity severity) noexcept
 {
-    switch (_enum_data)
+    switch (severity)
     {
-        case inner::high : return GL_DEBUG_SEVERITY_HIGH;
-        case inner::medium : return GL_DEBUG_SEVERITY_MEDIUM;
-        case inner::low : return GL_DEBUG_SEVERITY_LOW;
-        case inner::notification : return GL_DEBUG_SEVERITY_NOTIFICATION;
+        case gl_debug_severity::high : return GL_DEBUG_SEVERITY_HIGH;
+        case gl_debug_severity::medium : return GL_DEBUG_SEVERITY_MEDIUM;
+        case gl_debug_severity::low : return GL_DEBUG_SEVERITY_LOW;
+        case gl_debug_severity::notification : return GL_DEBUG_SEVERITY_NOTIFICATION;
 
         default : return 0;
+    }
+}
+
+inline constexpr const char* gl_debug_severity_str(gl_debug_severity severity) noexcept
+{
+    switch (severity)
+    {
+        case gl_debug_severity::high : return "high";
+        case gl_debug_severity::medium : return "medium";
+        case gl_debug_severity::low : return "low";
+        case gl_debug_severity::notification : return "notification";
+
+        default : return "unknown";
     }
 }
 

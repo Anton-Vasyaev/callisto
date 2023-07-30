@@ -20,7 +20,7 @@ namespace
 {
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
-}
+} // namespace
 
 /// @brief Returns base CV type of given CV type. For example, for CV_32FC3 return CV_32F.
 /// @param cv_type CV type.
@@ -86,11 +86,7 @@ inline constexpr int make_type(c_f::numeric_type num_type, image_type img_type);
 /// @param mat           Mat
 /// @param img_type      Image type.
 /// @param function_name Name of function, where call matching.
-void match_image_type(
-    const cv::Mat& mat,
-    image_type     img_type,
-    const char*    function_name = nullptr
-);
+void match_image_type(const cv::Mat& mat, image_type img_type, const char* function_name = nullptr);
 
 /// @brief Returns default image type for mat.
 /// @param mat Mat.
@@ -101,7 +97,13 @@ image_type default_image_type(const cv::Mat& mat);
 /// @param src Source mat.
 /// @param dst Destination mat.
 /// @param num_type Numeric type.
-inline void convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type, double alpha = 1.0, double beta = 0.0);
+inline void convert(
+    const cv::Mat&    src,
+    cv::Mat&          dst,
+    c_f::numeric_type num_type,
+    double            alpha = 1.0,
+    double            beta  = 0.0
+);
 
 /// @brief Converts mat bye basic arithmetic type.
 /// @tparam type Basic arithmetic type.
@@ -120,7 +122,6 @@ inline c_m::size2i mat_size(const cv::Mat& src);
 /// @return Size of mat.
 inline size_t mat_stride(const cv::Mat& src);
 
-
 #pragma region realisation
 
 inline constexpr int base_type(int cv_type)
@@ -130,18 +131,11 @@ inline constexpr int base_type(int cv_type)
     return cv_type % 8;
 }
 
-inline int base_type(const cv::Mat& mat)
-{
-    return base_type(mat.type());
-}
-
+inline int base_type(const cv::Mat& mat) { return base_type(mat.type()); }
 
 inline constexpr int type_channels(int cv_type) { return cv_type / 8 + 1; }
 
-inline int mat_channels(const cv::Mat& mat)
-{
-    return type_channels(mat.type());
-}
+inline int mat_channels(const cv::Mat& mat) { return type_channels(mat.type()); }
 
 constexpr c_f::numeric_type cv2numeric(int cv_type)
 {
@@ -149,33 +143,30 @@ constexpr c_f::numeric_type cv2numeric(int cv_type)
 
     switch (type)
     {
-        case CV_8U : return c_f::numeric_type::uint8();
-        case CV_8S : return c_f::numeric_type::int8();
-        case CV_16U : return c_f::numeric_type::uint16();
-        case CV_16S : return c_f::numeric_type::int16();
-        case CV_32S : return c_f::numeric_type::int32();
-        case CV_32F : return c_f::numeric_type::float32();
-        case CV_64F : return c_f::numeric_type::float64();
-        default : return c_f::numeric_type::unknown();
+        case CV_8U : return c_f::numeric_type::uint8;
+        case CV_8S : return c_f::numeric_type::int8;
+        case CV_16U : return c_f::numeric_type::uint16;
+        case CV_16S : return c_f::numeric_type::int16;
+        case CV_32S : return c_f::numeric_type::int32;
+        case CV_32F : return c_f::numeric_type::float32;
+        case CV_64F : return c_f::numeric_type::float64;
+        default : return c_f::numeric_type::unknown;
     }
 }
 
-inline c_f::numeric_type mat_numeric_type(const cv::Mat& mat)
-{
-    return cv2numeric(mat.type());
-}
+inline c_f::numeric_type mat_numeric_type(const cv::Mat& mat) { return cv2numeric(mat.type()); }
 
 constexpr int numeric2cv(c_f::numeric_type num_type)
 {
-    switch (num_type.get_data())
+    switch (num_type)
     {
-        case c_f::numeric_type::inner::uint8 : return CV_8U;
-        case c_f::numeric_type::inner::int8 : return CV_8S;
-        case c_f::numeric_type::inner::uint16 : return CV_16U;
-        case c_f::numeric_type::inner::int16 : return CV_16S;
-        case c_f::numeric_type::inner::int32 : return CV_32S;
-        case c_f::numeric_type::inner::float32 : return CV_32F;
-        case c_f::numeric_type::inner::float64 : return CV_64F;
+        case c_f::numeric_type::uint8 : return CV_8U;
+        case c_f::numeric_type::int8 : return CV_8S;
+        case c_f::numeric_type::uint16 : return CV_16U;
+        case c_f::numeric_type::int16 : return CV_16S;
+        case c_f::numeric_type::int32 : return CV_32S;
+        case c_f::numeric_type::float32 : return CV_32F;
+        case c_f::numeric_type::float64 : return CV_64F;
         default : return -1;
     }
 }
@@ -202,8 +193,8 @@ constexpr int make_type(c_f::numeric_type num_type, int channels)
     if (base_type == -1)
     {
         throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
-            "failed to make_type, not valid type for create cv::Mat:",
-            num_type.str(),
+            "failed to make_type, not valid numeric_type for create cv::Mat:",
+            c_f::numeric_type_str(num_type),
             ", code:",
             static_cast<int>(num_type)
         ));
@@ -217,7 +208,8 @@ inline constexpr int make_type(c_f::numeric_type num_type, image_type img_type)
     return make_type(num_type, image_type_channels(img_type));
 }
 
-inline void convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type, double alpha, double beta)
+inline void
+convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type, double alpha, double beta)
 {
     auto channels        = type_channels(src.type());
     auto convert_cv_type = make_type(num_type, channels);
@@ -225,23 +217,15 @@ inline void convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type
     src.convertTo(dst, convert_cv_type, alpha, beta);
 }
 
-
 template<c_f::concept_arithmetic type>
 inline void convert(const cv::Mat& src, cv::Mat& dst, double alpha, double beta)
 {
-    return convert(src, dst, c_f::numeric_type::instance<type>());
+    return convert(src, dst, c_f::numeric_type_instance<type>());
 }
 
+inline c_m::size2i mat_size(const cv::Mat& src) { return c_m::size2i(src.cols, src.rows); }
 
-inline c_m::size2i mat_size(const cv::Mat& src)
-{
-    return c_m::size2i(src.cols, src.rows);
-}
-
-inline size_t mat_stride(const cv::Mat& src)
-{
-    return static_cast<size_t>(src.step);
-}
+inline size_t mat_stride(const cv::Mat& src) { return static_cast<size_t>(src.step); }
 
 #pragma endregion
 
