@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.math)
 set(TARGET_NAME callisto_math)
 
-option(CALLISTO_MATH_SHARED "Build the shared library" ON)
+option(CALLISTO_SHARED "Build the shared library" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(CALLISTO_MATH_SHARED)
+if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()

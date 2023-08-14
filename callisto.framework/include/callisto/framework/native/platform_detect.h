@@ -17,7 +17,6 @@
     #define CALLISTO_OS_FAMILY_NAME "Unix"
 #endif
 
-    
 //
 // DETECT ARCHITECTURE
 //
@@ -33,7 +32,6 @@
     #define CALLISTO_ARCHITECTURE_FAMILY_X86
     #define CALLISTO_ARCHITECTURE_FAMILY_NAME "x86"
 #endif
-
 
 // DETECT BIT DESIGN
 #if defined(CALLISTO_OS_FAMILY_UNIX)

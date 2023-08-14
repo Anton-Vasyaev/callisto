@@ -4,22 +4,16 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.framework)
 set(TARGET_NAME callisto_framework)
 
-option(CALLISTO_FRAMEWORK_SHARED "Build the shared library" ON)
+option(CALLISTO_SHARED "Build the shared library" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(CALLISTO_FRAMEWORK_SHARED)
+if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
     set(LIBRARY_TYPE STATIC)
 endif()
-
-# ToDo before set conan
-message("before CONAN DIR:${CONAN_DIR}")
-message("before CMAKE PREFIX PATH: ${CMAKE_PREFIX_PATH}")
-message("before CMAKE MODULE PATH: ${CMAKE_MODULE_PATH}")
-message("before cmake source dir:${CMAKE_CURRENT_LIST_DIR}")
 
 # conan settings **********************************************************************************
 set(CONAN_DIR "")

@@ -26,7 +26,7 @@ private:
 
     inline void increment_tail()
     {
-        _tail = (_tail + 1) % buffer.size();
+        _tail = (_tail + 1) % _buffer.size();
 
         if (_tail == _head) increment_head();
     }

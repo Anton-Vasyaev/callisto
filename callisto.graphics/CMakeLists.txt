@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.graphics)
 set(TARGET_NAME callisto_graphics)
 
-option(CALLISTO_GRAPHICS_SHARED "Build the shared library" ON)
+option(CALLISTO_SHARED "Build the shared library" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(CALLISTO_GRAPHICS_SHARED)
+if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
@@ -64,8 +64,26 @@ endif()
 target_link_libraries(${TARGET_NAME} PUBLIC callisto_opencv)
 
 # Conan
-find_package(freetype PATHS ${CONAN_DIR})
+find_package(Freetype PATHS ${CONAN_DIR})
 find_package(nameof PATHS ${CONAN_DIR})
+find_package(Boost PATHS ${CONAN_DIR})
+find_package(GLEW)
+find_package(glfw3)
+find_package(imgui)
+find_package(glm)
 
-target_link_libraries(${TARGET_NAME} PUBLIC freetype::freetype)
+
+target_link_libraries(${TARGET_NAME} PUBLIC Freetype::Freetype)
 target_link_libraries(${TARGET_NAME} PUBLIC nameof::nameof)
+target_link_libraries(${TARGET_NAME} PUBLIC Boost::headers)
+
+if(CALLISTO_SHARED)
+    target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew)
+else()
+    target_link_libraries(${TARGET_NAME} PUBLIC GLEW::glew_s)
+endif()
+
+
+target_link_libraries(${TARGET_NAME} PUBLIC glfw::glfw)
+target_link_libraries(${TARGET_NAME} PUBLIC imgui::imgui)
+target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)

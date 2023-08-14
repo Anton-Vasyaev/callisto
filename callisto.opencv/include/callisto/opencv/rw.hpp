@@ -22,8 +22,9 @@ namespace callisto::opencv
 
 namespace
 {
-namespace c_f = callisto::framework;
-}
+namespace b_fs = boost::filesystem;
+namespace c_f  = callisto::framework;
+} // namespace
 
 cv::Mat imdecode(const void* buffer_ptr, size_t buffer_size, int flags = cv::IMREAD_UNCHANGED);
 
@@ -33,7 +34,7 @@ imencode(cv::Mat img, const char* ext, const std::vector<int>& params = std::vec
 template<typename path_type>
 cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
 {
-    std::ifstream file_handler(path, std::ios::binary);
+    b_fs::ifstream file_handler(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {
@@ -44,13 +45,13 @@ cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
                );
     }
 
-    auto file_length = c_f::fstream_aux::size_of_file(file_handler);
+    auto file_size = b_fs::file_size(path);
 
-    auto file_data = std::vector<uint8_t>(file_length);
+    auto file_data = std::vector<uint8_t>(file_size);
 
-    file_handler.read(reinterpret_cast<char*>(file_data.data()), file_length);
+    file_handler.read(reinterpret_cast<char*>(file_data.data()), file_size);
 
-    return imdecode(file_data.data(), file_length, flags);
+    return imdecode(file_data.data(), file_size, flags);
 }
 
 template<typename path_type>
@@ -62,7 +63,7 @@ cv::Mat imread(path_type&& path, int flags = cv::IMREAD_UNCHANGED)
 template<typename path_type>
 void imwrite(path_type* path, const cv::Mat& img)
 {
-    std::ofstream file_handler(path, std::ios::binary);
+    b_fs::ofstream file_handler(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {
@@ -80,7 +81,7 @@ void imwrite(path_type* path, const cv::Mat& img)
     auto channels = type_channels(mat_type);
 
     std::vector<uint8_t> encoded_data;
-    auto                 reserve_size = img.cols * img.rows * img.channels() * num_type.size();
+    auto reserve_size = img.cols * img.rows * img.channels() * c_f::numeric_type_size(num_type);
     encoded_data.reserve(reserve_size);
 
     cv::imencode(ext, img, encoded_data);

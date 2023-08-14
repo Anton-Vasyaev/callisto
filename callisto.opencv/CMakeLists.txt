@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.opencv)
 set(TARGET_NAME callisto_opencv)
 
-option(CALLISTO_OPENCV_SHARED "Build the shared library" ON)
+option(CALLISTO_SHARED "Build the shared library" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(CALLISTO_OPENCV_SHARED)
+if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
@@ -58,7 +58,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC callisto_math)
 # Conan
 find_package(cpuid)
 find_package(Boost)
-find_package(opencv)
+find_package(OpenCV)
 
 target_link_libraries(${TARGET_NAME} PUBLIC opencv::opencv)
 target_link_libraries(${TARGET_NAME} PUBLIC Boost::filesystem)

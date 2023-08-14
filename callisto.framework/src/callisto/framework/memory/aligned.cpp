@@ -1,9 +1,8 @@
-#pragma once
-
 // parent header
 #include <callisto/framework/memory/aligned.hpp>
 // std
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 // 3rd party
 // project
@@ -22,17 +21,18 @@ void mem_aligned_free(void* pointer) noexcept
 {
     _aligned_free(pointer);
 }
+#endif
 
-#elif CALLISTO_OS_LINUX
+#ifdef CALLISTO_OS_LINUX
 
-void* mem_aligned_alloc(size_t size, size_t aligned_size)
+void* mem_aligned_alloc(size_t size, size_t aligned_size) noexcept
 {
-    return aligned_alloc(size, aligned_size);
+    return ::aligned_alloc(size, aligned_size);
 }
 
-void mem_aligned_free(void* pointer)
+void mem_aligned_free(void* pointer) noexcept
 {
-    free(pointer);
+    ::free(pointer);
 }
 
 #endif

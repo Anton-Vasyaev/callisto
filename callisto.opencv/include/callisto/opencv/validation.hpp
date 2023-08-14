@@ -151,9 +151,9 @@ struct validation
                 "numeric type of mat \'",
                 argument_name,
                 "\' != ",
-                num_type.str(),
+                c_f::numeric_type_str(num_type),
                 ": ",
-                mat_num_type.str(),
+                c_f::numeric_type_str(mat_num_type),
                 "."
             ));
         }

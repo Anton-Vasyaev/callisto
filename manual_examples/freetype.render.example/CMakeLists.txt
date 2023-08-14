@@ -13,19 +13,16 @@ if(MSVC)
 endif()
 
 # conan settings **********************************************************************************
-
 set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
-message("CONAN DIR:${CONAN_DIR}")
-
-
 # collect source and linked libraries to executable file ******************************************
 file(GLOB_RECURSE TARGET_SRC "src/*.c" "src/*.cpp")
+
+
 add_executable(${TARGET_NAME} ${TARGET_SRC})
 target_include_directories(${TARGET_NAME} PRIVATE src)
-
 
 # 3rd party 
 
@@ -78,5 +75,5 @@ endif()
 add_custom_command(
     TARGET ${TARGET_NAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${TARGET_NAME}>/resources
+    ${CMAKE_SOURCE_DIR}/../resources $<TARGET_FILE_DIR:${TARGET_NAME}>/resources
 )

@@ -8,13 +8,15 @@ namespace callisto::graphics
 
 struct font_symbol_metrics
 {
-    int32_t hori_bearing_x;
-    int32_t hori_bearing_y;
-    int32_t hori_advance;
+    float hori_bearing_x;
+    float hori_bearing_y;
+    float hori_advance;
 
-    int32_t vert_bearing_x;
-    int32_t vert_bearing_y;
-    int32_t vert_advance;
+    float vert_bearing_x;
+    float vert_bearing_y;
+    float vert_advance;
+
+    bool strong_pixel_render;
 };
 
 } // namespace callisto::graphics

@@ -50,9 +50,6 @@ public:
             "need specialization std::numeric_limits for enum"
         );
         */
-        // ToDo
-        std::cout << (int)std::numeric_limits<enum_type>::lowest() << std::endl;
-        std::cout << (int)std::numeric_limits<enum_type>::max() << std::endl;
 
         this->data.resize(size);
     }

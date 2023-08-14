@@ -49,7 +49,7 @@ inline constexpr const char* image_type_str(image_type type) noexcept
     }
 }
 
-inline static constexpr image_type unspecified_image_type_from_channels(uint64_t channels)
+inline static constexpr image_type image_type_unspecified_from_channels(uint64_t channels)
 {
     return (image_type)(int(image_type::channels_1) + channels - 1);
 }

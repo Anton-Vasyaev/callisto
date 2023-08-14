@@ -16,7 +16,10 @@
 			"path": "test_package"
 		},
 		{
-			"path": "manual_examples/freetype.render.example"
+			"path": "manual_examples/freetype.render.example",
+		},
+		{
+			"path": "manual_examples/graphics.render.opengl"
 		}
 	],
 	"settings": {

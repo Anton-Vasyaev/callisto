@@ -9,15 +9,15 @@ namespace c_f = callisto::framework;
 
 using nt = c_f::numeric_type;
 
-#define PRINT_TYPE_INFO(type)                              \
-    auto n_##type = c_f::numeric_type::instance<##type>(); \
-    c_f::gtest_console::print_line(                        \
-        "c type:",                                         \
-        #type,                                             \
-        ", numeric_type:",                                 \
-        n_##type.str(),                                    \
-        ", byte_size:",                                    \
-        n_##type.size()                                    \
+#define PRINT_TYPE_INFO(type)                           \
+    auto n_##type = c_f::numeric_type_instance<type>(); \
+    c_f::gtest_console::print_line(                     \
+        "c type:",                                      \
+        #type,                                          \
+        ", numeric_type str:",                          \
+        c_f::numeric_type_str(n_##type),                \
+        ", byte_size:",                                 \
+        c_f::numeric_type_size(n_##type)                \
     );
 
 TEST(framework_native, native_numeric_type_test)
