@@ -53,7 +53,7 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
         if (window_handler == nullptr) throw std::runtime_error("cannot create glfw window");
     };
 
-    if (options.mode == window_mode::fullscreen())
+    if (options.mode == window_mode::fullscreen)
     {
         window_handler = glfwCreateWindow(
             window_size.width,
@@ -64,7 +64,7 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
         );
         validate_glfw_window_nullptr(window_handler);
     }
-    else if (options.mode == window_mode::borderless())
+    else if (options.mode == window_mode::borderless)
     {
         int value = 0;
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -72,7 +72,7 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
             = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
         glfwDefaultWindowHints();
     }
-    else if (options.mode == window_mode::windowed())
+    else if (options.mode == window_mode::windowed)
     {
         window_handler
             = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);

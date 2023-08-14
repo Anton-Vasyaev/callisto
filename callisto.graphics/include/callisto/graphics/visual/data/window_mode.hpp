@@ -1,18 +1,26 @@
 #pragma once
 
-// project
-#include <callisto/framework/configuration/object_enum.hpp>
-
 namespace callisto::graphics
 {
-    
-CALLISTO_DEFINE_OBJECT_ENUM(
-    window_mode,
-    ,
-    (unknown),
-    (fullscreen),
-    (borderless),
-    (windowed)
-);
 
+enum class window_mode
+{
+    unknown,
+    fullscreen,
+    borderless,
+    windowed
+};
+
+constexpr const char* window_mode_str(window_mode mode) noexcept
+{
+    switch (mode)
+    {
+        case window_mode::fullscreen : return "fullscreen";
+        case window_mode::borderless : return "borderless";
+        case window_mode::windowed : return "windowed";
+
+        default : return "unknown";
+    }
 }
+
+} // namespace callisto::graphics

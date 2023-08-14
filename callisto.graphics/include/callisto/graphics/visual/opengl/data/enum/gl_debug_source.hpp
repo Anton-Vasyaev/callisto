@@ -1,8 +1,6 @@
 #pragma once
 
 // project
-#include <callisto/framework/configuration/object_enum.hpp>
-
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics

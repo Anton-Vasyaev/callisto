@@ -74,8 +74,8 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
     _offset_position.x = 0.0f;
     _offset_position.y = 0.0f;
 
-    auto vertex_shader   = c_g::gl_shader(vertex_shader_source, c_g::gl_shader_type::vertex());
-    auto fragment_shader = c_g::gl_shader(fragment_shader_source, c_g::gl_shader_type::fragment());
+    auto vertex_shader   = c_g::gl_shader(vertex_shader_source, c_g::gl_shader_type::vertex);
+    auto fragment_shader = c_g::gl_shader(fragment_shader_source, c_g::gl_shader_type::fragment);
 
     _shader_program = c_g::gl_shader_program(vertex_shader, fragment_shader);
 
@@ -148,8 +148,8 @@ void simple_triangle_processor::process(c_g::i_window_context& context)
 
 void simple_triangle_processor::on_key_event(c_g::key_event data)
 {
-    if (data.action == c_g::input_action::press()) _pressed_keys[data.key] = true;
-    else if (data.action == c_g::input_action::release()) _pressed_keys[data.key] = false;
+    if (data.action == c_g::input_action::press) _pressed_keys[data.key] = true;
+    else if (data.action == c_g::input_action::release) _pressed_keys[data.key] = false;
 }
 
 void simple_triangle_processor::on_mouse_button_event(c_g::mouse_button_event data) {}

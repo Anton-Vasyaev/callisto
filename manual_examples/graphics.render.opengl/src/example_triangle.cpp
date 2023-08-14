@@ -17,7 +17,7 @@ void example_triangle(int argc, char* argv[])
     auto& primary_monitor = gl_context.get_primary_monitor();
 
     auto window_up = primary_monitor.create_window(
-        c_g::window_options(200, 200, 800, 800, c_g::window_mode::windowed())
+        c_g::window_options(200, 200, 800, 800, c_g::window_mode::windowed)
     );
 
     auto triangle_processor_sp = std::shared_ptr<c_g::a_window_processor>();

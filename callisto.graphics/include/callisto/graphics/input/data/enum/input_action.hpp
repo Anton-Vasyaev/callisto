@@ -1,8 +1,5 @@
 #pragma once
 
-// project
-#include <callisto/framework/configuration/object_enum.hpp>
-
 namespace callisto::graphics
 {
 
@@ -17,7 +14,7 @@ enum class input_action
     release
 };
 
-inline constexpr const char* input_action_str(input_action action)
+inline constexpr const char* input_action_str(input_action action) noexcept
 {
     switch (action)
     {

@@ -8,9 +8,9 @@
 namespace callisto::framework
 {
 
-struct panic_exception : virtual ::exception
+/// @brief Present base exception.
+struct panic_exception : virtual std::exception, virtual boost::exception
 {
-public:
     panic_exception() {}
 };
 
