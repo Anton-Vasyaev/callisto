@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <callisto/math/primitives.hpp>
-#include <callisto/math/primitives/bbox2_can.hpp>
 
 namespace callisto::math
 {

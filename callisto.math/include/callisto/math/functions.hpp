@@ -14,13 +14,13 @@ namespace c_f = callisto::framework;
 }
 
 template<c_f::concept_fundamental value_type, c_f::concept_fundamental min_type>
-inline constexpr auto min(value_type value, min_type min) noexcept
+inline constexpr auto min_f(value_type value, min_type min) noexcept
 {
     return value < min ? value : min;
 }
 
 template<c_f::concept_fundamental value_type, c_f::concept_fundamental max_type>
-inline constexpr auto max(value_type value, max_type max) noexcept
+inline constexpr auto max_f(value_type value, max_type max) noexcept
 {
     return value > max ? value : max;
 }
@@ -37,9 +37,9 @@ template<
     c_f::concept_fundamental value_type,
     c_f::concept_fundamental min_type,
     c_f::concept_fundamental max_type>
-inline constexpr auto clamp(value_type value, min_type min_val, max_type max_val) noexcept
+inline constexpr auto clamp_f(value_type value, min_type min_val, max_type max_val) noexcept
 {
-    return min(max_val, max(min_val, value));
+    return min_f(max_val, max_f(min_val, value));
 }
 
 /// @brief Calculates normalized value (from 0.0 to 1.0) on range.
