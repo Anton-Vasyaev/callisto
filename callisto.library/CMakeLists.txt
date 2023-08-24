@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
-# configure project *******************************************************************************
+# configure project ***************************************************************************************************
 project(callisto.library)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
@@ -17,7 +17,7 @@ else()
     set(LIBRARY_TYPE STATIC)
 endif()
 
-# conan settings **********************************************************************************
+# configure conan and 3rdparty libaries *******************************************************************************
 set(CONAN_DIR "")
 if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR}/..)
@@ -30,17 +30,23 @@ set(CMAKE_MODULE_PATH ${CONAN_DIR})
 # find libraries
 find_package(cpuid)
 find_package(Boost PATHS ${CONAN_DIR})
-find_package(opencv)
-
-find_package(Freetype PATHS ${CONAN_DIR})
 find_package(nameof PATHS ${CONAN_DIR})
-find_package(GLEW)
-find_package(glfw3)
-find_package(imgui)
-find_package(glm)
+
+if(CALLISTO_OPENCV_ENABLE)
+    find_package(opencv)
+endif()
+
+if(CALLISTO_GRAPHICS_ENABLE)
+    find_package(Freetype PATHS ${CONAN_DIR})
+    find_package(GLEW)
+    find_package(glfw3)
+    find_package(imgui)
+    find_package(glm)
+endif()
 
 
-# configure targets *******************************************************************************
+# configure targets ***************************************************************************************************
+
 # callisto.framework
 set(FRAMEWORK_TARGET callisto_framework)
 file(GLOB_RECURSE CALLISTO_FRAMEWORK_SRC "callisto.framework/src/*.c" "callisto.framework/src/*.cpp")

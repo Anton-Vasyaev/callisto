@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.19)
 
 # configure project *******************************************************************************
 project(callisto.test CXX)
-set(TARGET_NAME callisto_test)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
 
@@ -31,49 +30,48 @@ message("CONAN DIR:${CONAN_DIR}")
 
 
 # collect source and linked libraries to executable file ******************************************
-file(GLOB_RECURSE AUTO_SRC "src/*.c" "src/*.cpp")
-add_executable(${TARGET_NAME} ${AUTO_SRC})
-target_include_directories(${TARGET_NAME} PRIVATE src)
+set(TEST_TARGET callisto_test)
+file(GLOB_RECURSE TEST_SRC "src/*.c" "src/*.cpp")
+add_executable(${TEST_TARGET} ${TEST_SRC})
+target_include_directories(${TEST_TARGET} PRIVATE src)
 
 
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
-target_link_libraries(${TARGET_NAME} PRIVATE GTest::gtest)
+target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
 
-
-# link with family libraries
+# link with callisto
 if(NOT DEFINED CREATE_PACKAGE)
+    add_subdirectory(
+        ${CMAKE_SOURCE_DIR}/../callisto.library
+        ${CMAKE_CURRENT_BINARY_DIR}/callisto.library
+    )
+
     macro(link_local lib_name)
-        if(NOT TARGET callisto_${lib_name})
-            add_subdirectory(
-                ${CMAKE_SOURCE_DIR}/../callisto.${lib_name}
-                ${CMAKE_CURRENT_BINARY_DIR}/callisto.${lib_name}
+        target_link_libraries(${TEST_TARGET} PRIVATE callisto_${lib_name})
+
+        if(WIN32)
+            add_custom_command(
+                TARGET ${TEST_TARGET} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} 
+                -E copy_if_different 
+                $<TARGET_FILE:callisto_${lib_name}> 
+                $<TARGET_FILE_DIR:${TEST_TARGET}>
             )
-
-            target_link_libraries(${TARGET_NAME} PRIVATE callisto_${lib_name})
-
-            if(WIN32)
-                add_custom_command(
-                    TARGET ${TARGET_NAME} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} 
-                    -E copy_if_different 
-                    $<TARGET_FILE:callisto_${lib_name}> 
-                    $<TARGET_FILE_DIR:${TARGET_NAME}>
-                )
-            endif()
         endif()
     endmacro()
 
-    set(TEST_PACKAGE_LINK_LIBRARIES framework math opencv)
+    set(TEST_PACKAGE_LINK_LIBRARIES framework math opencv graphics)
     foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
         link_local(${lib_name1})
     endforeach()
 else()
     find_package(Callisto)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::framework)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::math)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::opencv)
+    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::framework)
+    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::math)
+    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::opencv)
+    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::graphics)
 endif()
 
 
@@ -82,11 +80,11 @@ if(WIN32)
     file(GLOB BINARY_SHARED_LIBRARIES "${CONAN_DIR}/bin/*.dll")
     foreach(BINARY_SHARED_LIBRARY IN LISTS BINARY_SHARED_LIBRARIES)
         add_custom_command(
-            TARGET ${TARGET_NAME} POST_BUILD
+            TARGET ${TEST_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} 
             -E copy_if_different 
             ${BINARY_SHARED_LIBRARY}
-            $<TARGET_FILE_DIR:${TARGET_NAME}>
+            $<TARGET_FILE_DIR:${TEST_TARGET}>
         )
     endforeach()
 endif()
