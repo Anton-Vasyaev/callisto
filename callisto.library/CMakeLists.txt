@@ -17,6 +17,12 @@ else()
     set(LIBRARY_TYPE STATIC)
 endif()
 
+if(MSVC)
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+elseif(GCC)
+endif()
+
 # configure conan and 3rdparty libaries *******************************************************************************
 set(CONAN_DIR "")
 if(DEFINED CREATE_PACKAGE)

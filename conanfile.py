@@ -34,7 +34,6 @@ class DependencyGraph:
             raise Exception(f'library already appended:{name}')
 
         # Check and append dependency
-        resolve_dependencies : List[LibraryNode] = list()
         for dependency in dependencies:
             if not dependency in self.libraries:
                 raise Exception(f'Cannot resolve dependency:{dependency}')
@@ -104,8 +103,6 @@ class DependencyGraph:
                     build_requires[require_name] = self.requires[require_name]
 
         return list(build_requires.items())
-
-
 
 
 class CallistoConan(ConanFile):
@@ -220,13 +217,17 @@ class CallistoConan(ConanFile):
 
 
     def build(self):
+        libraries = self.dependency_graph.form_libraries()
+
         cmake = CMake(self)
         cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
         cmake.definitions[f'CREATE_PACKAGE']  = '1'
 
-        cmake.definitions[f'CALLISTO_MATH_ENABLE']     = self.__get_option_from_bool(self.options.build_math)
-        cmake.definitions[f'CALLISTO_OPENCV_ENABLE']   = self.__get_option_from_bool(self.options.build_opencv)
-        cmake.definitions[f'CALLISTO_GRAPHICS_ENABLE'] = self.__get_option_from_bool(self.options.build_graphics)
+        libraries_names = [lib.name for lib in libraries]
+
+        cmake.definitions[f'CALLISTO_MATH_ENABLE']     = self.__get_option_from_bool('math'     in libraries_names)
+        cmake.definitions[f'CALLISTO_OPENCV_ENABLE']   = self.__get_option_from_bool('opencv'   in libraries_names)
+        cmake.definitions[f'CALLISTO_GRAPHICS_ENABLE'] = self.__get_option_from_bool('graphics' in libraries_names)
 
 
         cmake.configure(source_folder=f'callisto.library', build_folder=f'callisto.library.build')
@@ -254,6 +255,7 @@ class CallistoConan(ConanFile):
         self.cpp_info.names['cmake_find_package_multi'] = 'Callisto'
 
         libraries = self.dependency_graph.form_libraries()
+
         for lib_module in libraries:
             lib_name = lib_module.name
 

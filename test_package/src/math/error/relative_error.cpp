@@ -1,8 +1,10 @@
-// test
-#include <callisto/math/error/relative_error.hpp>
-// 3rd party
-#include <gtest/gtest.h>
-#include <callisto/framework/test/gtest.hpp>
+#ifndef CALLISTO_MATH_DISABLE
+
+    // test
+    #include <callisto/math/error/relative_error.hpp>
+    // 3rd party
+    #include <gtest/gtest.h>
+    #include <callisto/framework/test/gtest.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -21,3 +23,5 @@ TEST(math_error, relative_error_test)
     relative_error_test_example(-43, 0.001, -43.0429);
     relative_error_test_example(-43, 0.001, -42.958);
 }
+
+#endif

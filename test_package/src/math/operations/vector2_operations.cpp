@@ -1,13 +1,15 @@
-// test
-#include <callisto/math/operations/vector2op.hpp>
-// 3rd party
-#include <gtest/gtest.h>
-#include <callisto/framework/test/gtest.hpp>
-// project
-#include <callisto/math/primitives.hpp>
-#include <callisto/math/error/relative_error.hpp>
+#ifndef CALLISTO_MATH_DISABLE
 
-#include <math/auxiliary/print_math_data.hpp>
+    // test
+    #include <callisto/math/operations/vector2op.hpp>
+    // 3rd party
+    #include <gtest/gtest.h>
+    #include <callisto/framework/test/gtest.hpp>
+    // project
+    #include <callisto/math/primitives.hpp>
+    #include <callisto/math/error/relative_error.hpp>
+
+    #include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -55,3 +57,5 @@ TEST(math_operations, vector2_operations_placeholder_test)
 
     ASSERT_EQ(true, true);
 }
+
+#endif

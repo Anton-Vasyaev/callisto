@@ -22,11 +22,10 @@ if(DEFINED CREATE_PACKAGE)
     conan_basic_setup()
 else()
     set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
-    set(CMAKE_PREFIX_PATH ${CONAN_DIR})
-    set(CMAKE_MODULE_PATH ${CONAN_DIR})
 endif()
 
-message("CONAN DIR:${CONAN_DIR}")
+set(CMAKE_PREFIX_PATH ${CONAN_DIR})
+set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
 
 # collect source and linked libraries to executable file ******************************************
@@ -35,13 +34,14 @@ file(GLOB_RECURSE TEST_SRC "src/*.c" "src/*.cpp")
 add_executable(${TEST_TARGET} ${TEST_SRC})
 target_include_directories(${TEST_TARGET} PRIVATE src)
 
-
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
 target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
 
 # link with callisto
+set(CALLISTO_LIBRARIES framework math opencv graphics)
+
 if(NOT DEFINED CREATE_PACKAGE)
     add_subdirectory(
         ${CMAKE_SOURCE_DIR}/../callisto.library
@@ -49,29 +49,43 @@ if(NOT DEFINED CREATE_PACKAGE)
     )
 
     macro(link_local lib_name)
-        target_link_libraries(${TEST_TARGET} PRIVATE callisto_${lib_name})
+        if(TARGET callisto_${lib_name})
+            target_link_libraries(${TEST_TARGET} PRIVATE callisto_${lib_name})
 
-        if(WIN32)
-            add_custom_command(
-                TARGET ${TEST_TARGET} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} 
-                -E copy_if_different 
-                $<TARGET_FILE:callisto_${lib_name}> 
-                $<TARGET_FILE_DIR:${TEST_TARGET}>
-            )
+            if(WIN32)
+                add_custom_command(
+                    TARGET ${TEST_TARGET} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} 
+                    -E copy_if_different 
+                    $<TARGET_FILE:callisto_${lib_name}> 
+                    $<TARGET_FILE_DIR:${TEST_TARGET}>
+                )
+            endif()
+        else()
+            string(TOUPPER ${lib_name} lib_name_upper)
+            target_compile_definitions(${TEST_TARGET} CALLISTO_${lib_name_upper}_DISABLE)
         endif()
+
     endmacro()
 
-    set(TEST_PACKAGE_LINK_LIBRARIES framework math opencv graphics)
-    foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
-        link_local(${lib_name1})
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        link_local(${lib_name})
     endforeach()
 else()
     find_package(Callisto)
-    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::framework)
-    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::math)
-    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::opencv)
-    target_link_libraries(${TEST_TARGET} PRIVATE Callisto::graphics)
+
+    macro(link_conan lib_name)
+        if(TARGET Callisto::${lib_name})
+            target_link_libraries(${TEST_TARGET} PRIVATE Callisto::${lib_name})
+        else()
+            string(TOUPPER ${lib_name} lib_name_upper)
+            target_compile_definitions(${TEST_TARGET} PRIVATE CALLISTO_${lib_name_upper}_DISABLE)
+        endif()
+    endmacro()
+
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        link_conan(${lib_name})
+    endforeach()
 endif()
 
 
