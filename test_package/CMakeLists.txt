@@ -14,6 +14,8 @@ if(MSVC)
 elseif(GCC)
 endif()
 
+
+
 # conan settings **********************************************************************************
 set(CONAN_DIR "")
 if(DEFINED CREATE_PACKAGE)
@@ -33,6 +35,16 @@ set(TEST_TARGET callisto_test)
 file(GLOB_RECURSE TEST_SRC "src/*.c" "src/*.cpp")
 add_executable(${TEST_TARGET} ${TEST_SRC})
 target_include_directories(${TEST_TARGET} PRIVATE src)
+
+# Generate debug pdb information for Release mode
+# Need for boost::stactrace
+if(MSVC)
+    target_compile_options(${TEST_TARGET} PRIVATE "$<$<CONFIG:Release>:/Zi>")
+
+    # fix problem when pdb symbols not find
+    # https://github.com/boostorg/stacktrace/issues/55
+    target_link_options(${TEST_TARGET} PRIVATE "/PDBALTPATH:%_PDB%")
+endif()
 
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})

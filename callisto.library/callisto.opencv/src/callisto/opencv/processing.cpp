@@ -12,7 +12,7 @@ void resize_frame(cv::InputArray src, cv::OutputArray dst, cv::Size dsize, int i
     auto w_scale = float(dsize.width) / im_w;
     auto h_scale = float(dsize.height) / im_h;
 
-    auto scale = std::min(w_scale, h_scale);
+    auto scale = (std::min)(w_scale, h_scale);
 
     auto new_w = int(im_w * scale);
     auto new_h = int(im_h * scale);

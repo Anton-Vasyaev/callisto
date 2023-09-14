@@ -126,7 +126,10 @@ processor_info::__static_init__::__static_init__()
 
 #pragma region cpu_standard
 
-    if (!cpuid_present()) { throw std::runtime_error("CPU Id not present\n"); }
+    if (!cpuid_present())
+    {
+        throw std::runtime_error("CPU Id not present\n");
+    }
 
     cpu_raw_data_t raw;
     cpu_id_t       data;

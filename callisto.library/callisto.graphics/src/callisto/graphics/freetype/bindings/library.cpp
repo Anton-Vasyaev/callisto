@@ -17,7 +17,10 @@ library::library(library&& lib)
 
 library::~library()
 {
-    if (this->_handler != nullptr) { WRAP_CALL_FREETYPE_FUNC(FT_Done_FreeType, _handler); }
+    if (this->_handler != nullptr)
+    {
+        WRAP_CALL_FREETYPE_FUNC(FT_Done_FreeType, _handler);
+    }
 }
 
 #pragma endregion
