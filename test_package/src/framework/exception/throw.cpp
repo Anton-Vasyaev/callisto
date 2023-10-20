@@ -10,8 +10,25 @@
 
 namespace c_f = callisto::framework;
 
+template<typename code_type>
+using error_tag_code = boost::error_info<struct tag_code, code_type>;
+
 struct random_exception : public c_f::exception
 {
+};
+
+enum class custom_error_code
+{
+    not_found,
+    not_allocated,
+    not_compiled
+};
+
+enum class not_define_code
+{
+    status,
+    hitler,
+    nigger
 };
 
 void call_exception_1() { CALLISTO_THROW_EXCEPTION(random_exception()); }
@@ -19,7 +36,8 @@ void call_exception_1() { CALLISTO_THROW_EXCEPTION(random_exception()); }
 void call_exception_2()
 {
     CALLISTO_THROW_EXCEPTION(c_f::argument_exception())
-        << c_f::error_tag_message(c_f::_bs("Number is ", 5));
+        << c_f::error_tag_message(c_f::_bs("Number is ", 5))
+        << error_tag_code<custom_error_code>(custom_error_code::not_compiled);
 }
 
 void foo_1() { call_exception_1(); }
@@ -56,6 +74,17 @@ void exception_example()
         auto boost_d_i = boost::diagnostic_information(e);
 
         c_f::gtest_console::print_line("Catch boost exception:", boost_d_i);
+
+        auto error_code = boost::get_error_info<error_tag_code<not_define_code>>(e);
+
+        if (error_code == nullptr)
+        {
+            c_f::gtest_console::print_line("Not find error code");
+        }
+        else
+        {
+            c_f::gtest_console::print_line("Error code:", int(*error_code));
+        }
     }
 }
 

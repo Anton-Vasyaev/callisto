@@ -79,7 +79,7 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
 
     _shader_program = c_g::gl_shader_program(vertex_shader, fragment_shader);
 
-    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stage");
+    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stagea");
     _offset_location       = _shader_program.get_uniform_location("offset");
 
     auto data = std::vector<float> { 0.0f, 0.5f, 1.0f,  0.0f,  0.0f, 0.5f, -0.5f, 0.0f,
@@ -130,8 +130,9 @@ void simple_triangle_processor::process(c_g::i_window_context& context)
     _rotate_stage += _delta_timer.delta() * _rotate_speed;
 
     _shader_program.use();
-    _shader_program.uniform_1f(_rotate_stage_location, _rotate_stage);
-    _shader_program.uniform_2f(_offset_location, _offset_position.x, _offset_position.y);
+
+    _rotate_stage_location.uniform_1f(_rotate_stage);
+    _offset_location.uniform_2f(_offset_position);
 
     glBindVertexArray(_vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

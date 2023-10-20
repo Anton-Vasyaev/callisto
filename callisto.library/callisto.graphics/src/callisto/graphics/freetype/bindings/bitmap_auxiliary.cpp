@@ -18,12 +18,8 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
 {
     if (bitmap.pitch <= 0)
     {
-        throw c_f::runtime_exception() << c_f::error_tag_message(c_f::_bs(
-            "Failed to execute ",
-            NAMEOF(bitmap_auxiliary::get_mat_present),
-            ". Pitch <= 0: ",
-            bitmap.pitch
-        ));
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message(c_f::_bs(". Bitmap pitch <= 0: ", bitmap.pitch));
     }
 
     auto data_ptr = (uint8_t*)bitmap.buffer;
@@ -44,7 +40,7 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
     }
     else
     {
-        throw c_f::runtime_exception() << c_f::error_tag_message(
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
             c_f::_bs("Invalid pixel mode of bitmap:", pixel_mode_str(bitmap.pixel_mode))
         );
     }

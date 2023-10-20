@@ -24,29 +24,27 @@ file(GLOB_RECURSE TARGET_SRC "src/*.c" "src/*.cpp")
 add_executable(${TARGET_NAME} ${TARGET_SRC})
 target_include_directories(${TARGET_NAME} PRIVATE src)
 
-# 3rd party 
+# link with main project
+add_subdirectory(
+    ${CMAKE_CURRENT_LIST_DIR}/../../callisto.library
+    ${CMAKE_CURRENT_BINARY_DIR}/callisto.library
+)
 
-# link with family libraries
-macro(link_local lib_name)
-    if(NOT TARGET callisto_${lib_name})
-        add_subdirectory(
-            ${CMAKE_CURRENT_LIST_DIR}/../../callisto.${lib_name}
-            ${CMAKE_CURRENT_BINARY_DIR}/callisto.${lib_name}
+macro (link_local lib_name)
+    target_link_libraries(${TARGET_NAME} PRIVATE callisto_${lib_name})
+
+    if(WIN32)
+        add_custom_command(
+            TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} 
+            -E copy_if_different 
+            $<TARGET_FILE:callisto_${lib_name}> 
+            $<TARGET_FILE_DIR:${TARGET_NAME}>
         )
-
-        target_link_libraries(${TARGET_NAME} PRIVATE callisto_${lib_name})
-
-        if(WIN32)
-            add_custom_command(
-                TARGET ${TARGET_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} 
-                -E copy_if_different 
-                $<TARGET_FILE:callisto_${lib_name}> 
-                $<TARGET_FILE_DIR:${TARGET_NAME}>
-            )
-        endif()
     endif()
+
 endmacro()
+
 
 set(TEST_PACKAGE_LINK_LIBRARIES opencv graphics)
 foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})

@@ -3,8 +3,6 @@
 // std
 #include <cstddef>
 #include <algorithm>
-// project
-#include <callisto/framework/exception/string_holder_exception.hpp>
 
 namespace callisto::framework
 {

@@ -1,5 +1,4 @@
-#ifndef CALLISTO_FRAMEWORK_DEFAULT_DISPOSER_HPP
-#define CALLISTO_FRAMEWORK_DEFAULT_DISPOSER_HPP
+#pragma once
 
 namespace callisto::framework
 {
@@ -9,5 +8,3 @@ namespace callisto::framework
         void operator()(data_type data);
     };
 }
-
-#endif

@@ -1,11 +1,17 @@
 #pragma once
 
-// 3rd party
-#include <callisto/math/primitives.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 // project
+#include <callisto/framework/exception.hpp>
+#include <callisto/framework/string.hpp>
+
+#include <callisto/math/primitives.hpp>
+
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
+#include <callisto/graphics/visual/opengl/exception.hpp>
+
+#include "gl_location.hpp"
 #include "gl_shader.hpp"
 
 namespace callisto::graphics
@@ -30,7 +36,10 @@ class gl_shader_program
 
     inline void destruct()
     {
-        if (this->handler != 0) { glDeleteProgram(this->handler); }
+        if (this->handler != 0)
+        {
+            glDeleteProgram(this->handler);
+        }
     }
 
 public:
@@ -51,50 +60,24 @@ public:
     // methods
     inline void use() { glUseProgram(this->handler); }
 
-    inline GLint get_uniform_location(const char* uniform_name)
+    inline gl_location get_uniform_location_nothrow(const char* uniform_name)
     {
-        return glGetUniformLocation(this->handler, uniform_name);
+        auto location_idx = glGetUniformLocation(this->handler, uniform_name);
+
+        return gl_location(location_idx);
     }
 
-    template<typename int_type>
-    inline void uniform_1f(int_type location, float value)
+    inline gl_location get_uniform_location(const char* uniform_name)
     {
-        glUniform1f(static_cast<GLint>(location), value);
-    }
+        auto location = get_uniform_location_nothrow(uniform_name);
 
-    template<typename int_type>
-    inline void uniform_1i(int_type location, int value)
-    {
-        glUniform1i(static_cast<GLint>(location), value);
-    }
+        if (!location.is_exist())
+        {
+            CALLISTO_THROW_EXCEPTION(opengl_exception())
+                << c_f::error_tag_message(c_f::_bs("Location is not exist:", uniform_name));
+        }
 
-    template<typename int_type, typename vec2f_type>
-    inline void uniform_2f(int_type location, vec2f_type value)
-    {
-        auto [v1, v2] = value;
-        glUniform2f(static_cast<GLint>(location), v1, v2);
-    }
-
-    template<typename int_type>
-    inline void uniform_2f(int_type location, float v1, float v2)
-    {
-        glUniform2f(static_cast<GLint>(location), v1, v2);
-    }
-
-    template<typename int_type, typename num_type>
-    inline void uniform_2f(int_type location, c_m::vector2<num_type> values)
-    {
-        float v1 = values.value1;
-        float v2 = values.value2;
-
-        glUniform2f(static_cast<GLint>(location), v1, v2);
-    }
-
-    template<typename int_type, typename vec3f_type>
-    inline void uniform_3f(int_type location, vec3f_type value)
-    {
-        auto [v1, v2, v3] = value;
-        glUniform3f(location, v1, v2, v3);
+        return location;
     }
 
     // matrix
@@ -122,9 +105,7 @@ public:
     }
 
     // getters and settters
-    inline GLuint get_handler() { return this->handler; }
-
-    inline const GLuint get_handler() const { return this->handler; }
+    inline GLuint get_handler() const { return this->handler; }
 
     // operator
     inline gl_shader_program& operator=(gl_shader_program&& program)

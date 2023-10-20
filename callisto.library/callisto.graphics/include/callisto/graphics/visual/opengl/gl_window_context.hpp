@@ -121,6 +121,24 @@ public:
     virtual void start_processing() override;
 
     virtual void stop_processing() override;
+
+    // getters and setters
+    inline GLFWwindow* get_window_handler() const;
+
+    inline GLFWmonitor* get_monitor_handler() const;
 };
+
+// inline implementations
+
+#pragma region getters_and_setters
+
+inline GLFWwindow* gl_window_context::get_window_handler() const { return this->window_handler; }
+
+inline GLFWmonitor* gl_window_context::get_monitor_handler() const
+{
+    return this->parent_monitor_handler;
+}
+
+#pragma endregion
 
 } // namespace callisto::graphics

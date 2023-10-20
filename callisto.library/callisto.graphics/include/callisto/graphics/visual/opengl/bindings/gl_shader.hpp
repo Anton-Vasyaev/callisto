@@ -32,7 +32,10 @@ class gl_shader
 
     inline void destruct()
     {
-        if (this->handler != 0) { glDeleteShader(this->handler); }
+        if (this->handler != 0)
+        {
+            glDeleteShader(this->handler);
+        }
     }
 
 public:
@@ -45,8 +48,9 @@ public:
 
         if (!file.is_open())
         {
-            throw c_f::exception(
-            ) << c_f::error_tag_message(c_f::_wbs("failed to open file with shader:", shader_path));
+            throw c_f::exception() << c_f::error_tag_message_w(
+                c_f::_wbs("failed to open file with shader:", shader_path)
+            );
         }
         std::stringstream ss;
         ss << file.rdbuf();
@@ -71,9 +75,7 @@ public:
     inline ~gl_shader() { this->destruct(); }
 
     // getters and setters
-    inline GLuint get_handler() { return this->handler; }
-
-    inline const GLuint get_handler() const { return this->handler; }
+    inline GLuint get_handler() const { return this->handler; }
 
     // operators
     inline gl_shader& operator=(gl_shader&& shader)
