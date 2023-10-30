@@ -110,9 +110,9 @@ struct line2
 #pragma endregion
 };
 
-template<typename start_x_type, typename start_y_type, typename end_x_type, typename end_y_type>
-line2(start_x_type, start_y_type, end_x_type, end_y_type)
-    -> line2<c_f::senior_conversion_t<start_x_type, start_y_type, end_x_type, end_y_type>>;
+template<typename type_x1, typename type_y1, typename type_x2, typename type_y2>
+line2(type_x1, type_y1, type_x2, type_y2)
+    -> line2<c_f::senior_conversion_t<type_x1, type_y1, type_x2, type_y2>>;
 
 template<typename start_type, typename end_type>
 line2(start_type, end_type) -> line2<

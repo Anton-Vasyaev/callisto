@@ -2,9 +2,11 @@
 
 // std
 #include <cmath>
-// 3rd party
+// project
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>
+
+#include "constants.hpp"
 
 namespace callisto::math
 {
@@ -70,6 +72,18 @@ inline constexpr auto tmod(value_type value, mod_type module) noexcept
     {
         return value % module;
     }
+}
+
+template<c_f::concept_fundamental value_type>
+inline constexpr auto deg2rad(value_type degree)
+{
+    return degree / degree_per_radian;
+}
+
+template<c_f::concept_fundamental value_type>
+inline constexpr auto rad2deg(value_type radian)
+{
+    return radian / radian_per_degree;
 }
 
 } // namespace callisto::math

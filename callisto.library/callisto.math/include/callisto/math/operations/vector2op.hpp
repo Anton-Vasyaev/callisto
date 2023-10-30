@@ -6,13 +6,16 @@
 #include <callisto/math/primitives/alg_tuple2.hpp>
 #include <callisto/math/primitives/line2.hpp>
 
+// ToDo
+#include <iostream>
+
 namespace callisto::math
 {
 
 struct vector2op
 {
     template<typename vector_type>
-    inline static constexpr auto square_of_length(const vector_type& vector)
+    inline static constexpr auto square_of_length(const vector_type& vector) noexcept
     {
         auto& x = vector.x;
         auto& y = vector.y;
@@ -21,7 +24,7 @@ struct vector2op
     }
 
     template<typename _calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto length(const vector_type& vector)
+    inline static constexpr auto length(const vector_type& vector) noexcept
     {
         using calc_type = typename std::conditional<
             std::is_void<_calc_type>::value,
@@ -37,7 +40,7 @@ struct vector2op
         typename vector_type  = alg_tuple2i,
         typename numeric_type = typename vector_type::value_type>
     inline static constexpr auto
-    normalize(const vector_type& vector, numeric_type normalize_value = 1.0)
+    normalize(const vector_type& vector, numeric_type normalize_value = 1.0) noexcept
     {
         using calc_type = typename std::conditional<
             std::is_void<_calc_type>::value,
@@ -53,10 +56,11 @@ struct vector2op
     }
 
     template<typename vector_type>
-    inline static constexpr auto dot_product(const vector_type& vec1, const vector_type& vec2)
+    inline static constexpr auto
+    dot_product(const vector_type& vec1, const vector_type& vec2) noexcept
     {
         auto& x1 = vec1.x;
-        auto& y1 = vec2.y;
+        auto& y1 = vec1.y;
 
         auto& x2 = vec2.x;
         auto& y2 = vec2.y;
@@ -65,7 +69,8 @@ struct vector2op
     }
 
     template<typename _calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto cos_angle(const vector_type& vec1, const vector_type& vec2)
+    inline static constexpr auto
+    cos_angle(const vector_type& vec1, const vector_type& vec2) noexcept
     {
         using calc_type = typename std::conditional<
             std::is_void<_calc_type>::value,
@@ -79,7 +84,7 @@ struct vector2op
     }
 
     template<typename calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto angle(const vector_type& vec1, const vector_type& vec2)
+    inline static constexpr auto angle(const vector_type& vec1, const vector_type& vec2) noexcept
     {
         auto cos_value = cos_angle<calc_type>(vec1, vec2);
 
@@ -88,10 +93,10 @@ struct vector2op
 
     template<typename vector_type>
     inline static constexpr auto
-    pseudo_scalar_product(const vector_type& vec1, const vector_type& vec2)
+    pseudo_scalar_product(const vector_type& vec1, const vector_type& vec2) noexcept
     {
         auto& x1 = vec1.x;
-        auto& y1 = vec2.y;
+        auto& y1 = vec1.y;
 
         auto& x2 = vec2.x;
         auto& y2 = vec2.y;
@@ -100,9 +105,10 @@ struct vector2op
     }
 
     template<typename calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto sign_angle(const vector_type& vec1, const vector_type& vec2)
+    inline static constexpr auto
+    sign_angle(const vector_type& vec1, const vector_type& vec2) noexcept
     {
-        auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : 0;
+        auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : -1;
 
         auto angle_value = angle<calc_type>(vec1, vec2);
 
@@ -124,7 +130,7 @@ struct vector2op
     }
 
     template<typename point_type>
-    static double cos(const point_type& point)
+    static double cos(const point_type& point) noexcept
     {
         auto length = vector2op::length<double>(point);
 

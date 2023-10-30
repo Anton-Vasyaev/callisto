@@ -15,7 +15,7 @@ namespace c_f = callisto::framework;
 }
 
 template<typename _numeric_type>
-class relative_error
+class absolute_error
 {
 public:
     using numeric_type = _numeric_type;
@@ -25,11 +25,10 @@ private:
     numeric_type _max;
 
 public:
-    inline constexpr relative_error(numeric_type value, numeric_type percent)
+    inline constexpr absolute_error(numeric_type value, numeric_type error)
     {
-        auto distance = std::abs(value) * percent;
-        _min          = value - distance;
-        _max          = value + distance;
+        _min = value - error;
+        _max = value + error;
     }
 
     template<typename other_type>
@@ -46,7 +45,7 @@ public:
 };
 
 template<typename value_type, typename error_type>
-relative_error(value_type, error_type)
-    -> relative_error<c_f::senior_conversion_t<value_type, error_type>>;
+absolute_error(value_type, error_type)
+    -> absolute_error<c_f::senior_conversion_t<value_type, error_type>>;
 
 } // namespace callisto::math

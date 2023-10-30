@@ -52,6 +52,12 @@ struct bbox2
 
 #pragma region methods
 
+    template<c_f::concept_fundamental cast_type>
+    inline constexpr auto as() const noexcept
+    {
+        return bbox2<cast_type>(x1, y1, x2, y2);
+    }
+
     inline constexpr auto left_top() const noexcept { return point2(x1, y1); }
 
     inline constexpr auto left_bottom() const noexcept { return point2(x1, y2); }
@@ -100,12 +106,12 @@ struct bbox2
 };
 
 template<
-    c_f::concept_fundamental type_1,
-    c_f::concept_fundamental type_2,
-    c_f::concept_fundamental type_3,
-    c_f::concept_fundamental type_4>
-bbox2(type_1, type_2, type_3, type_4)
-    -> bbox2<c_f::senior_conversion_t<type_1, type_2, type_3, type_4>>;
+    c_f::concept_fundamental type_x1,
+    c_f::concept_fundamental type_y1,
+    c_f::concept_fundamental type_x2,
+    c_f::concept_fundamental type_y2>
+bbox2(type_x1, type_y1, type_x2, type_y2)
+    -> bbox2<c_f::senior_conversion_t<type_x1, type_y1, type_x2, type_y2>>;
 
 #pragma region alias
 
