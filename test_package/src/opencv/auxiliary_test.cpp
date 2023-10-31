@@ -1,12 +1,10 @@
-#ifndef CALLISTO_OPENCV_DISABLE
-
-    // test
-    #include <callisto/opencv/auxiliary.hpp>
-    // std
-    #include <iostream>
-    // 3rd party
-    #include <gtest/gtest.h>
-    #include <callisto/framework/test/gtest.hpp>
+// test
+#include <callisto/opencv/auxiliary.hpp>
+// std
+#include <iostream>
+// 3rd party
+#include <gtest/gtest.h>
+#include <callisto/framework/test/gtest.hpp>
 
 namespace c_f = callisto::framework;
 
@@ -55,5 +53,3 @@ TEST(opencv_auxiliary, auxiliary_test_2)
 
     ASSERT_EQ(true, equal_status);
 }
-
-#endif

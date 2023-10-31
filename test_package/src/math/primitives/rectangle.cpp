@@ -1,14 +1,12 @@
-#ifndef CALLISTO_MATH_DISABLE
-
-    // test
-    #include <callisto/math/primitives/rectangle.hpp>
-    // std
-    #include <iostream>
-    // 3rd party
-    #include <gtest/gtest.h>
-    #include <callisto/framework/test/gtest.hpp>
-    // project
-    #include <math/auxiliary/print_math_data.hpp>
+// test
+#include <callisto/math/primitives/rectangle.hpp>
+// std
+#include <iostream>
+// 3rd party
+#include <gtest/gtest.h>
+#include <callisto/framework/test/gtest.hpp>
+// project
+#include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -37,5 +35,3 @@ TEST(math_primitives, rectangle_placeholder_test)
 
     ASSERT_EQ(true, true);
 }
-
-#endif

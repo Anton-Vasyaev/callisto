@@ -1,17 +1,15 @@
-#ifndef CALLISTO_MATH_DISABLE
+// test
+#include <callisto/math/operations/point2op.hpp>
+// 3rd party
+#include <gtest/gtest.h>
 
-    // test
-    #include <callisto/math/operations/point2op.hpp>
-    // 3rd party
-    #include <gtest/gtest.h>
+// project
+#include <callisto/framework/test/gtest.hpp>
+#include <callisto/math/primitives.hpp>
+#include <callisto/math/constants.hpp>
 
-    // project
-    #include <callisto/framework/test/gtest.hpp>
-    #include <callisto/math/primitives.hpp>
-    #include <callisto/math/constants.hpp>
-
-    #include <math/auxiliary/print_math_data.hpp>
-    #include <math/auxiliary/data_equal.hpp>
+#include <math/auxiliary/print_math_data.hpp>
+#include <math/auxiliary/data_equal.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -171,5 +169,3 @@ TEST(point2_operations, normalize_test)
     p = p2op::normalize(p, box);
     ASSERT_TRUE(rel_err_point2_equal(p, c_m::point2f(-1.0 / 3.0, -0.8), rel_float_acc));
 }
-
-#endif

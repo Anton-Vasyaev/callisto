@@ -1,17 +1,15 @@
-#ifndef CALLISTO_MATH_DISABLE
+// test
+#include <callisto/math/operations/line2op.hpp>
+// 3rd party
+#include <gtest/gtest.h>
 
-    // test
-    #include <callisto/math/operations/line2op.hpp>
-    // 3rd party
-    #include <gtest/gtest.h>
+// project
+#include <callisto/framework/test/gtest.hpp>
+#include <callisto/math/primitives.hpp>
+#include <callisto/math/constants.hpp>
 
-    // project
-    #include <callisto/framework/test/gtest.hpp>
-    #include <callisto/math/primitives.hpp>
-    #include <callisto/math/constants.hpp>
-
-    #include <math/auxiliary/print_math_data.hpp>
-    #include <math/auxiliary/data_equal.hpp>
+#include <math/auxiliary/print_math_data.hpp>
+#include <math/auxiliary/data_equal.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -52,5 +50,3 @@ TEST(line2_operations, get_bbox_test)
     box  = line2op::get_bbox(line);
     ASSERT_TRUE(rel_err_bbox2_equal(box, c_m::bbox2f(-34.5, 23.21, -23.0, 34.5), rel_float_acc));
 }
-
-#endif

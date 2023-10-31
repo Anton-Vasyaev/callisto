@@ -1,9 +1,7 @@
 #pragma once
 
-#ifndef CALLISTO_MATH_DISABLE
-
-    // project
-    #include <callisto/math/primitives.hpp>
+// project
+#include <callisto/math/primitives.hpp>
 
 namespace c_m = callisto::math;
 
@@ -31,5 +29,3 @@ inline stream_type& operator<<(stream_type& stream, const c_m::rectangle<type>& 
 
     return stream;
 }
-
-#endif

@@ -1,13 +1,11 @@
-#ifndef CALLISTO_MATH_DISABLE
-
-    // test
-    #include <callisto/math/functions.hpp>
-    // 3rd party
-    #include <gtest/gtest.h>
-    #include <callisto/framework/test/gtest.hpp>
-    // project
-    #include <callisto/math/primitives.hpp>
-    #include <callisto/math/error/relative_error.hpp>
+// test
+#include <callisto/math/functions.hpp>
+// 3rd party
+#include <gtest/gtest.h>
+#include <callisto/framework/test/gtest.hpp>
+// project
+#include <callisto/math/primitives.hpp>
+#include <callisto/math/error/relative_error.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -25,5 +23,3 @@ TEST(math_functions, functions_placeholder_test_1)
 
     ASSERT_EQ(true, true);
 }
-
-#endif

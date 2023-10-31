@@ -1,17 +1,15 @@
-#ifndef CALLISTO_MATH_DISABLE
+// test
+#include <callisto/math/operations/poly2op.hpp>
+// 3rd party
+#include <gtest/gtest.h>
 
-    // test
-    #include <callisto/math/operations/poly2op.hpp>
-    // 3rd party
-    #include <gtest/gtest.h>
+// project
+#include <callisto/framework/test/gtest.hpp>
+#include <callisto/math/primitives.hpp>
+#include <callisto/math/constants.hpp>
 
-    // project
-    #include <callisto/framework/test/gtest.hpp>
-    #include <callisto/math/primitives.hpp>
-    #include <callisto/math/constants.hpp>
-
-    #include <math/auxiliary/print_math_data.hpp>
-    #include <math/auxiliary/data_equal.hpp>
+#include <math/auxiliary/print_math_data.hpp>
+#include <math/auxiliary/data_equal.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -90,5 +88,3 @@ TEST(poly2_operations, area_test)
         }
     }
 }
-
-#endif

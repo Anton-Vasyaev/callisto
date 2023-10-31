@@ -1,13 +1,11 @@
-#ifndef CALLISTO_OPENCV_DISABLE
-
-    // test
-    #include <callisto/opencv/rw.hpp>
-    // std
-    #include <iostream>
-    // 3rd party
-    #include <boost/filesystem/fstream.hpp>
-    #include <gtest/gtest.h>
-    #include <callisto/framework/test/gtest.hpp>
+// test
+#include <callisto/opencv/rw.hpp>
+// std
+#include <iostream>
+// 3rd party
+#include <boost/filesystem/fstream.hpp>
+#include <gtest/gtest.h>
+#include <callisto/framework/test/gtest.hpp>
 
 namespace b_fs = boost::filesystem;
 namespace c_cv = callisto::opencv;
@@ -27,5 +25,3 @@ TEST(opencv_auxiliary, read_write_utf8_test)
     ASSERT_EQ(read_img.cols, img_h);
     ASSERT_EQ(read_img.rows, img_w);
 }
-
-#endif

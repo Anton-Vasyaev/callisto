@@ -1,18 +1,16 @@
-#ifndef CALLISTO_MATH_DISABLE
+// test
+#include <callisto/math/operations/vector2op.hpp>
+// 3rd party
+#include <gtest/gtest.h>
 
-    // test
-    #include <callisto/math/operations/vector2op.hpp>
-    // 3rd party
-    #include <gtest/gtest.h>
+// project
+#include <callisto/framework/test/gtest.hpp>
+#include <callisto/math/primitives.hpp>
+#include <callisto/math/error.hpp>
+#include <callisto/math/operations/point2op.hpp>
+#include <callisto/math/constants.hpp>
 
-    // project
-    #include <callisto/framework/test/gtest.hpp>
-    #include <callisto/math/primitives.hpp>
-    #include <callisto/math/error.hpp>
-    #include <callisto/math/operations/point2op.hpp>
-    #include <callisto/math/constants.hpp>
-
-    #include <math/auxiliary/print_math_data.hpp>
+#include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -233,5 +231,3 @@ TEST(vector2_operations, sin_cos_test)
         );
     }
 }
-
-#endif
