@@ -37,12 +37,33 @@ struct line2op
     }
 
     template<typename line_type>
-    static constexpr auto get_bbox(const line_type& line) noexcept
+    inline static constexpr auto get_bbox(const line_type& line) noexcept
     {
         auto [left, right] = std::minmax(line.x1, line.x2);
         auto [top, bottom] = std::minmax(line.y1, line.y2);
 
         return bbox2(left, top, right, bottom);
+    }
+
+    template<typename line_type, typename bbox_type>
+    inline static constexpr auto normalize(const line_type& line, const bbox_type& contour)
+    {
+        auto w = contour.width();
+        auto h = contour.height();
+
+        auto x1 = line.x1;
+        auto y1 = line.y1;
+
+        auto x2 = line.x2;
+        auto y2 = line.y2;
+
+        x1 = (x1 - contour.x1) / w;
+        y1 = (y1 - contour.y1) / h;
+
+        x2 = (x2 - contour.x1) / w;
+        y2 = (y2 - contour.y1) / h;
+
+        return line_type(x1, y1, x2, y2);
     }
 };
 

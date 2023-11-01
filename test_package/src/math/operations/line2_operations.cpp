@@ -50,3 +50,17 @@ TEST(line2_operations, get_bbox_test)
     box  = line2op::get_bbox(line);
     ASSERT_TRUE(rel_err_bbox2_equal(box, c_m::bbox2f(-34.5, 23.21, -23.0, 34.5), rel_float_acc));
 }
+
+TEST(line2_operations, normalize_test)
+{
+    auto p1   = c_m::point2f(9, 12);
+    auto p2   = c_m::point2f(1, -4);
+    auto line = c_m::line2f(p1, p2);
+
+    auto box = c_m::bbox2f(5, 4, 17, 14);
+    line     = line2op::normalize(line, box);
+
+    ASSERT_TRUE(
+        rel_err_line2_equal(line, c_m::line2f(1.0 / 3.0, 0.8, -1.0 / 3.0, -0.8), rel_float_acc)
+    );
+}
