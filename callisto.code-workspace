@@ -1,17 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "callisto.framework"
+			"path": "callisto.library"
 		},
-		{
-			"path": "callisto.math"
-		},
-		{
-			"path": "callisto.opencv"
-		},
-		{
-			"path": "callisto.graphics"
-		}
 		{
 			"path": "test_package"
 		},

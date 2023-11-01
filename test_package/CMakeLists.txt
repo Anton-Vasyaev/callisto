@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 
-# configure project *******************************************************************************
+# list of libraries names
+set(CALLISTO_LIBRARIES framework math opencv graphics)
+
+# configure project ***********************************************************************************************************
 project(callisto.test CXX)
-set(TARGET_NAME callisto_test)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
 
@@ -15,78 +17,125 @@ if(MSVC)
 elseif(GCC)
 endif()
 
-# conan settings **********************************************************************************
+# callisto library providing and conan settings **********************************************************************************
 set(CONAN_DIR "")
+
+# CREATE_PACKAGE defined when cmake and build running from conan create command
 if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR})
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
+
+    find_package(Callisto)
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        if(TARGET Callisto::${lib_name})
+            set(ENABLE_${lib_name} TRUE)
+        endif()
+    endforeach()
+# else, callisto library and 3rd party providing from solution directory.
 else()
     set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
-    set(CMAKE_PREFIX_PATH ${CONAN_DIR})
-    set(CMAKE_MODULE_PATH ${CONAN_DIR})
+
+    add_subdirectory(
+        ${CMAKE_SOURCE_DIR}/../callisto.library
+        ${CMAKE_CURRENT_BINARY_DIR}/callisto.library
+    )
+
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        if(TARGET callisto_${lib_name})
+            set(ENABLE_${lib_name} TRUE)
+        endif()
+    endforeach()
 endif()
 
-message("CONAN DIR:${CONAN_DIR}")
+set(CMAKE_PREFIX_PATH ${CONAN_DIR})
+set(CMAKE_MODULE_PATH ${CONAN_DIR})
+
+# collect source and linked libraries to executable file *******************************************************************
+set(TEST_TARGET callisto_test)
+
+set(TEST_SRC src/main.cpp)
+
+macro(collect_source lib_name)
+    if(DEFINED ENABLE_${lib_name})
+        file(GLOB_RECURSE ${lib_name}_src "src/${lib_name}/*.c" "src/${lib_name}/*.cpp")
+        list(APPEND TEST_SRC ${${lib_name}_src})
+    endif()
+endmacro()
+
+foreach(lib_name ${CALLISTO_LIBRARIES})
+    collect_source(${lib_name})
+endforeach()
 
 
-# collect source and linked libraries to executable file ******************************************
-file(GLOB_RECURSE AUTO_SRC "src/*.c" "src/*.cpp")
-add_executable(${TARGET_NAME} ${AUTO_SRC})
-target_include_directories(${TARGET_NAME} PRIVATE src)
+add_executable(${TEST_TARGET} ${TEST_SRC})
+target_include_directories(${TEST_TARGET} PRIVATE src)
 
+# Generate debug pdb information for Release mode
+# Need for boost::stactrace
+if(MSVC)
+    target_compile_options(${TEST_TARGET} PRIVATE "$<$<CONFIG:Release>:/Zi>")
+
+    # fix problem when pdb symbols not find
+    # https://github.com/boostorg/stacktrace/issues/55
+    target_link_options(${TEST_TARGET} PRIVATE "/PDBALTPATH:%_PDB%")
+endif()
 
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
-target_link_libraries(${TARGET_NAME} PRIVATE GTest::gtest)
+target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
 
-
-# link with family libraries
 if(NOT DEFINED CREATE_PACKAGE)
     macro(link_local lib_name)
-        if(NOT TARGET callisto_${lib_name})
-            add_subdirectory(
-                ${CMAKE_SOURCE_DIR}/../callisto.${lib_name}
-                ${CMAKE_CURRENT_BINARY_DIR}/callisto.${lib_name}
-            )
-
-            target_link_libraries(${TARGET_NAME} PRIVATE callisto_${lib_name})
+        if(TARGET callisto_${lib_name})
+            target_link_libraries(${TEST_TARGET} PRIVATE callisto_${lib_name})
 
             if(WIN32)
                 add_custom_command(
-                    TARGET ${TARGET_NAME} POST_BUILD
+                    TARGET ${TEST_TARGET} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} 
                     -E copy_if_different 
                     $<TARGET_FILE:callisto_${lib_name}> 
-                    $<TARGET_FILE_DIR:${TARGET_NAME}>
+                    $<TARGET_FILE_DIR:${TEST_TARGET}>
                 )
             endif()
+        else()
+            string(TOUPPER ${lib_name} lib_name_upper)
+            target_compile_definitions(${TEST_TARGET} CALLISTO_${lib_name_upper}_DISABLE)
+        endif()
+
+    endmacro()
+
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        link_local(${lib_name})
+    endforeach()
+else()
+    macro(link_conan lib_name)
+        if(TARGET Callisto::${lib_name})
+            target_link_libraries(${TEST_TARGET} PRIVATE Callisto::${lib_name})
+        else()
+            string(TOUPPER ${lib_name} lib_name_upper)
+            target_compile_definitions(${TEST_TARGET} PRIVATE CALLISTO_${lib_name_upper}_DISABLE)
         endif()
     endmacro()
 
-    set(TEST_PACKAGE_LINK_LIBRARIES framework math opencv)
-    foreach(lib_name1 ${TEST_PACKAGE_LINK_LIBRARIES})
-        link_local(${lib_name1})
+    foreach(lib_name ${CALLISTO_LIBRARIES})
+        link_conan(${lib_name})
     endforeach()
-else()
-    find_package(Callisto)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::framework)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::math)
-    target_link_libraries(${TARGET_NAME} PRIVATE Callisto::opencv)
 endif()
 
 
-# copy dlls if platform is windows ****************************************************************
+# copy dlls if platform is windows ************************************************************************************
 if(WIN32)
     file(GLOB BINARY_SHARED_LIBRARIES "${CONAN_DIR}/bin/*.dll")
     foreach(BINARY_SHARED_LIBRARY IN LISTS BINARY_SHARED_LIBRARIES)
         add_custom_command(
-            TARGET ${TARGET_NAME} POST_BUILD
+            TARGET ${TEST_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} 
             -E copy_if_different 
             ${BINARY_SHARED_LIBRARY}
-            $<TARGET_FILE_DIR:${TARGET_NAME}>
+            $<TARGET_FILE_DIR:${TEST_TARGET}>
         )
     endforeach()
 endif()

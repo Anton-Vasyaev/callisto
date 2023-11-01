@@ -7,7 +7,7 @@
 
 namespace c_f = callisto::framework;
 
-TEST(framework_exceptions, exception)
+TEST(framework_exception, exception)
 {
     std::string exception_message;
     try

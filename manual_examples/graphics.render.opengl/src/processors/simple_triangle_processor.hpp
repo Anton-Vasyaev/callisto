@@ -18,9 +18,9 @@ class simple_triangle_processor : public c_g::a_window_processor
 
     GLuint _vao;
 
-    GLint _rotate_stage_location;
+    c_g::gl_location _rotate_stage_location;
 
-    GLint _offset_location;
+    c_g::gl_location _offset_location;
 
     c_m::value_looper<float> _rotate_stage;
 
@@ -31,9 +31,10 @@ class simple_triangle_processor : public c_g::a_window_processor
     c_f::delta_timer _delta_timer;
 
     float _rotate_speed;
-    
+
     // protected methods
     void process_control();
+
 public:
     // construct and destruct
     inline simple_triangle_processor() {}

@@ -10,7 +10,6 @@
 namespace b_fs = boost::filesystem;
 namespace c_cv = callisto::opencv;
 
-
 TEST(opencv_auxiliary, read_write_utf8_test)
 {
     auto img_w = 1600;

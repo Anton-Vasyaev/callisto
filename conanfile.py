@@ -34,7 +34,6 @@ class DependencyGraph:
             raise Exception(f'library already appended:{name}')
 
         # Check and append dependency
-        resolve_dependencies : List[LibraryNode] = list()
         for dependency in dependencies:
             if not dependency in self.libraries:
                 raise Exception(f'Cannot resolve dependency:{dependency}')
@@ -106,13 +105,11 @@ class DependencyGraph:
         return list(build_requires.items())
 
 
-
-
 class CallistoConan(ConanFile):
     dependency_graph : DependencyGraph
 
     name = 'callisto'
-    version = '0.2.0'
+    version = '0.2.2d1'
     license = 'BSD'
     settings = 'os', 'compiler', 'build_type', 'arch'
     generators = 'cmake', 'cmake_find_package_multi'
@@ -222,14 +219,19 @@ class CallistoConan(ConanFile):
     def build(self):
         libraries = self.dependency_graph.form_libraries()
 
-        for lib_module in libraries:
-            lib_name = lib_module.name
+        cmake = CMake(self)
+        cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
+        cmake.definitions[f'CREATE_PACKAGE']  = '1'
 
-            cmake = CMake(self)
-            cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
-            cmake.definitions[f'CREATE_PACKAGE']  = '1'
-            cmake.configure(source_folder=f'callisto.{lib_name}', build_folder=f'callisto.{lib_name}.build')
-            cmake.build()
+        libraries_names = [lib.name for lib in libraries]
+
+        cmake.definitions[f'CALLISTO_MATH_ENABLE']     = self.__get_option_from_bool('math'     in libraries_names)
+        cmake.definitions[f'CALLISTO_OPENCV_ENABLE']   = self.__get_option_from_bool('opencv'   in libraries_names)
+        cmake.definitions[f'CALLISTO_GRAPHICS_ENABLE'] = self.__get_option_from_bool('graphics' in libraries_names)
+
+
+        cmake.configure(source_folder=f'callisto.library', build_folder=f'callisto.library.build')
+        cmake.build()
 
 
     def package(self):
@@ -238,8 +240,8 @@ class CallistoConan(ConanFile):
         for lib_module in libraries:
             lib_name = lib_module.name
 
-            self.copy(f'*h',   dst=f'include/callisto_{lib_name}_headers', src=f'callisto.{lib_name}/include')
-            self.copy(f'*hpp', dst=f'include/callisto_{lib_name}_headers', src=f'callisto.{lib_name}/include')
+            self.copy(f'*h',   dst=f'include/callisto_{lib_name}_headers', src=f'callisto.library/callisto.{lib_name}/include')
+            self.copy(f'*hpp', dst=f'include/callisto_{lib_name}_headers', src=f'callisto.library/callisto.{lib_name}/include')
 
         self.copy('*callisto_*.lib',   dst='lib', keep_path=False)
         self.copy('*callisto_*.a',     dst='lib', keep_path=False)
@@ -253,6 +255,7 @@ class CallistoConan(ConanFile):
         self.cpp_info.names['cmake_find_package_multi'] = 'Callisto'
 
         libraries = self.dependency_graph.form_libraries()
+
         for lib_module in libraries:
             lib_name = lib_module.name
 

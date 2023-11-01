@@ -10,7 +10,7 @@ class TestConanCallisto(ConanFile):
     settings   = 'os', 'compiler', 'arch', 'build_type'
     generators = 'cmake', 'cmake_find_package_multi'
 
-    requires        = 'gtest/1.8.1'
+    requires = 'gtest/1.8.1'
 
     def __get_option_from_bool(self, flag : bool) -> str:
         return "ON" if flag else "OFF"

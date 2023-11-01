@@ -10,3 +10,5 @@ packages
 
 CMakeSettings.json
 *.pdb
+
+*.png
