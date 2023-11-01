@@ -25,17 +25,22 @@ if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR})
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
+else()
+    set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
+endif()
 
+set(CMAKE_PREFIX_PATH ${CONAN_DIR})
+set(CMAKE_MODULE_PATH ${CONAN_DIR})
+
+# Provide callisto library
+if(DEFINED CREATE_PACKAGE)
     find_package(Callisto)
     foreach(lib_name ${CALLISTO_LIBRARIES})
         if(TARGET Callisto::${lib_name})
             set(ENABLE_${lib_name} TRUE)
         endif()
     endforeach()
-# else, callisto library and 3rd party providing from solution directory.
 else()
-    set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
-
     add_subdirectory(
         ${CMAKE_SOURCE_DIR}/../callisto.library
         ${CMAKE_CURRENT_BINARY_DIR}/callisto.library
@@ -47,9 +52,6 @@ else()
         endif()
     endforeach()
 endif()
-
-set(CMAKE_PREFIX_PATH ${CONAN_DIR})
-set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
 # collect source and linked libraries to executable file *******************************************************************
 set(TEST_TARGET callisto_test)
@@ -84,6 +86,7 @@ endif()
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
+
 target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
 
 if(NOT DEFINED CREATE_PACKAGE)
@@ -125,6 +128,17 @@ else()
     endforeach()
 endif()
 
+macro(found_target target_name)
+    if(TARGET ${target_name})
+        message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${target_name} found")
+    else()
+        message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${target_name} not found")
+    endif()
+endmacro()
+
+found_target(Callisto::framework)
+found_target(imgui::imgui)
+found_target(glm::glm)
 
 # copy dlls if platform is windows ************************************************************************************
 if(WIN32)

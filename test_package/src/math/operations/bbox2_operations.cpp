@@ -14,7 +14,7 @@
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
-using line2op = c_m::line2op;
+using bbox2op = c_m::bbox2op;
 
 constexpr double rel_double_acc = 1e-6;
 constexpr double abs_double_acc = 1e-6;
@@ -31,9 +31,7 @@ TEST(bbox2_operations, normalize_test)
     auto contour = c_m::bbox2f(5, 4, 17, 14);
     box          = bbox2op::normalize(box, contour);
 
-    std::cout << "line:" << line << "\n";
-
     ASSERT_TRUE(
-        rel_err_bbox2_equal(line, c_m::line2f(1.0 / 3.0, 0.8, -1.0 / 3.0, -0.8), rel_float_acc)
+        rel_err_bbox2_equal(box, c_m::bbox2f(-1.0 / 3.0, -0.8, 1.0 / 3.0, 0.8), rel_float_acc)
     );
 }

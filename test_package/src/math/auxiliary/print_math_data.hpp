@@ -29,3 +29,11 @@ inline stream_type& operator<<(stream_type& stream, const c_m::rectangle<type>& 
 
     return stream;
 }
+
+template<typename stream_type, typename type>
+inline stream_type& operator<<(stream_type& stream, const c_m::bbox2<type>& box)
+{
+    stream << "[" << box.x1 << ", " << box.y1 << ", " << box.x2 << ", " << box.y2 << "]";
+
+    return stream;
+}

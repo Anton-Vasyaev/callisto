@@ -39,6 +39,19 @@ struct bbox2
         this->y2 = y2;
     }
 
+    template<typename left_top_type, typename right_bottom_type>
+    inline constexpr bbox2(
+        const left_top_type&     left_top,
+        const right_bottom_type& right_bottom
+    ) noexcept
+    {
+        x1 = left_top.x;
+        y1 = left_top.y;
+
+        x2 = right_bottom.x;
+        y2 = right_bottom.y;
+    }
+
     template<typename other_bbox_type>
     inline constexpr bbox2(const other_bbox_type& other_bbox) noexcept
     {
