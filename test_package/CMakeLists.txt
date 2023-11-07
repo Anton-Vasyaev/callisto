@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.19)
 
+#--------------------------------------------------------------------------------------------------
 # list of libraries names
 set(CALLISTO_LIBRARIES framework math opencv graphics)
 
-# configure project ***********************************************************************************************************
+#--------------------------------------------------------------------------------------------------
+# configure project
 project(callisto.test CXX)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
@@ -17,7 +19,8 @@ if(MSVC)
 elseif(GCC)
 endif()
 
-# callisto library providing and conan settings **********************************************************************************
+#--------------------------------------------------------------------------------------------------
+# callisto library providing and conan settings
 set(CONAN_DIR "")
 
 # CREATE_PACKAGE defined when cmake and build running from conan create command
@@ -53,7 +56,8 @@ else()
     endforeach()
 endif()
 
-# collect source and linked libraries to executable file *******************************************************************
+#--------------------------------------------------------------------------------------------------
+# collect source and linked libraries to executable file
 set(TEST_TARGET callisto_test)
 
 set(TEST_SRC src/main.cpp)
@@ -73,6 +77,7 @@ endforeach()
 add_executable(${TEST_TARGET} ${TEST_SRC})
 target_include_directories(${TEST_TARGET} PRIVATE src)
 
+#--------------------------------------------------------------------------------------------------
 # Generate debug pdb information for Release mode
 # Need for boost::stactrace
 if(MSVC)
@@ -83,6 +88,7 @@ if(MSVC)
     target_link_options(${TEST_TARGET} PRIVATE "/PDBALTPATH:%_PDB%")
 endif()
 
+#--------------------------------------------------------------------------------------------------
 # 3rd party 
 find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
@@ -128,19 +134,8 @@ else()
     endforeach()
 endif()
 
-macro(found_target target_name)
-    if(TARGET ${target_name})
-        message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${target_name} found")
-    else()
-        message("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ${target_name} not found")
-    endif()
-endmacro()
-
-found_target(Callisto::framework)
-found_target(imgui::imgui)
-found_target(glm::glm)
-
-# copy dlls if platform is windows ************************************************************************************
+#--------------------------------------------------------------------------------------------------
+# copy dlls if platform is windows
 if(WIN32)
     file(GLOB BINARY_SHARED_LIBRARIES "${CONAN_DIR}/bin/*.dll")
     foreach(BINARY_SHARED_LIBRARY IN LISTS BINARY_SHARED_LIBRARIES)
