@@ -39,7 +39,7 @@ find_package(Boost PATHS ${CONAN_DIR})
 find_package(nameof PATHS ${CONAN_DIR})
 
 if(CALLISTO_OPENCV_ENABLE)
-    find_package(opencv)
+    find_package(OpenCV PATHS ${CONAN_DIR})
 endif()
 
 if(CALLISTO_GRAPHICS_ENABLE)
