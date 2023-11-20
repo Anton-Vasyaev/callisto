@@ -11,6 +11,8 @@ void match_image_type(const cv::Mat& mat, image_type img_type, const char* funct
     auto mat_channels      = type_channels(mat.type());
     auto img_type_channels = image_type_channels(img_type);
 
+    auto func_name = function_name != nullptr ? function_name : "unknown location";
+
     if (mat_channels != img_type_channels)
     {
         auto error = c_f::argument_exception();
@@ -19,9 +21,10 @@ void match_image_type(const cv::Mat& mat, image_type img_type, const char* funct
             img_type_channels,
             " != ",
             mat_channels,
-            "."
+            ". Vallidate call from \'",
+            func_name,
+            "\'"
         ));
-        if (function_name != nullptr) { error << c_f::error_tag_function_name(function_name); }
 
         throw error;
     }

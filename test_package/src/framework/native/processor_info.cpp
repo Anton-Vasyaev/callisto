@@ -9,7 +9,7 @@ namespace c_f = callisto::framework;
 
 // clang-format off
 
-#define log_line_processor_info_property(property_name)                                             \
+#define LOG_LINE_PROCESSOR_INFO_PROPERTY(property_name)                                             \
     c_f::gtest_console::print_line(                                                                 \
         "[processor_info] ", #property_name, ":",                                                   \
         c_f::processor_info::get_##property_name()                                                  \
@@ -19,29 +19,40 @@ namespace c_f = callisto::framework;
 
 TEST(framework_native, processor_info_placeholder_test_1)
 {
-    log_line_processor_info_property(vendor_name);
-    log_line_processor_info_property(code_name);
-    log_line_processor_info_property(brand_name);
-    log_line_processor_info_property(num_cores);
-    log_line_processor_info_property(num_logical_cpus);
-    log_line_processor_info_property(total_logical_cpus);
-    log_line_processor_info_property(l1_data_cache);
-    log_line_processor_info_property(l1_instruction_cache);
-    log_line_processor_info_property(l2_cache);
-    log_line_processor_info_property(l3_cache);
-    log_line_processor_info_property(l4_cache);
-    log_line_processor_info_property(l1_assoc);
-    log_line_processor_info_property(l1_data_assoc);
-    log_line_processor_info_property(l1_instruction_assoc);
-    log_line_processor_info_property(l2_assoc);
-    log_line_processor_info_property(l3_assoc);
-    log_line_processor_info_property(l4_assoc);
-    log_line_processor_info_property(l1_cacheline);
-    log_line_processor_info_property(l1_data_cacheline);
-    log_line_processor_info_property(l1_instruction_cacheline);
-    log_line_processor_info_property(l2_cacheline);
-    log_line_processor_info_property(l3_cacheline);
-    log_line_processor_info_property(l4_cacheline);
+    if (!c_f::processor_info::is_init())
+    {
+        c_f::gtest_console::print_line(
+            "processor info cannot initialize:",
+            c_f::processor_info::get_not_init_error_message()
+        );
+    }
+    else
+    {
+
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(vendor_name);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(code_name);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(brand_name);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(num_cores);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(num_logical_cpus);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(total_logical_cpus);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_data_cache);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_instruction_cache);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l2_cache);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l3_cache);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l4_cache);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_data_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_instruction_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l2_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l3_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l4_assoc);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_cacheline);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_data_cacheline);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l1_instruction_cacheline);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l2_cacheline);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l3_cacheline);
+        LOG_LINE_PROCESSOR_INFO_PROPERTY(l4_cacheline);
+    }
 
     ASSERT_EQ(true, true);
 }

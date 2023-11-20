@@ -13,6 +13,10 @@ namespace callisto::framework
 
 #pragma region data
 
+bool is_init_flag = false;
+
+std::string not_init_error_message;
+
 #pragma region cpu_standard
 
 std::string vendor_name;
@@ -128,7 +132,8 @@ processor_info::__static_init__::__static_init__()
 
     if (!cpuid_present())
     {
-        throw std::runtime_error("CPU Id not present\n");
+        not_init_error_message = "CPU Id not present\n";
+        return;
     }
 
     cpu_raw_data_t raw;
@@ -136,16 +141,19 @@ processor_info::__static_init__::__static_init__()
 
     if (cpuid_get_raw_data(&raw) < 0)
     {
-        throw runtime_exception(
-        ) << error_tag_message(_bs("Cannot get CPUID raw data. Error:", cpuid_error(), "."));
+        not_init_error_message = _bs("Cannot get CPUID raw data. Error:", cpuid_error(), ".");
+        return;
     }
 
     if (cpu_identify(&raw, &data) < 0)
     {
-        throw runtime_exception(
-        ) << error_tag_message(_bs("CPU identification failed. Error:", cpuid_error(), "."));
+        not_init_error_message = _bs("CPU identification failed. Error:", cpuid_error(), ".");
+        return;
     }
 
+    is_init_flag = true;
+
+    // Initialize cpu data
     vendor_name = data.vendor_str;
 
     code_name = data.cpu_codename;
@@ -255,13 +263,20 @@ processor_info::__static_init__ processor_info::__static_initializer__;
 
 #pragma region getters
 
+bool processor_info::is_init() noexcept { return is_init_flag; }
+
+const std::string& processor_info::get_not_init_error_message() noexcept
+{
+    return not_init_error_message;
+}
+
 #pragma region cpu_standard
 
-std::string processor_info::get_vendor_name() noexcept { return vendor_name; }
+const std::string& processor_info::get_vendor_name() noexcept { return vendor_name; }
 
-std::string processor_info::get_code_name() noexcept { return code_name; }
+const std::string& processor_info::get_code_name() noexcept { return code_name; }
 
-std::string processor_info::get_brand_name() noexcept { return brand_name; }
+const std::string& processor_info::get_brand_name() noexcept { return brand_name; }
 
 int32_t processor_info::get_num_cores() noexcept { return num_cores; }
 

@@ -13,8 +13,17 @@ namespace c_f = callisto::framework;
 template<typename code_type>
 using error_tag_code = boost::error_info<struct tag_code, code_type>;
 
-struct random_exception : public c_f::exception
+struct random_point_exception : public c_f::exception
 {
+    float x;
+    float y;
+
+    random_point_exception(float x, float y) : x(x), y(y) {}
+
+    virtual std::string form_error_message() const
+    {
+        return c_f::_bs("Ivalid point coords: (", x, ", ", y, ").");
+    }
 };
 
 enum class custom_error_code
@@ -24,14 +33,7 @@ enum class custom_error_code
     not_compiled
 };
 
-enum class not_define_code
-{
-    status,
-    hitler,
-    nigger
-};
-
-void call_exception_1() { CALLISTO_THROW_EXCEPTION(random_exception()); }
+void call_exception_1() { CALLISTO_THROW_EXCEPTION(random_point_exception(5.0, 3.0)); }
 
 void call_exception_2()
 {
@@ -75,7 +77,7 @@ void exception_example()
 
         c_f::gtest_console::print_line("Catch boost exception:", boost_d_i);
 
-        auto error_code = boost::get_error_info<error_tag_code<not_define_code>>(e);
+        auto error_code = boost::get_error_info<error_tag_code<custom_error_code>>(e);
 
         if (error_code == nullptr)
         {
@@ -93,7 +95,8 @@ TEST(framework_app, throw_exception)
     c_f::gtest_console::print_line("callisto exception stacktrace disable-----");
     exception_example();
 
-    c_f::application_environment::exception_trace_flag = true;
+    c_f::application_environment::exception_trace_flag    = true;
+    c_f::application_environment::exception_location_flag = true;
 
     c_f::gtest_console::print_line("callisto exception stacktrace enable-----");
     exception_example();

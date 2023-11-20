@@ -38,11 +38,9 @@ cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
 
     if (!file_handler.is_open())
     {
-        throw read_write_exception()
-            << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION)
-            << c_f::error_tag_message_w(
-                   c_f::_wbs(L"imread failed. img on path \'", path, L"\' not opened.")
-               );
+        CALLISTO_THROW_EXCEPTION(read_write_exception()) << c_f::error_tag_message_w(
+            c_f::_wbs(L"imread failed. img on path \'", path, L"\' not opened.")
+        );
     }
 
     auto file_size = b_fs::file_size(path);
@@ -67,11 +65,9 @@ void imwrite(path_type* path, const cv::Mat& img)
 
     if (!file_handler.is_open())
     {
-        throw read_write_exception()
-            << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION)
-            << c_f::error_tag_message_w(
-                   c_f::_wbs(L"imwrite failed. file handler on path \'", path, L"\' not opened.")
-               );
+        CALLISTO_THROW_EXCEPTION(read_write_exception()) << c_f::error_tag_message_w(
+            c_f::_wbs(L"imwrite failed. file handler on path \'", path, L"\' not opened.")
+        );
     }
 
     auto ext = boost::filesystem::path(path).extension().string();

@@ -12,11 +12,15 @@ namespace callisto::framework
 class processor_info
 {
 public:
-    static std::string get_vendor_name() noexcept;
+    static bool is_init() noexcept;
 
-    static std::string get_code_name() noexcept;
+    static const std::string& get_not_init_error_message() noexcept;
 
-    static std::string get_brand_name() noexcept;
+    static const std::string& get_vendor_name() noexcept;
+
+    static const std::string& get_code_name() noexcept;
+
+    static const std::string& get_brand_name() noexcept;
 
     static int32_t get_num_cores() noexcept;
 
