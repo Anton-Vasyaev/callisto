@@ -12,16 +12,25 @@ namespace callisto::framework
 struct exception : virtual std::exception, virtual boost::exception
 {
 private:
+    static constexpr const char* default_message = "default error message (not exist).";
+
     mutable std::string _formed_error_message;
 
 public:
-    virtual std::string form_error_message() const { return "default error message (not exist)."; }
+    virtual std::string form_error_message() const { return exception::default_message; }
 
-    virtual const char* what() const
+    virtual const char* what() const noexcept
     {
-        if (_formed_error_message.empty())
+        try
         {
-            _formed_error_message = std::move(form_error_message());
+            if (_formed_error_message.empty())
+            {
+                _formed_error_message = std::move(form_error_message());
+            }
+        }
+        catch(...)
+        {
+            return exception::default_message;
         }
 
         return _formed_error_message.c_str();
