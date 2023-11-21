@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 
-# configure project *******************************************************************************
+# *************************************************************************************************
+# configure project
 project(graphics.render.opengl CXX)
 set(TARGET_NAME graphics_render_opengl)
 
@@ -12,17 +13,25 @@ if(MSVC)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
-# conan settings **********************************************************************************
+# *************************************************************************************************
+# conan settings
 set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
-# collect source and linked libraries to executable file ******************************************
+# *************************************************************************************************
+# collect source and linked libraries to executable file
 file(GLOB_RECURSE TARGET_SRC "src/*.c" "src/*.cpp")
 
 
 add_executable(${TARGET_NAME} ${TARGET_SRC})
 target_include_directories(${TARGET_NAME} PRIVATE src)
+
+# options for executabe file
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    message("ToDo")
+endif()
+
 
 # link with main project
 add_subdirectory(
@@ -54,6 +63,11 @@ endforeach()
 find_package(Boost)
 
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::program_options)
+target_link_libraries(${TARGET_NAME} PRIVATE Boost::stacktrace)
+
+if(NOT MSVC)
+    target_link_libraries(${TARGET_NAME} PRIVATE Boost::stacktrace_backtrace)
+endif()
 
 # copy dlls if platform is windows ****************************************************************
 if(WIN32)

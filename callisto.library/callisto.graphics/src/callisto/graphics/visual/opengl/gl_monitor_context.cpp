@@ -1,5 +1,3 @@
-#pragma once
-
 // parent header
 #include <callisto/graphics/visual/opengl/gl_monitor_context.hpp>
 // std

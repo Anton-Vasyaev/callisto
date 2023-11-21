@@ -94,6 +94,11 @@ find_package(Boost PATHS ${CONAN_DIR})
 find_package(GTest PATHS ${CONAN_DIR})
 
 target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
+target_link_libraries(${TEST_TARGET} PRIVATE Boost::stacktrace)
+
+if(NOT MSVC)
+    target_link_libraries(${TEST_TARGET} PRIVATE Boost::stacktrace_backtrace)
+endif()
 
 if(NOT DEFINED CREATE_PACKAGE)
     macro(link_local lib_name)
