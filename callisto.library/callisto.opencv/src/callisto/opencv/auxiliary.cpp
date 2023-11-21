@@ -15,8 +15,7 @@ void match_image_type(const cv::Mat& mat, image_type img_type, const char* funct
 
     if (mat_channels != img_type_channels)
     {
-        auto error = c_f::argument_exception();
-        error << c_f::error_tag_message(c_f::_bs(
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
             "img type channels != mat channels:",
             img_type_channels,
             " != ",
@@ -25,8 +24,6 @@ void match_image_type(const cv::Mat& mat, image_type img_type, const char* funct
             func_name,
             "\'"
         ));
-
-        throw error;
     }
 }
 
@@ -41,7 +38,7 @@ image_type default_image_type(const cv::Mat& mat)
         case 4 : return image_type::bgra;
 
         default :
-            throw c_f::argument_exception() << c_f::error_tag_message(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
                 c_f::_bs("not exist default image_type for cv::Mat channels:", channels)
             );
     }

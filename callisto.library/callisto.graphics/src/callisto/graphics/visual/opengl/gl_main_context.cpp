@@ -2,6 +2,9 @@
 #include <callisto/graphics/visual/opengl/gl_main_context.hpp>
 // std
 #include <iostream>
+// project
+#include <callisto/framework/exception.hpp>
+#include <callisto/framework/string/build_string.hpp>
 
 namespace callisto::graphics
 {
@@ -30,7 +33,11 @@ void gl_main_context::init_primary_monitor()
 {
     auto primary_monitor_handler = glfwGetPrimaryMonitor();
     if (primary_monitor_handler == nullptr)
-        throw std::runtime_error("GLFW: failed to get primary monitor");
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("GLFW: failed to get primary moniitor");
+    }
+
     this->primary_monitor
         = std::unique_ptr<i_monitor_context>(new gl_monitor_context(primary_monitor_handler));
 }
@@ -43,7 +50,11 @@ gl_main_context::gl_main_context()
 {
     glfwSetErrorCallback(glfw_error_callback);
     int glfw_status = glfwInit();
-    if (glfw_status != GLFW_TRUE) throw std::runtime_error("GLFW: failed to initialization");
+    if (glfw_status != GLFW_TRUE)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("GLFW: failed to initialization");
+    }
 
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

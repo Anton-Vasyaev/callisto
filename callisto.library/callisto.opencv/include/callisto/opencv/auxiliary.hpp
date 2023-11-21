@@ -185,14 +185,14 @@ constexpr int make_type(c_f::numeric_type num_type, int channels)
 {
     if (channels > 8 || channels <= 0)
     {
-        throw c_f::argument_exception()
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message("failed to make_type, reason: channels > 8 or channels <= 0");
     }
 
     auto base_type = numeric2cv(num_type);
     if (base_type == -1)
     {
-        throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
             "failed to make_type, not valid numeric_type for create cv::Mat:",
             c_f::numeric_type_str(num_type),
             ", code:",

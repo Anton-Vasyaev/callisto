@@ -19,7 +19,7 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
     if (bitmap.pitch <= 0)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
-            << c_f::error_tag_message(c_f::_bs(". Bitmap pitch <= 0: ", bitmap.pitch));
+            << c_f::error_tag_message(c_f::_bs("freetype bitmap pitch <= 0: ", bitmap.pitch));
     }
 
     auto data_ptr = (uint8_t*)bitmap.buffer;
@@ -41,7 +41,7 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
     else
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
-            c_f::_bs("Invalid pixel mode of bitmap:", pixel_mode_str(bitmap.pixel_mode))
+            c_f::_bs("Invalid pixel mode of freetype bitmap:", pixel_mode_str(bitmap.pixel_mode))
         );
     }
     stride = bitmap.pitch;

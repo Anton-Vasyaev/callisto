@@ -32,7 +32,8 @@ class gl_texture2d
     };
 
     // static methods
-    inline static conversion_formats get_format_from_img_type(c_cv::image_type t)
+    inline static conversion_formats
+    get_format_from_img_type(c_cv::image_type t, bool validate = true)
     {
         switch (t)
         {
@@ -43,16 +44,19 @@ class gl_texture2d
             case c_cv::image_type::grayscale : return { GL_RED, GL_RED };
 
             default :
-                throw opengl_exception() << c_f::error_tag_message(
+                CALLISTO_THROW_EXCEPTION(opengl_exception()) << c_f::error_tag_message(
                     c_f::_bs("invalid img type for generate gl_texture2d:", c_cv::image_type_str(t))
-                ) << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION);
+                );
         }
     }
 
     // private methods
     inline void destruct()
     {
-        if (this->handler != 0) { glDeleteTextures(1, &(this->handler)); }
+        if (this->handler != 0)
+        {
+            glDeleteTextures(1, &(this->handler));
+        }
     }
 
     inline void move_from(gl_texture2d&& texture)

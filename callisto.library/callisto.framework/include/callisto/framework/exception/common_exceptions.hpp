@@ -21,6 +21,6 @@ struct argument_exception : public virtual exception
 /// @brief Present not find resources exception.
 struct not_find_exception : public virtual exception
 {
-}
+};
 
 } // namespace callisto::framework

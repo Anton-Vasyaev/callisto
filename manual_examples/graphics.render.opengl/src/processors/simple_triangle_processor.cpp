@@ -79,7 +79,7 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
 
     _shader_program = c_g::gl_shader_program(vertex_shader, fragment_shader);
 
-    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stagea");
+    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stage");
     _offset_location       = _shader_program.get_uniform_location("offset");
 
     auto data = std::vector<float> { 0.0f, 0.5f, 1.0f,  0.0f,  0.0f, 0.5f, -0.5f, 0.0f,

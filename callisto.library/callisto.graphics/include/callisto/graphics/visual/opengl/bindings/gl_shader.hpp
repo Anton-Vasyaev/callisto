@@ -20,8 +20,6 @@ namespace c_f = callisto::framework;
 
 class gl_shader
 {
-    static constexpr size_t INFO_LOG_SIZE = 1024;
-
     GLuint handler;
 
     inline void move_from(gl_shader&& shader)
@@ -48,8 +46,8 @@ public:
 
         if (!file.is_open())
         {
-            throw c_f::exception() << c_f::error_tag_message_w(
-                c_f::_wbs("failed to open file with shader:", shader_path)
+            CALLISTO_THROW_EXCEPTION(c_f::not_find_exception()
+            ) << c_f::error_tag_message_w(c_f::_wbs("failed to open file with shader:", shader_path)
             );
         }
         std::stringstream ss;

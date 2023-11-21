@@ -26,7 +26,10 @@ face::face(face&& face)
 
 face::~face()
 {
-    if (_handler != nullptr) { FT_Done_Face(_handler); }
+    if (_handler != nullptr)
+    {
+        FT_Done_Face(_handler);
+    }
 }
 
 #pragma endregion

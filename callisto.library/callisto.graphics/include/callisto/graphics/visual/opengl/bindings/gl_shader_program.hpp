@@ -26,8 +26,6 @@ class gl_shader_program
 {
     GLuint handler;
 
-    static constexpr size_t INFO_LOG_SIZE = 1024;
-
     inline void move_from(gl_shader_program&& program)
     {
         this->handler   = program.handler;

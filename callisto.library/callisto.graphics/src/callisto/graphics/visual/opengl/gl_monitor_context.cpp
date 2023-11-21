@@ -50,7 +50,11 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
 
     auto validate_glfw_window_nullptr = [](GLFWwindow* window_handler)
     {
-        if (window_handler == nullptr) throw std::runtime_error("cannot create glfw window");
+        if (window_handler == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+                << c_f::error_tag_message("cannot create glfw window");
+        }
     };
 
     if (options.mode == window_mode::fullscreen)

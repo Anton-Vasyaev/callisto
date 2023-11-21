@@ -1,7 +1,7 @@
 // parent header
 #include <callisto/graphics/visual/opengl/bindings/gl_shader_program.hpp>
-// 3rd party
-#include <callisto/framework/string.hpp>
+// project
+#include <callisto/graphics/visual/opengl/exception.hpp>
 
 namespace callisto::graphics
 {
@@ -18,13 +18,18 @@ gl_shader_program::gl_shader_program(gl_shader& vertex_shader, gl_shader& fragme
     glGetProgramiv(this->handler, GL_LINK_STATUS, &success_status);
     if (!success_status)
     {
-        GLchar info_log[INFO_LOG_SIZE];
-        glGetShaderInfoLog(this->handler, INFO_LOG_SIZE, nullptr, info_log);
+        GLint log_length = 0;
+        glGetShaderiv(this->handler, GL_INFO_LOG_LENGTH, &log_length);
+
+        std::string info_log;
+        info_log.resize(log_length);
+
+        GLsizei real_len;
+        glGetShaderInfoLog(this->handler, log_length, &real_len, info_log.data());
 
         glDeleteProgram(this->handler);
 
-        throw c_f::exception(
-        ) << c_f::error_tag_message(c_f::_bs("Failed to link shader program:", info_log, "."));
+        CALLISTO_THROW_EXCEPTION(opengl_shader_failed_link_exception(std::move(info_log)));
     }
 }
 

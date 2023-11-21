@@ -248,7 +248,12 @@ void gl_window_context::set_processor(std::shared_ptr<a_window_processor> proces
 void gl_window_context::start_processing()
 {
 
-    if (this->window_handler == nullptr) throw std::runtime_error("GLFW window is not initialized");
+    if (this->window_handler == nullptr)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("GLFW window is not initialized");
+    }
+
     {
         std::lock_guard<std::mutex> locker(call_functions_mutex);
         call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
@@ -259,7 +264,8 @@ void gl_window_context::start_processing()
 
     if (this->window_processor == nullptr)
     {
-        throw c_f::runtime_exception() << c_f::error_tag_message("Window processor is not setted.");
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("Window processor is not setted.");
     }
 
     glfwMakeContextCurrent(this->window_handler);
@@ -267,8 +273,10 @@ void gl_window_context::start_processing()
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
     {
-        throw std::runtime_error("Failed to initialize glew");
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("Failed to initialize glew");
     }
+
     std::cout << "Vendor name:" << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Version:" << glGetString(GL_VERSION) << std::endl;
 

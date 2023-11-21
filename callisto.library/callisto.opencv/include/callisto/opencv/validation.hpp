@@ -37,7 +37,7 @@ struct validation
 
         if (w1 != w2 || h1 != h2 || c1 != c2)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "dimensions of \'",
                 argument_name_1,
                 "\' and \'",
@@ -76,7 +76,7 @@ struct validation
 
         if (w1 != w2 || h1 != h2)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "sizes of \'",
                 argument_name_1,
                 "\' and \'",
@@ -103,7 +103,7 @@ struct validation
 
         if (channels != mat_c)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
                 c_f::_bs("channels of mat \'", argument_name, "\' != ", channels, ": ", mat_c, ".")
             );
         }
@@ -122,7 +122,7 @@ struct validation
 
         if (mat1_channels != mat2_channels)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "channels in mats \'",
                 argument_name_1,
                 "\' and \'",
@@ -147,7 +147,7 @@ struct validation
 
         if (mat_num_type != num_type)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "numeric type of mat \'",
                 argument_name,
                 "\' != ",
@@ -169,7 +169,7 @@ struct validation
     {
         if (mat1.cols < mat2.cols || mat1.rows < mat2.rows)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "size of \'",
                 argument_name_1,
                 "\' (",
