@@ -76,21 +76,21 @@ struct bbox3
         return bbox2<cast_type>(x1, y1, z1, x2, y2, z2);
     }
 
-    inline constexpr auto left_top_far() const noexcept { return point3(x1, y1, z1); }
+    inline constexpr auto left_top_near() const noexcept { return point3(x1, y1, z1); }
 
-    inline constexpr auto left_bottom_far() const noexcept { return point3(x1, y2, z1); }
+    inline constexpr auto left_bottom_near() const noexcept { return point3(x1, y2, z1); }
 
-    inline constexpr auto right_bottom_far() const noexcept { return point3(x2, y2, z1); }
+    inline constexpr auto right_bottom_near() const noexcept { return point3(x2, y2, z1); }
 
-    inline constexpr auto right_top_far() const noexcept { return point3(x2, y1, z1); }
+    inline constexpr auto right_top_near() const noexcept { return point3(x2, y1, z1); }
 
-    inline constexpr auto left_top_near() const noexcept { return point3(x1, y1, z2); }
+    inline constexpr auto left_top_far() const noexcept { return point3(x1, y1, z2); }
 
-    inline constexpr auto left_bottom_near() const noexcept { return point3(x1, y2, z2); }
+    inline constexpr auto left_bottom_far() const noexcept { return point3(x1, y2, z2); }
 
-    inline constexpr auto right_bottom_near() const noexcept { return point3(x2, y2, z2); }
+    inline constexpr auto right_bottom_far() const noexcept { return point3(x2, y2, z2); }
 
-    inline constexpr auto right_top_near() const noexcept { return point3(x2, y1, z2); }
+    inline constexpr auto right_top_far() const noexcept { return point3(x2, y1, z2); }
 
     inline constexpr value_type width() const noexcept { return x2 - x1; }
 

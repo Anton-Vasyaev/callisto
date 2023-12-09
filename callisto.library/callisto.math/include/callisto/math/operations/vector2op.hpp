@@ -6,9 +6,6 @@
 #include <callisto/math/primitives/alg_tuple2.hpp>
 #include <callisto/math/primitives/line2.hpp>
 
-// ToDo
-#include <iostream>
-
 namespace callisto::math
 {
 
