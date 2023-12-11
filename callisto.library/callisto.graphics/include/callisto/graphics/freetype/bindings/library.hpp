@@ -6,6 +6,8 @@
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 // project
+#include <callisto/framework/types/assert_traits.hpp>
+
 #include "face.hpp"
 #include "stroker.hpp"
 
@@ -22,7 +24,7 @@ public:
 
     library(const library&) = delete;
 
-    library(library&& lib);
+    library(library&& lib) = delete;
 
     ~library();
 
@@ -41,5 +43,7 @@ public:
 
     const library& operator=(library&&) = delete;
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_REFERENCE(library);
 
 } // namespace callisto::graphics::freetype

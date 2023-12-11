@@ -1,6 +1,8 @@
 #pragma once
 
 // project
+#include <callisto/framework/types/assert_traits.hpp>
+
 #include "bitmap_glyph.hpp"
 #include "stroker.hpp"
 
@@ -14,18 +16,19 @@ namespace c_cv = callisto::opencv;
 
 class glyph
 {
-    FT_Glyph _handler = nullptr;
+    // data
+    FT_Glyph __handler = nullptr;
+
+    // private methods
+    void __move_from(glyph&& glyph);
+
+    void __destroy();
 
 public:
-    // deleted functions
-    glyph(const glyph&) = delete;
-
-    const glyph& operator=(const glyph&) = delete;
-
-    const glyph& operator=(glyph&&) = delete;
-
     // construct and destruct
     glyph(FT_Glyph handler);
+
+    glyph(const glyph&) = delete;
 
     glyph(glyph&& glyph);
 
@@ -42,6 +45,13 @@ public:
     FT_Glyph get_handler();
 
     const FT_Glyph get_handler() const;
+
+    // operators
+    glyph& operator=(const glyph&) = delete;
+
+    glyph& operator=(glyph&&);
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_MOVE(glyph);
 
 } // namespace callisto::graphics::freetype

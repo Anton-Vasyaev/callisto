@@ -47,7 +47,7 @@ cv::Mat& font_symbol_data::get_bitmap() { return _bitmap; }
 const cv::Mat& font_symbol_data::get_bitmap() const { return _bitmap; }
 
 // operators
-const font_symbol_data& font_symbol_data::operator=(font_symbol_data&& info)
+font_symbol_data& font_symbol_data::operator=(font_symbol_data&& info)
 {
     move_from(std::move(info));
 

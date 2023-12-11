@@ -5,6 +5,7 @@
 #include FT_FREETYPE_H
 // project
 #include <callisto/opencv.hpp>
+#include <callisto/framework/types/assert_traits.hpp>
 
 #include "glyph.hpp"
 
@@ -18,19 +19,19 @@ namespace c_cv = callisto::opencv;
 
 class face
 {
-private:
-    FT_Face _handler = nullptr;
+    // data
+    FT_Face __handler = nullptr;
+
+    // private methods
+    void __destroy() noexcept;
+
+    void __move_from(face&& face);
 
 public:
-    // deleted functions
-    face(const face&) = delete;
-
-    const face& operator=(const face&) = delete;
-
-    const face& operator=(face&&) = delete;
-
     // construct and destruct
     face(FT_Face handler);
+
+    face(const face&) = delete;
 
     face(face&& face);
 
@@ -55,6 +56,13 @@ public:
     FT_Face get_handler();
 
     const FT_Face get_handler() const;
+
+    // operators
+    face& operator=(const face&) = delete;
+
+    face& operator=(face&& face);
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_MOVE(face);
 
 } // namespace callisto::graphics::freetype

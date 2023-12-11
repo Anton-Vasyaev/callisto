@@ -1,6 +1,8 @@
 #pragma once
 
 // project
+#include <callisto/framework/types/assert_traits.hpp>
+
 #include <callisto/opencv.hpp>
 
 #include "font_symbol_metrics.hpp"
@@ -18,14 +20,10 @@ class font_symbol_data
     void move_from(font_symbol_data&& info);
 
 public:
-    // deleted functions
-
-    font_symbol_data(const font_symbol_data&) = delete;
-
-    const font_symbol_data& operator=(const font_symbol_data&) = delete;
-
     // construct and destruct
     font_symbol_data();
+
+    font_symbol_data(const font_symbol_data&) = delete;
 
     font_symbol_data(const font_symbol_metrics& metrics, const cv::Mat& bitmap);
 
@@ -46,7 +44,11 @@ public:
     const cv::Mat& get_bitmap() const;
 
     // operators
-    const font_symbol_data& operator=(font_symbol_data&& info);
+    font_symbol_data& operator=(const font_symbol_data&) = delete;
+
+    font_symbol_data& operator=(font_symbol_data&& info);
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_MOVE(font_symbol_data);
 
 } // namespace callisto::graphics

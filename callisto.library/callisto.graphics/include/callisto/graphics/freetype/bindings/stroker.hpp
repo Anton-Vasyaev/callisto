@@ -4,24 +4,27 @@
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype/ftstroke.h>
+// project
+#include <callisto/framework/types/assert_traits.hpp>
 
 namespace callisto::graphics::freetype
 {
 
 class stroker
 {
-    FT_Stroker _handler = nullptr;
+    // data
+    FT_Stroker __handler = nullptr;
+
+    // private methods
+    void __move_from(stroker&& other_stroker);
+
+    void __destroy();
 
 public:
-    // deleted functions
-    stroker(const stroker&) = delete;
-
-    const stroker& operator=(const stroker&) = delete;
-
-    const stroker& operator=(stroker&&) = delete;
-
     // construct and destruct
     stroker(FT_Stroker handler);
+
+    stroker(const stroker&) = delete;
 
     stroker(stroker&& stroker);
 
@@ -38,6 +41,13 @@ public:
     FT_Stroker get_handler();
 
     const FT_Stroker get_handler() const;
+
+    // operators
+    stroker& operator=(const stroker&) = delete;
+
+    stroker& operator=(stroker&& other_stroker);
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_MOVE(stroker);
 
 } // namespace callisto::graphics::freetype
