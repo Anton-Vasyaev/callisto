@@ -71,13 +71,13 @@ struct bbox2
         return bbox2<cast_type>(x1, y1, x2, y2);
     }
 
-    inline constexpr auto left_top() const noexcept { return point2(x1, y1); }
+    inline constexpr auto left_top() const noexcept { return point2<value_type>(x1, y1); }
 
-    inline constexpr auto left_bottom() const noexcept { return point2(x1, y2); }
+    inline constexpr auto left_bottom() const noexcept { return point2<value_type>(x1, y2); }
 
-    inline constexpr auto right_bottom() const noexcept { return point2(x2, y2); }
+    inline constexpr auto right_bottom() const noexcept { return point2<value_type>(x2, y2); }
 
-    inline constexpr auto right_top() const noexcept { return point2(x2, y1); }
+    inline constexpr auto right_top() const noexcept { return point2<value_type>(x2, y1); }
 
     inline constexpr value_type width() const noexcept { return x2 - x1; }
 

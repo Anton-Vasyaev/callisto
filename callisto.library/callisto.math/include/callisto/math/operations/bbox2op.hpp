@@ -7,8 +7,8 @@ namespace callisto::math
 
 struct bbox2op
 {
-    template<typename bbox_type, typename contour_bbox_type>
-    inline static constexpr auto normalize(const bbox_type& box, const contour_bbox_type& contour)
+    template<typename bbox_type, typename contour_type>
+    inline static constexpr auto normalize(const bbox2<bbox_type>& box, const bbox2<contour_type>& contour)
     {
         auto w = contour.width();
         auto h = contour.height();
@@ -25,7 +25,7 @@ struct bbox2op
         x2 = (x2 - contour.x1) / w;
         y2 = (y2 - contour.y1) / h;
 
-        return bbox_type(x1, y1, x2, y2);
+        return bbox2<bbox_type>(x1, y1, x2, y2);
     }
 };
 

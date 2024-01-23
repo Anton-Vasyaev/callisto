@@ -3,13 +3,6 @@
 
 namespace callisto::graphics
 {
-
-#pragma region private_methods
-
-void font_symbol_data::move_from(font_symbol_data&& info) { _bitmap = std::move(info._bitmap); }
-
-#pragma endregion
-
 #pragma region construct_and_destruct
 
 font_symbol_data::font_symbol_data() {}
@@ -25,8 +18,6 @@ font_symbol_data::font_symbol_data(const font_symbol_metrics& metrics, cv::Mat&&
     _metrics = metrics;
     _bitmap  = std::move(bitmap);
 }
-
-font_symbol_data::font_symbol_data(font_symbol_data&& info) { move_from(std::move(info)); }
 
 #pragma endregion
 
@@ -45,14 +36,6 @@ const font_symbol_metrics& font_symbol_data::get_metrics() const { return _metri
 cv::Mat& font_symbol_data::get_bitmap() { return _bitmap; }
 
 const cv::Mat& font_symbol_data::get_bitmap() const { return _bitmap; }
-
-// operators
-font_symbol_data& font_symbol_data::operator=(font_symbol_data&& info)
-{
-    move_from(std::move(info));
-
-    return *this;
-}
 
 #pragma endregion
 } // namespace callisto::graphics

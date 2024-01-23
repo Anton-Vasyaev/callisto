@@ -48,8 +48,8 @@ struct alg_tuple2
         this->v2 = v2;
     }
 
-    template<typename other_alg_type>
-    inline constexpr alg_tuple2(const other_alg_type& values) noexcept
+    template<typename other_type>
+    inline constexpr alg_tuple2(const alg_tuple2<other_type>& values) noexcept
     {
         v1 = values.v1;
         v2 = values.v2;
@@ -59,7 +59,7 @@ struct alg_tuple2
 
 #pragma region methods
 
-    template<c_f::concept_fundamental cast_type>
+    template<typename cast_type>
     inline constexpr auto as() const noexcept
     {
         return alg_tuple2<cast_type>(v1, v2);

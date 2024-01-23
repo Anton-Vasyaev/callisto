@@ -3,6 +3,8 @@
 // std
 #include <unordered_map>
 // project
+#include <callisto/framework/types/assert_traits.hpp>
+
 #include "font_symbol_data.hpp"
 
 namespace callisto::graphics
@@ -29,15 +31,7 @@ private:
 
     int32_t _space_vert_advance;
 
-    // private method
-    void move_from(typing_garniture&& garniture);
-
 public:
-    // deleted functions
-    typing_garniture(const typing_garniture&) = delete;
-
-    const typing_garniture& operator=(typing_garniture&) = delete;
-
     // construct and destruct
     typing_garniture(
         int32_t render_height_size,
@@ -45,7 +39,9 @@ public:
         int32_t space_vert_advance
     );
 
-    typing_garniture(typing_garniture&& garniture);
+    typing_garniture(const typing_garniture&) = delete;
+
+    typing_garniture(typing_garniture&& garniture) = default;
 
     // methods
     typing_garniture clone() const;
@@ -70,7 +66,11 @@ public:
     const symbols_data_type& get_symbols_data() const;
 
     // operators
-    const typing_garniture& operator=(typing_garniture&& garniture);
+    typing_garniture& operator=(typing_garniture&) = delete;
+
+    typing_garniture& operator=(typing_garniture&& garniture) = default;
 };
+
+CALLISTO_ASSERT_TRAIT_ONLY_MOVE(typing_garniture);
 
 } // namespace callisto::graphics

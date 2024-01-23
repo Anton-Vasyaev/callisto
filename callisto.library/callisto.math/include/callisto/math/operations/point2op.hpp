@@ -72,7 +72,7 @@ struct point2op
         auto x = clamp_f(point.x, bbox.x1, bbox.x2);
         auto y = clamp_f(point.y, bbox.y1, bbox.y2);
 
-        return point2(x, y);
+        return point2<decltype(x)>(x, y);
     };
 
     template<typename point_type, typename bbox_type>
@@ -87,7 +87,7 @@ struct point2op
         x /= w;
         y /= h;
 
-        return point2(x, y);
+        return point2<decltype(x)>(x, y);
     }
 };
 

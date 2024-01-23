@@ -178,7 +178,10 @@ void point(
     int thickness = radius + 1;
 
     auto size = mat_size(img);
-    if (normalized) { point *= size; }
+    if (normalized)
+    {
+        point *= size;
+    }
 
     auto p_i = c_m::point2i(point);
 
@@ -217,7 +220,7 @@ void fill_polygon(
     auto points_size = (int)points.size();
     auto size_ptr    = (const int*)(&points_size);
 
-    auto cv_color = cv::Scalar(color.r, color.g, color.b);
+    auto cv_color = cv::Scalar(color.b, color.g, color.r);
 
     cv::fillPoly(img, const_points_pp, size_ptr, 1, cv_color, line_type);
 }

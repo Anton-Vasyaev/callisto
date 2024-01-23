@@ -3,18 +3,6 @@
 
 namespace callisto::graphics
 {
-#pragma region private_method
-
-void typing_garniture::move_from(typing_garniture&& garniture)
-{
-    _symbols_data = std::move(garniture._symbols_data);
-
-    _render_height_size = garniture._render_height_size;
-    _space_hori_advance = garniture._space_hori_advance;
-    _space_vert_advance = garniture._space_vert_advance;
-}
-
-#pragma endregion
 
 #pragma region construct_and_destruct
 
@@ -29,11 +17,6 @@ typing_garniture::typing_garniture(
     _space_vert_advance = space_vert_advance;
 }
 
-typing_garniture::typing_garniture(typing_garniture&& garniture)
-{
-    move_from(std::move(garniture));
-}
-
 #pragma endregion
 
 #pragma region methods
@@ -43,7 +26,10 @@ typing_garniture typing_garniture::clone() const
     auto new_garniture
         = typing_garniture(_render_height_size, _space_hori_advance, _space_vert_advance);
 
-    for (auto& item : _symbols_data) { new_garniture.add_symbol(item.first, item.second.clone()); }
+    for (auto& item : _symbols_data)
+    {
+        new_garniture.add_symbol(item.first, item.second.clone());
+    }
 
     return std::move(new_garniture);
 }
@@ -83,17 +69,6 @@ typing_garniture::symbols_data_type& typing_garniture::get_symbols_data() { retu
 const typing_garniture::symbols_data_type& typing_garniture::get_symbols_data() const
 {
     return _symbols_data;
-}
-
-#pragma endregion
-
-#pragma region operators
-
-const typing_garniture& typing_garniture::operator=(typing_garniture&& garniture)
-{
-    move_from(std::move(garniture));
-
-    return *this;
 }
 
 #pragma endregion
