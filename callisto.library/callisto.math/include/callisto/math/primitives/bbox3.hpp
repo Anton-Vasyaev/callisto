@@ -1,9 +1,9 @@
 #pragma once
 
-// 3rd party
+// project
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>
-#include <callisto/math/primitives/alg_tuple3.hpp>
+#include "alg_tuple3.hpp"
 
 namespace callisto::math
 {
@@ -54,7 +54,7 @@ struct bbox3
         this->z2 = z2;
     }
 
-    template<typename other_bbox_type>
+    template<c_f::concept_fundamental other_bbox_type>
     inline constexpr bbox3(const other_bbox_type& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
@@ -78,17 +78,29 @@ struct bbox3
 
     inline constexpr auto left_top_near() const noexcept { return point3<value_type>(x1, y1, z1); }
 
-    inline constexpr auto left_bottom_near() const noexcept { return point3<value_type>(x1, y2, z1); }
+    inline constexpr auto left_bottom_near() const noexcept
+    {
+        return point3<value_type>(x1, y2, z1);
+    }
 
-    inline constexpr auto right_bottom_near() const noexcept { return point3<value_type>(x2, y2, z1); }
+    inline constexpr auto right_bottom_near() const noexcept
+    {
+        return point3<value_type>(x2, y2, z1);
+    }
 
     inline constexpr auto right_top_near() const noexcept { return point3<value_type>(x2, y1, z1); }
 
     inline constexpr auto left_top_far() const noexcept { return point3<value_type>(x1, y1, z2); }
 
-    inline constexpr auto left_bottom_far() const noexcept { return point3<value_type>(x1, y2, z2); }
+    inline constexpr auto left_bottom_far() const noexcept
+    {
+        return point3<value_type>(x1, y2, z2);
+    }
 
-    inline constexpr auto right_bottom_far() const noexcept { return point3<value_type>(x2, y2, z2); }
+    inline constexpr auto right_bottom_far() const noexcept
+    {
+        return point3<value_type>(x2, y2, z2);
+    }
 
     inline constexpr auto right_top_far() const noexcept { return point3<value_type>(x2, y1, z2); }
 
@@ -105,16 +117,16 @@ struct bbox3
         return size3<value_type>(width(), height(), depth());
     }
 
-    template<typename point_type>
-    inline constexpr void set_first(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_first(const point3<type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
         z1 = point.z;
     }
 
-    template<typename point_type>
-    inline constexpr void set_second(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_second(const point3<type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -123,8 +135,8 @@ struct bbox3
 
 #pragma region operators
 
-    template<typename other_bbox_type>
-    inline constexpr const bbox3& operator=(const other_bbox_type& other_bbox)
+    template<c_f::concept_fundamental other_type>
+    inline constexpr const bbox3& operator=(const bbox2<other_type>& other_bbox)
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -147,6 +159,11 @@ template<
     c_f::concept_fundamental type_z2>
 bbox3(type_x1, type_y1, type_z1, type_x2, type_y2, type_z2)
     -> bbox3<c_f::senior_conversion_t<type_x1, type_y1, type_z1, type_x2, type_y2, type_z2>>;
+
+template<typename left_top_near_type, typename right_bottom_far_type>
+bbox3(left_top_near_type, right_bottom_far_type) -> bbox3<c_f::senior_conversion_t<
+    typename left_top_near_type::value_type,
+    typename right_bottom_far_type::value_type>>;
 
 #pragma region alias
 

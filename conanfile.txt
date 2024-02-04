@@ -3,16 +3,16 @@ libcpuid/0.5.1
 gtest/1.8.1
 boost/1.71.0
 nameof/0.10.1
+freetype/2.13.0
 opencv/4.5.3
-freetype/2.10.4
 zlib/1.2.12
 glfw/3.3.2
 glew/2.1.0
 glm/0.9.9.5
-imgui/1.74
+imgui/1.90.1
 
 [generators]
-cmake_find_package_multi
+CMakeDeps
 
 [imports]
 bin, *.dll      -> ./bin # Copies all dll files from packages bin folder to my "bin" folder

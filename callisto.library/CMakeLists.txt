@@ -25,8 +25,13 @@ endif()
 
 # configure conan and 3rdparty libaries *******************************************************************************
 set(CONAN_DIR "")
+
+# TODO
+message("!!!!!!!!!!!!!!!!!!!!!!!!!!!CREATE PACKAGE OPTIONS:${CREATE_PACKAGE}")
+message(${CMAKE_BINARY_DIR}/generators)
+
 if(DEFINED CREATE_PACKAGE)
-    set(CONAN_DIR ${CMAKE_BINARY_DIR}/..)
+    set(CONAN_DIR ${CMAKE_BINARY_DIR}/generators)
 else()
     set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
@@ -112,12 +117,12 @@ if(CALLISTO_GRAPHICS_ENABLE)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC Boost::headers)
 
     if(CALLISTO_SHARED)
-        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::glew)
+        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::GLEW)
     else()
-        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::glew_s)
+        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::GLEW)
     endif()
 
-    target_link_libraries(${GRAPHICS_TARGET} PUBLIC glfw::glfw)
+    target_link_libraries(${GRAPHICS_TARGET} PUBLIC glfw)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC imgui::imgui)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC glm::glm)
 endif()

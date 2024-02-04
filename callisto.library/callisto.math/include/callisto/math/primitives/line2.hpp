@@ -1,6 +1,7 @@
 #pragma once
 
-#include <callisto/math/primitives/alg_tuple2.hpp>
+// project
+#include "alg_tuple2.hpp"
 
 namespace callisto::math
 {
@@ -11,7 +12,7 @@ namespace
 namespace c_f = callisto::framework;
 }
 
-template<typename _value_type>
+template<c_f::concept_fundamental _value_type>
 struct line2
 {
     using value_type = _value_type;
@@ -29,7 +30,11 @@ struct line2
 
     inline constexpr line2() {}
 
-    template<typename type_x1, typename type_y1, typename type_x2, typename type_y2>
+    template<
+        c_f::concept_fundamental type_x1,
+        c_f::concept_fundamental type_y1,
+        c_f::concept_fundamental type_x2,
+        c_f::concept_fundamental type_y2>
     inline constexpr line2(type_x1 x1, type_y1 y1, type_x2 x2, type_y2 y2) noexcept
     {
         this->x1 = x1;
@@ -39,8 +44,8 @@ struct line2
         this->y2 = y2;
     }
 
-    template<typename start_type, typename end_type>
-    inline constexpr line2(const start_type& start, const end_type& end) noexcept
+    template<c_f::concept_fundamental start_type, c_f::concept_fundamental end_type>
+    inline constexpr line2(const point2<start_type>& start, const point2<end_type>& end) noexcept
     {
         x1 = start.x;
         y1 = start.y;
@@ -49,8 +54,8 @@ struct line2
         y2 = end.y;
     }
 
-    template<typename other_line2_can_type>
-    inline constexpr line2(const other_line2_can_type& other_line) noexcept
+    template<c_f::concept_fundamental other_type>
+    inline constexpr line2(const line2<other_type>& other_line) noexcept
     {
         x1 = other_line.x1;
         y1 = other_line.y1;
@@ -75,15 +80,15 @@ struct line2
         return point2<value_type>(x_c, y_c);
     }
 
-    template<typename point_type>
-    inline constexpr void set_first(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_first(const point2<type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
     }
 
-    template<typename point_type>
-    inline constexpr void set_second(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_second(const point2<type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -93,14 +98,14 @@ struct line2
 
 #pragma region operators
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr bool operator==(const line2<other_type>& other_line) const noexcept
     {
         return this->x1 == other_line.x1 && this->x2 == other_line.x2 && this->y1 == other_line.y1
                && this->y2 == other_line.y2;
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr bool operator!=(const line2<other_type>& other_line) const noexcept
     {
         return this->x1 == other_line.x1 || this->x2 == other_line.x2 || this->y1 == other_line.y1
@@ -110,7 +115,11 @@ struct line2
 #pragma endregion
 };
 
-template<typename type_x1, typename type_y1, typename type_x2, typename type_y2>
+template<
+    c_f::concept_fundamental type_x1,
+    c_f::concept_fundamental type_y1,
+    c_f::concept_fundamental type_x2,
+    c_f::concept_fundamental type_y2>
 line2(type_x1, type_y1, type_x2, type_y2)
     -> line2<c_f::senior_conversion_t<type_x1, type_y1, type_x2, type_y2>>;
 

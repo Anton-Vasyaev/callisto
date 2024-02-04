@@ -40,14 +40,14 @@ TEST(line2_operations, cross_point_test)
     ASSERT_TRUE(abs_err_point2_equal(cross_p, c_m::point2f::empty(), abs_float_acc));
 }
 
-TEST(line2_operations, get_bbox_test)
+TEST(line2_operations, get_contour_test)
 {
     auto line = c_m::line2f(15.0f, 23.0f, 43.5f, 36.2f);
-    auto box  = line2op::get_bbox(line);
+    auto box  = line2op::get_contour(line);
     ASSERT_TRUE(rel_err_bbox2_equal(box, c_m::bbox2f(15.0f, 23.0f, 43.5, 36.2f), rel_float_acc));
 
     line = c_m::line2f(-23.0, 34.5, -34.5, 23.21);
-    box  = line2op::get_bbox(line);
+    box  = line2op::get_contour(line);
     ASSERT_TRUE(rel_err_bbox2_equal(box, c_m::bbox2f(-34.5, 23.21, -23.0, 34.5), rel_float_acc));
 }
 

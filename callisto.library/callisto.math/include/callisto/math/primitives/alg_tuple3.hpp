@@ -3,7 +3,7 @@
 // std
 #include <cstdint>
 #include <utility>
-// 3rd party
+// project
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>
 
@@ -61,7 +61,10 @@ struct alg_tuple3
 
     inline constexpr alg_tuple3() noexcept {}
 
-    template<typename num_type_1, typename num_type_2, typename num_type_3>
+    template<
+        c_f::concept_fundamental num_type_1,
+        c_f::concept_fundamental num_type_2,
+        c_f::concept_fundamental num_type_3>
     inline constexpr alg_tuple3(num_type_1 v1, num_type_2 v2, num_type_3 v3) noexcept
     {
         this->v1 = v1;
@@ -69,8 +72,8 @@ struct alg_tuple3
         this->v3 = v3;
     }
 
-    template<typename other_alg3_type>
-    inline constexpr alg_tuple3(const other_alg3_type& values) noexcept
+    template<c_f::concept_fundamental other_type>
+    inline constexpr alg_tuple3(const alg_tuple3<other_type>& values) noexcept
     {
         v1 = values.v1;
         v2 = values.v2;
@@ -91,7 +94,7 @@ struct alg_tuple3
 
 #pragma region operators
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr const alg_tuple3& operator=(const alg_tuple3<other_type>& other_tuple) noexcept
     {
         v1 = other_tuple.v1;
@@ -100,7 +103,7 @@ struct alg_tuple3
     }
 
     // ADDITION
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr auto operator+(const alg_tuple3<other_type>& other_tuple) const noexcept
     {
         using num_type = decltype(v1 + other_tuple.v1);
@@ -108,7 +111,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 + other_tuple.v1, v2 + other_tuple.v2, v3 + other_tuple.v3);
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr auto operator+(numeric_type value) const noexcept
     {
         using num_type = decltype(v1 + value);
@@ -116,7 +119,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 + value, v2 + value, v3 + value);
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr const alg_tuple3& operator+=(const alg_tuple3<other_type>& other_tuple
     ) noexcept
     {
@@ -127,7 +130,7 @@ struct alg_tuple3
         return *this;
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr const alg_tuple3& operator+=(numeric_type value) noexcept
     {
         v1 += value;
@@ -138,7 +141,7 @@ struct alg_tuple3
     }
 
     // SUBSTRACTION
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr auto operator-(const alg_tuple3<other_type>& other_tuple) const noexcept
     {
         using num_type = decltype(v1 + other_tuple.v1);
@@ -146,7 +149,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 - other_tuple.v1, v2 - other_tuple.v2, v3 - other_tuple.v3);
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr auto operator-(numeric_type value) const noexcept
     {
         using num_type = decltype(v1 + value);
@@ -154,7 +157,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 - value, v2 - value, v3 - value);
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr const alg_tuple3& operator-=(const alg_tuple3<other_type>& other_tuple
     ) noexcept
     {
@@ -165,7 +168,7 @@ struct alg_tuple3
         return *this;
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr const alg_tuple3& operator-=(numeric_type value) noexcept
     {
         v1 -= value;
@@ -176,7 +179,7 @@ struct alg_tuple3
     }
 
     // MULTIPLICATION
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr auto operator*(const alg_tuple3<other_type>& other_tuple) const noexcept
     {
         using num_type = decltype(v1 + other_tuple.v1);
@@ -184,7 +187,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 * other_tuple.v1, v2 * other_tuple.v2, v3 * other_tuple.v3);
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr auto operator*(numeric_type value) const noexcept
     {
         using num_type = decltype(v1 + value);
@@ -192,7 +195,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 * value, v2 * value, v3 * value);
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr const alg_tuple3& operator*=(const alg_tuple3<other_type>& other_tuple
     ) noexcept
     {
@@ -203,7 +206,7 @@ struct alg_tuple3
         return *this;
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr const alg_tuple3& operator*=(numeric_type value) noexcept
     {
         v1 *= value;
@@ -214,7 +217,7 @@ struct alg_tuple3
     }
 
     // DIVISION
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr auto operator/(const alg_tuple3<other_type>& other_tuple) const noexcept
     {
         using num_type = decltype(v1 + other_tuple.v1);
@@ -222,7 +225,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 / other_tuple.v1, v2 / other_tuple.v2, v3 / other_tuple.v3);
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr auto operator/(numeric_type value) const noexcept
     {
         using num_type = decltype(v1 + value);
@@ -230,7 +233,7 @@ struct alg_tuple3
         return alg_tuple3<num_type>(v1 / value, v2 / value, v3 / value);
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr const alg_tuple3& operator/=(const alg_tuple3<other_type>& other_tuple
     ) noexcept
     {
@@ -241,7 +244,7 @@ struct alg_tuple3
         return *this;
     }
 
-    template<typename numeric_type>
+    template<c_f::concept_fundamental numeric_type>
     inline constexpr const alg_tuple3& operator/=(numeric_type value) noexcept
     {
         v1 /= value;
@@ -251,13 +254,13 @@ struct alg_tuple3
         return *this;
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr bool operator==(const alg_tuple3<other_type>& other_tuple) noexcept
     {
         return v1 == other_tuple.v1 && v2 == other_tuple.v2 && v3 == other_tuple.v3;
     }
 
-    template<typename other_type>
+    template<c_f::concept_fundamental other_type>
     inline constexpr bool operator!=(const alg_tuple3<other_type>& other_tuple) noexcept
     {
         return v1 != other_tuple.v1 || v2 != other_tuple.v2 || v3 != other_tuple.v3;
@@ -266,7 +269,10 @@ struct alg_tuple3
 #pragma endregion
 };
 
-template<typename type_1, typename type_2, typename type_3>
+template<
+    c_f::concept_fundamental type_1,
+    c_f::concept_fundamental type_2,
+    c_f::concept_fundamental type_3>
 alg_tuple3(type_1, type_2, type_3) -> alg_tuple3<c_f::senior_conversion_t<type_1, type_2, type_3>>;
 
 #pragma region alias

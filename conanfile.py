@@ -1,8 +1,13 @@
 # python
+from os.path import join
+
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Any
+
 # conan
-from conans import ConanFile, CMake
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
+from conan.tools.files import copy
 
 @dataclass
 class LibraryNode:
@@ -109,11 +114,11 @@ class CallistoConan(ConanFile):
     dependency_graph : DependencyGraph
 
     name = 'callisto'
-    version = '0.3.1'
+    version = '0.3.2'
     license = 'BSD'
     settings = 'os', 'compiler', 'build_type', 'arch'
-    generators = 'cmake', 'cmake_find_package_multi'
-    exports = '*'
+    
+    exports_sources = '*'
 
     options = {
         'shared'         : [True, False],
@@ -143,11 +148,11 @@ class CallistoConan(ConanFile):
         self.dependency_graph.append_require('nameof',      'nameof/0.10.1')
         self.dependency_graph.append_require('boost',       'boost/1.71.0')
         self.dependency_graph.append_require('opencv',      'opencv/4.5.3')
-        self.dependency_graph.append_require('freetype',    'freetype/2.10.4')
+        self.dependency_graph.append_require('freetype',    'freetype/2.13.0')
         self.dependency_graph.append_require('glfw',        'glfw/3.3.2')
         self.dependency_graph.append_require('glew',        'glew/2.1.0')
         self.dependency_graph.append_require('glm',         'glm/0.9.9.5')
-        self.dependency_graph.append_require('imgui',       'imgui/1.74')
+        self.dependency_graph.append_require('imgui',       'imgui/1.90.1')
 
         # Append libraries with dependencies-------------------------------------------------------
         
@@ -215,22 +220,32 @@ class CallistoConan(ConanFile):
         for _, require_resolve in requires:
             self.requires(require_resolve)
 
+    def layout(self):
+        cmake_layout(self, src_folder=f'callisto.library', build_folder=f'callisto.library.build')
 
-    def build(self):
+    def generate(self):
         libraries = self.dependency_graph.form_libraries()
 
-        cmake = CMake(self)
-        cmake.definitions[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
-        cmake.definitions[f'CREATE_PACKAGE']  = '1'
+        tc = CMakeToolchain(self)
+
+        tc.variables[f'CALLISTO_SHARED'] = self.__get_option_from_bool(self.options.shared)
+        tc.variables[f'CREATE_PACKAGE']  = '1'
 
         libraries_names = [lib.name for lib in libraries]
 
-        cmake.definitions[f'CALLISTO_MATH_ENABLE']     = self.__get_option_from_bool('math'     in libraries_names)
-        cmake.definitions[f'CALLISTO_OPENCV_ENABLE']   = self.__get_option_from_bool('opencv'   in libraries_names)
-        cmake.definitions[f'CALLISTO_GRAPHICS_ENABLE'] = self.__get_option_from_bool('graphics' in libraries_names)
+        tc.variables[f'CALLISTO_MATH_ENABLE']     = self.__get_option_from_bool('math'     in libraries_names)
+        tc.variables[f'CALLISTO_OPENCV_ENABLE']   = self.__get_option_from_bool('opencv'   in libraries_names)
+        tc.variables[f'CALLISTO_GRAPHICS_ENABLE'] = self.__get_option_from_bool('graphics' in libraries_names)
+        tc.generate()
+
+        # This generates "foo-config.cmake" and "bar-config.cmake" in self.generators_folder
+        deps = CMakeDeps(self)
+        deps.generate()
 
 
-        cmake.configure(source_folder=f'callisto.library', build_folder=f'callisto.library.build')
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
 
@@ -240,27 +255,25 @@ class CallistoConan(ConanFile):
         for lib_module in libraries:
             lib_name = lib_module.name
 
-            self.copy(f'*h',   dst=f'include/callisto_{lib_name}_headers', src=f'callisto.library/callisto.{lib_name}/include')
-            self.copy(f'*hpp', dst=f'include/callisto_{lib_name}_headers', src=f'callisto.library/callisto.{lib_name}/include')
+            copy(self, f'*h',   join(self.source_folder, f'callisto.{lib_name}/include'), join(self.package_folder, f'include/callisto_{lib_name}_headers'))
+            copy(self, f'*hpp', join(self.source_folder, f'callisto.{lib_name}/include'), join(self.package_folder, f'include/callisto_{lib_name}_headers'))
 
-        self.copy('*callisto_*.lib',   dst='lib', keep_path=False)
-        self.copy('*callisto_*.a',     dst='lib', keep_path=False)
-        self.copy('*callisto_*.dll',   dst='bin', keep_path=False)
-        self.copy('*callisto_*.so',    dst='lib', keep_path=False)
-        self.copy('*callisto_*.dylib', dst='lib', keep_path=False)
+        copy(self, '*callisto_*.lib',   self.build_folder, join(self.package_folder, 'lib'), keep_path=False)
+        copy(self, '*callisto_*.a',     self.build_folder, join(self.package_folder, 'lib'), keep_path=False)
+        copy(self, '*callisto_*.dll',   self.build_folder, join(self.package_folder, 'bin'), keep_path=False)
+        copy(self, '*callisto_*.so',    self.build_folder, join(self.package_folder, 'lib'), keep_path=False)
+        copy(self, '*callisto_*.dylib', self.build_folder, join(self.package_folder, 'lib'), keep_path=False)
 
 
     def package_info(self):
-        self.cpp_info.names['cmake_find_package'] = 'Callisto'
-        self.cpp_info.names['cmake_find_package_multi'] = 'Callisto'
+        self.cpp.package.names['CMakeDeps'] = 'Callisto'
 
         libraries = self.dependency_graph.form_libraries()
 
         for lib_module in libraries:
             lib_name = lib_module.name
 
-            self.cpp_info.components[lib_name].names['cmake_find_package']       = lib_name
-            self.cpp_info.components[lib_name].names['cmake_find_package_multi'] = lib_name
+            self.cpp_info.components[lib_name].names['CMakeDeps'] = lib_name
             self.cpp_info.components[lib_name].libs = [f'callisto_{lib_name}']
             self.cpp_info.components[lib_name].includedirs = [f'include/callisto_{lib_name}_headers']
 

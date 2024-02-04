@@ -11,8 +11,8 @@ namespace callisto::math
 
 struct vector2op
 {
-    template<typename vector_type>
-    inline static constexpr auto square_of_length(const vector_type& vector) noexcept
+    template<typename type>
+    inline static constexpr auto square_of_length(const vector2<type>& vector) noexcept
     {
         auto& x = vector.x;
         auto& y = vector.y;
@@ -20,41 +20,28 @@ struct vector2op
         return x * x + y * y;
     }
 
-    template<typename _calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto length(const vector_type& vector) noexcept
+    template<typename type>
+    inline static constexpr auto length(const vector2<type>& vector) noexcept
     {
-        using calc_type = typename std::conditional<
-            std::is_void<_calc_type>::value,
-            typename vector_type::value_type,
-            _calc_type>::type;
-
-        calc_type square_len = square_of_length(vector);
+        double square_len = square_of_length(vector);
         return std::sqrt(square_len);
     }
 
-    template<
-        typename _calc_type   = void,
-        typename vector_type  = alg_tuple2i,
-        typename numeric_type = typename vector_type::value_type>
+    template<typename type>
     inline static constexpr auto
-    normalize(const vector_type& vector, numeric_type normalize_value = 1.0) noexcept
+    normalize(const vector2<type>& vector, double normalize_value = 1.0) noexcept
     {
-        using calc_type = typename std::conditional<
-            std::is_void<_calc_type>::value,
-            typename vector_type::value_type,
-            _calc_type>::type;
-
-        auto scale = normalize_value / length<calc_type>(vector);
+        auto scale = normalize_value / length(vector);
 
         auto x = vector.x * scale;
         auto y = vector.y * scale;
 
-        return vector_type { x, y };
+        return vector2<decltype(x)>(x, y);
     }
 
-    template<typename vector_type>
+    template<typename type_1, typename type_2>
     inline static constexpr auto
-    dot_product(const vector_type& vec1, const vector_type& vec2) noexcept
+    dot_product(const vector2<type_1>& vec1, const vector2<type_2>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -65,32 +52,27 @@ struct vector2op
         return x1 * x2 + y1 * y2;
     }
 
-    template<typename _calc_type = void, typename vector_type = alg_tuple2i>
+    template<typename type_1, typename type_2>
     inline static constexpr auto
-    cos_angle(const vector_type& vec1, const vector_type& vec2) noexcept
+    cos_angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
     {
-        using calc_type = typename std::conditional<
-            std::is_void<_calc_type>::value,
-            typename vector_type::value_type,
-            _calc_type>::type;
-
         auto dot_prod       = dot_product(vec1, vec2);
-        auto prod_of_length = length<calc_type>(vec1) * length<calc_type>(vec2);
+        auto prod_of_length = length(vec1) * length(vec2);
 
-        return dot_prod / prod_of_length;
+        return dot_prod / (prod_of_length + eps);
     }
 
-    template<typename calc_type = void, typename vector_type = alg_tuple2i>
-    inline static constexpr auto angle(const vector_type& vec1, const vector_type& vec2) noexcept
+    template<typename type_1, typename type_2>
+    inline static constexpr auto angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
     {
-        auto cos_value = cos_angle<calc_type>(vec1, vec2);
+        auto cos_value = cos_angle(vec1, vec2, eps);
 
         return std::acos(cos_value);
     }
 
-    template<typename vector_type>
+    template<typename type_1, typename type_2>
     inline static constexpr auto
-    pseudo_scalar_product(const vector_type& vec1, const vector_type& vec2) noexcept
+    pseudo_scalar_product(const vector2<type_1>& vec1, const vector2<type_2>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -101,35 +83,35 @@ struct vector2op
         return x1 * y2 - x2 * y1;
     }
 
-    template<typename calc_type = void, typename vector_type = alg_tuple2i>
+    template<typename type_1, typename type_2>
     inline static constexpr auto
-    sign_angle(const vector_type& vec1, const vector_type& vec2) noexcept
+    sign_angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
     {
         auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : -1;
 
-        auto angle_value = angle<calc_type>(vec1, vec2);
+        auto angle_value = angle(vec1, vec2, eps);
 
         return sign * angle_value;
     }
 
-    template<typename line2_type>
-    inline static constexpr auto from_line(const line2_type& line) noexcept
+    template<typename type>
+    inline static constexpr auto from_line(const line2<type>& line) noexcept
     {
-        return point2<typename line2_type::value_type>(line.x2 - line.x1, line.y2 - line.y1);
+        return point2<type>(line.x2 - line.x1, line.y2 - line.y1);
     }
 
-    template<typename point_type>
-    static double sin(const point_type& point) noexcept
+    template<typename type>
+    static double sin(const vector2<type>& point) noexcept
     {
-        auto length = vector2op::length<double>(point);
+        auto length = vector2op::length(point);
 
         return point.y / length;
     }
 
-    template<typename point_type>
-    static double cos(const point_type& point) noexcept
+    template<typename type>
+    static double cos(const vector2<type>& point) noexcept
     {
-        auto length = vector2op::length<double>(point);
+        auto length = vector2op::length(point);
 
         return point.x / length;
     }

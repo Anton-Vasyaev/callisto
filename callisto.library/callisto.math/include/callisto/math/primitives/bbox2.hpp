@@ -1,9 +1,9 @@
 #pragma once
 
-// 3rd party
+// project
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>
-#include <callisto/math/primitives/alg_tuple2.hpp>
+#include "alg_tuple2.hpp"
 
 namespace callisto::math
 {
@@ -39,10 +39,10 @@ struct bbox2
         this->y2 = y2;
     }
 
-    template<typename left_top_type, typename right_bottom_type>
+    template<c_f::concept_fundamental lt_type, c_f::concept_fundamental rb_type>
     inline constexpr bbox2(
-        const left_top_type&     left_top,
-        const right_bottom_type& right_bottom
+        const point2<lt_type>& left_top,
+        const point2<rb_type>& right_bottom
     ) noexcept
     {
         x1 = left_top.x;
@@ -52,8 +52,8 @@ struct bbox2
         y2 = right_bottom.y;
     }
 
-    template<typename other_bbox_type>
-    inline constexpr bbox2(const other_bbox_type& other_bbox) noexcept
+    template<c_f::concept_fundamental other_type>
+    inline constexpr bbox2(const bbox2<other_type>& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -90,15 +90,15 @@ struct bbox2
         return size2<value_type>(width(), height());
     }
 
-    template<typename point_type>
-    inline constexpr void set_left_top(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_left_top(const point2<type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
     }
 
-    template<typename point_type>
-    inline constexpr void set_right_bottom(const point_type& point) noexcept
+    template<c_f::concept_fundamental type>
+    inline constexpr void set_right_bottom(const point2<type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -106,11 +106,12 @@ struct bbox2
 
 #pragma region operators
 
-    template<typename other_bbox_type>
-    inline constexpr const bbox2& operator=(const other_bbox_type& other_bbox)
+    template<c_f::concept_fundamental other_type>
+    inline constexpr const bbox2& operator=(const bbox2<other_type>& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
+
         x2 = other_bbox.x2;
         y2 = other_bbox.y2;
     }
@@ -125,6 +126,11 @@ template<
     c_f::concept_fundamental type_y2>
 bbox2(type_x1, type_y1, type_x2, type_y2)
     -> bbox2<c_f::senior_conversion_t<type_x1, type_y1, type_x2, type_y2>>;
+
+template<typename left_top_type, typename right_bottom_type>
+bbox2(left_top_type, right_bottom_type) -> bbox2<c_f::senior_conversion_t<
+    typename left_top_type::value_type,
+    typename right_bottom_type::value_type>>;
 
 #pragma region alias
 
