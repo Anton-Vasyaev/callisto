@@ -92,21 +92,25 @@ public:
     }
 
     // matrix
+    inline void uniform_matrix_4f(const glm::mat4& mat, bool transpose = false)
+    {
+        glUniformMatrix4fv(_location, 1, static_cast<GLboolean>(transpose), glm::value_ptr(mat));
+    }
+
     template<typename int_type>
     inline void
-    uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, float* matrix_ptr)
+    uniform_matrix_4fv(const float* matrix_ptr, GLsizei count = 1, bool transpose = false)
     {
         glUniformMatrix4fv(_location, count, static_cast<GLboolean>(transpose), matrix_ptr);
     }
 
-    template<typename int_type>
-    inline void uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, glm::mat4& mat)
+    inline void uniform_matrix_4fv(const glm::mat4* mat, GLsizei count, bool transpose = false)
     {
         glUniformMatrix4fv(
             _location,
             count,
             static_cast<GLboolean>(transpose),
-            glm::value_ptr(mat)
+            glm::value_ptr(*mat)
         );
     }
 

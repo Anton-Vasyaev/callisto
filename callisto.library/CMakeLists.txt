@@ -26,10 +26,6 @@ endif()
 # configure conan and 3rdparty libaries *******************************************************************************
 set(CONAN_DIR "")
 
-# TODO
-message("!!!!!!!!!!!!!!!!!!!!!!!!!!!CREATE PACKAGE OPTIONS:${CREATE_PACKAGE}")
-message(${CMAKE_BINARY_DIR}/generators)
-
 if(DEFINED CREATE_PACKAGE)
     set(CONAN_DIR ${CMAKE_BINARY_DIR}/generators)
 else()

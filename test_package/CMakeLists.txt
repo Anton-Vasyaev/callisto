@@ -25,9 +25,7 @@ set(CONAN_DIR "")
 
 # CREATE_PACKAGE defined when cmake and build running from conan create command
 if(DEFINED CREATE_PACKAGE)
-    set(CONAN_DIR ${CMAKE_BINARY_DIR})
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    set(CONAN_DIR ${CMAKE_BINARY_DIR}/generators)
 else()
     set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
@@ -79,7 +77,7 @@ target_include_directories(${TEST_TARGET} PRIVATE src)
 
 #--------------------------------------------------------------------------------------------------
 # Generate debug pdb information for Release mode
-# Need for boost::stactrace
+# Need for boost::stacktrace
 if(MSVC)
     target_compile_options(${TEST_TARGET} PRIVATE "$<$<CONFIG:Release>:/Zi>")
 
@@ -90,15 +88,21 @@ endif()
 
 #--------------------------------------------------------------------------------------------------
 # 3rd party 
-find_package(Boost PATHS ${CONAN_DIR})
+find_package(Boost PATHS ${CONAN_DIR} REQUIRED)
 find_package(GTest PATHS ${CONAN_DIR})
 
 target_link_libraries(${TEST_TARGET} PRIVATE GTest::gtest)
 target_link_libraries(${TEST_TARGET} PRIVATE Boost::stacktrace)
 
-if(NOT MSVC)
+
+if(NOT WIN32)
     target_link_libraries(${TEST_TARGET} PRIVATE Boost::stacktrace_backtrace)
+else()
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        target_link_libraries(${TEST_TARGET} PRIVATE Boost::stacktrace_windbg)
+    endif()
 endif()
+
 
 if(NOT DEFINED CREATE_PACKAGE)
     macro(link_local lib_name)
@@ -125,6 +129,7 @@ if(NOT DEFINED CREATE_PACKAGE)
         link_local(${lib_name})
     endforeach()
 else()
+    find_package(Callisto)
     macro(link_conan lib_name)
         if(TARGET Callisto::${lib_name})
             target_link_libraries(${TEST_TARGET} PRIVATE Callisto::${lib_name})
