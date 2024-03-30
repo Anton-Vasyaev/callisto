@@ -141,7 +141,7 @@ struct alg_tuple3
     }
 
     // INVERSE
-    inline constexpr auto operator-() const noexcept { return alg_tuple3<num_type>(-v1, -v2, v3); }
+    inline constexpr auto operator-() const noexcept { return alg_tuple3(-v1, -v2, v3); }
 
     // SUBSTRACTION
     template<c_f::concept_fundamental other_type>

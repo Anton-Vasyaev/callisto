@@ -95,14 +95,15 @@ TEST(point2_operations, rotate_default_rotate_anchor_test)
         auto start_point = c_m::point2f(len, 0.0);
 
         // positive rotate angle
-        auto first_rotate_point  = p2op::rotate(start_point, first_rotate_angle);
-        auto second_rotate_point = p2op::rotate(first_rotate_point, second_rotate_angle);
+        auto first_rotate_point = p2op::rotate(start_point, first_rotate_angle).as<float>();
+        auto second_rotate_point
+            = p2op::rotate(first_rotate_point, second_rotate_angle).as<float>();
         ASSERT_TRUE(rel_err_point2_equal(first_rotate_point, c_m::point2f(x, y), rel_float_acc));
         ASSERT_TRUE(rel_err_point2_equal(second_rotate_point, c_m::point2f(-x, y), rel_float_acc));
 
         // negative rotate angle
-        first_rotate_point  = p2op::rotate(start_point, -first_rotate_angle);
-        second_rotate_point = p2op::rotate(first_rotate_point, -second_rotate_angle);
+        first_rotate_point  = p2op::rotate(start_point, -first_rotate_angle).as<float>();
+        second_rotate_point = p2op::rotate(first_rotate_point, -second_rotate_angle).as<float>();
         ASSERT_TRUE(rel_err_point2_equal(first_rotate_point, c_m::point2f(x, -y), rel_float_acc));
         ASSERT_TRUE(rel_err_point2_equal(second_rotate_point, c_m::point2f(-x, -y), rel_float_acc));
 

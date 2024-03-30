@@ -6,4 +6,5 @@
 #include "primitives/bbox2.hpp"
 #include "primitives/bbox3.hpp"
 #include "primitives/line2.hpp"
+#include "primitives/line3.hpp"
 #include "primitives/rectangle.hpp"
