@@ -2,9 +2,9 @@
 
 namespace callisto::framework
 {
-    template<typename data_type>
-    struct default_disposer
-    {
-        void operator()(data_type data);
-    };
-}
+template<typename data_type>
+struct default_disposer
+{
+    void operator()(data_type data);
+};
+} // namespace callisto::framework

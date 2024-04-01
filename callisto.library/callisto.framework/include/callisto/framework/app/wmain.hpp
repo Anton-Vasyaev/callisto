@@ -9,7 +9,7 @@
 // clang-format off
 
 #ifdef CALLISTO_OS_WINDOWS 
-#define BEGIN_MAIN_WCHAR_ARGUMENTS                                      \
+#define CALLISTO_BEGIN_WMAIN                                            \
     int wmain(int argc, wchar_t** argv)                                 \
     {                                                                   \
         std::vector<std::wstring> command_line_arguments;               \
@@ -21,7 +21,7 @@
 
 
 
-#define END_MAIN_WCHAR_ARGUMENTS    \
+#define CALLISTO_END_WMAIN    \
     }
 
 // clang-format on

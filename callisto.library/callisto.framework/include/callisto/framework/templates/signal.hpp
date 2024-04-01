@@ -32,24 +32,17 @@ private:
     }
 
 public:
-    raii_connection(
-        connections_place_type& connections, 
-        connection_type& connection
-    ) : connections(connections), connection(connection)
+    raii_connection(connections_place_type& connections, connection_type& connection) :
+        connections(connections), connection(connection)
     {
         this->has_connection = true;
     }
 
-    raii_connection(
-        raii_connection&& connection
-    )
-    {
-        this->move_from(std::move(connection));
-    }
+    raii_connection(raii_connection&& connection) { this->move_from(std::move(connection)); }
 
     ~raii_connection()
     {
-        if(this->has_connection)
+        if (this->has_connection)
         {
             disconnect();
         }
@@ -65,7 +58,6 @@ public:
     {
         this->move_from(std::move(connection));
     }
-
 };
 
 template<typename _connections_place_type>
@@ -83,18 +75,12 @@ private:
     connection_type connection;
 
 public:
-    signal_connection(
-        connections_place_type& connections, 
-        connection_type& connection
-    ) : connections(connections), connection(connection)
+    signal_connection(connections_place_type& connections, connection_type& connection) :
+        connections(connections), connection(connection)
     {
-        
     }
 
-    void disconnect()
-    {
-        this->connections.erase(this->connection);
-    }
+    void disconnect() { this->connections.erase(this->connection); }
 
     raii_connection_type to_raii()
     {
@@ -116,7 +102,7 @@ class signal
     connections_place_type connections;
 
 public:
-    signal() { };
+    signal() {};
 
     connection_type connect(func_type& func)
     {
@@ -144,20 +130,16 @@ public:
         return connection_type(this->connections, connection);
     }
 
+    void disconnect(connection_type& connection) { connection.disconnect(); }
 
-    void disconnect(connection_type& connection)
-    {
-        connection.disconnect();
-    }
-
-    template<typename ...variable_params>
+    template<typename... variable_params>
     void operator()(variable_params&&... params)
     {
-        for(auto& connection : connections)
+        for (auto& connection : connections)
         {
             connection(std::forward<variable_params>(params)...);
         }
     }
 };
 
-}
+} // namespace callisto::framework
