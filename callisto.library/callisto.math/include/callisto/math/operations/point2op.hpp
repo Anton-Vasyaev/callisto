@@ -2,6 +2,7 @@
 
 // std
 #include <cmath>
+#include <span>
 // project
 #include <callisto/math/primitives/alg_tuple2.hpp>
 #include <callisto/math/primitives/bbox2.hpp>
@@ -86,6 +87,40 @@ struct point2op
         auto y = (point.y - bbox.y1) / h;
 
         return point2<type>(x, y);
+    }
+
+    template<typename p2_type, typename bb2_type>
+    inline static constexpr auto
+    reverse_normalize(const point2<p2_type>& point, const bbox2<bb2_type>& bbox) noexcept
+    {
+        auto contour_w = bbox.width();
+        auto contour_h = bbox.height();
+
+        auto x = point.x * contour_w + bbox.x1;
+        auto y = point.y * contour_h + bbox.y1;
+
+        return point2<decltype(x)>(x, y);
+    }
+
+    template<typename type>
+    inline static constexpr bbox2<type> get_box_contour(std::span<point2<type>> points)
+    {
+        type min_x = points[0].x;
+        type max_x = points[0].x;
+
+        type min_y = points[0].y;
+        type max_y = points[0].y;
+
+        for (auto& p : points)
+        {
+            min_x = min_f(min_x, p.x);
+            max_x = max_f(max_x, p.x);
+
+            min_y = min_f(min_y, p.y);
+            max_y = max_f(max_y, p.y);
+        }
+
+        return bbox2<type>(min_x, min_y, max_x, max_y);
     }
 };
 

@@ -73,7 +73,7 @@ struct bbox3
     template<c_f::concept_fundamental cast_type>
     inline constexpr auto as() const noexcept
     {
-        return bbox2<cast_type>(x1, y1, z1, x2, y2, z2);
+        return bbox3<cast_type>(x1, y1, z1, x2, y2, z2);
     }
 
     inline constexpr auto left_top_near() const noexcept { return point3<value_type>(x1, y1, z1); }
@@ -136,7 +136,7 @@ struct bbox3
 #pragma region operators
 
     template<c_f::concept_fundamental other_type>
-    inline constexpr const bbox3& operator=(const bbox2<other_type>& other_bbox)
+    inline constexpr const bbox3& operator=(const bbox3<other_type>& other_bbox)
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;

@@ -145,7 +145,7 @@ TEST(bbox2_operations, from_center_test)
         auto center = c_m::point2f(x_c, y_c);
         auto size   = c_m::size2d(w, h);
 
-        auto box = c_m::bbox2op::from_center(center.as<double>(), size);
+        auto box = c_m::bbox2op::from_center(center.as<float>(), size.as<float>());
 
         ASSERT_TRUE(rel_err_bbox2_equal(box, test_box, rel_float_acc));
     }

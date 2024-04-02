@@ -6,3 +6,4 @@
 #include "operations/point2op.hpp"
 #include "operations/poly2op.hpp"
 #include "operations/vector2op.hpp"
+#include "operations/vector3op.hpp"

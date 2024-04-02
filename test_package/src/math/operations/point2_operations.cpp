@@ -1,5 +1,7 @@
 // test
 #include <callisto/math/operations/point2op.hpp>
+// std
+#include <functional>
 // 3rd party
 #include <gtest/gtest.h>
 
@@ -159,14 +161,75 @@ TEST(point2_operations, clamp_test)
     ASSERT_TRUE(rel_err_point2_equal(clamp_p, c_m::point2f(12.5, 21.333), rel_float_acc));
 }
 
-TEST(point2_operations, normalize_test)
+TEST(point2_operations, normalize_reverse_normalize_test)
 {
+    using namespace std::placeholders;
+
     auto p   = c_m::point2f(9, 12);
     auto box = c_m::bbox2f(5, 4, 17, 14);
     p        = p2op::normalize(p, box);
     ASSERT_TRUE(rel_err_point2_equal(p, c_m::point2f(1.0 / 3.0, 0.8), rel_float_acc));
 
-    p = c_m::point2f(1, -4);
+    p = c_m::point2f(-1, -4);
     p = p2op::normalize(p, box);
-    ASSERT_TRUE(rel_err_point2_equal(p, c_m::point2f(-1.0 / 3.0, -0.8), rel_float_acc));
+    ASSERT_TRUE(rel_err_point2_equal(p, c_m::point2f(-0.5, -0.8), rel_float_acc));
+
+    auto test_points = std::vector<c_m::point2f> {
+        {   11.2,   0.64},
+        { -0.345,   0.02},
+        {-0.0023, -0.055},
+        {  -20.3,   44.5},
+        {    5.3,    7.5},
+        {    0.0,    0.0}
+    };
+
+    auto test_boxes = std::vector<c_m::bbox2f> {
+        {  0.0,   0.0,  1.0,   1.0},
+        { -5.0,  -3.4, 23.6,  11.2},
+        { 44.5,  43.2, 71.2,  51.2},
+        {-11.0, -14.0, -9.0, -12.0}
+    };
+
+    for (auto test_point : test_points)
+    {
+        for (auto test_box : test_boxes)
+        {
+            auto norm_point = c_m::point2op::normalize(test_point, test_box);
+            auto rev_point  = c_m::point2op::reverse_normalize(norm_point, test_box);
+
+            std::function<bool(c_m::point2f, c_m::point2f)> accuracy_func;
+
+            if (test_point == c_m::point2f(0.0, 0.0))
+            {
+                accuracy_func = std::bind(abs_err_point2_equal<float>, _1, _2, abs_float_acc);
+            }
+            else
+            {
+                accuracy_func = std::bind(rel_err_point2_equal<float>, _1, _2, 1e-3);
+            }
+
+            ASSERT_TRUE(accuracy_func(test_point, rev_point));
+        }
+    }
+}
+
+TEST(point2_operations, get_box_contour_test)
+{
+    auto points = std::vector<c_m::point2f> {
+        {   0.0,   2.0},
+        {   0.3,   0.6},
+        { -11.2,  34.5},
+        {-21.23, 44.56},
+        {  97.5,  61.2},
+        {  10.0,  10.0},
+        { -11.3,  -5.3},
+        {   0.0,   0.0},
+        {  21.5,  34.6}
+    };
+
+    auto expected_box = c_m::bbox2f { -21.23, -5.3, 97.5, 61.2 };
+
+    auto contour_box = c_m::point2op::get_box_contour(std::span(points));
+
+    ASSERT_TRUE(rel_err_bbox2_equal(contour_box, expected_box, rel_float_acc));
 }
