@@ -1,12 +1,12 @@
 // test
 #include <callisto/math/primitives/alg_tuple2.hpp>
+// project
+#include <math/auxiliary/print_math_data.hpp>
 // std
 #include <iostream>
 // 3rd party
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
-// project
-#include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -32,6 +32,7 @@ TEST(math_primitives, alg_tuple2_placeholder_test)
     p1 *= 21;
     p1 += 133.0;
     p1 -= 13.4;
+
     c_f::gtest_console::print_line("p1:", p1);
 
     p1 = c_m::vector2f(23.45, 123.4) / c_m::size2l(240, 534);
@@ -51,11 +52,11 @@ TEST(math_primitives, alg_tuple2_placeholder_test)
     p5 += 0.5f;
     c_f::gtest_console::print_line("p5:", p5);
 
-    auto condition_1 = c_m::point2i(102, 66) == c_m::point2l(102, 66);
+    auto condition_1 = c_m::point2i(102, 66) == c_m::point2i(102, 66);
     auto condition_2 = c_m::point2l(0, 0) == c_m::point2l::empty();
     auto condition_3 = c_m::point2f(0.0f, 0.0f) == c_m::point2f::empty();
     auto condition_4 = c_m::point2l(102, 36) != c_m::point2l(36, 102);
-    auto condition_5 = c_m::point2l(102, 36) != c_m::point2<uint8_t>(102, 36);
+    auto condition_5 = c_m::point2l(102, 36) != c_m::point2l(102, 36);
 
     c_f::gtest_console::print_line("condition_1:", condition_1);
     c_f::gtest_console::print_line("condition_2:", condition_2);

@@ -1,7 +1,7 @@
 [requires]
 libcpuid/0.5.1
 gtest/1.8.1
-boost/1.71.0
+boost/1.84.0
 nameof/0.10.1
 freetype/2.13.0
 opencv/4.5.3

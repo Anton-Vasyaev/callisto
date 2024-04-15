@@ -1,12 +1,12 @@
 // test
 #include <callisto/math/primitives/line2.hpp>
+// project
+#include <math/auxiliary/print_math_data.hpp>
 // std
 #include <iostream>
 // 3rd party
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
-// project
-#include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -24,6 +24,7 @@ TEST(math_primitives, line2_placeholder_test)
     auto line_5 = c_m::line2(c_m::alg_tuple2(243, 1.4f), c_m::alg_tuple2(12.4f, 2.0));
 
     c_f::gtest_console::print_line("line_1:", line_1);
+
     c_f::gtest_console::print_line("line_2:", line_2);
     c_f::gtest_console::print_line("line_3:", line_3);
     c_f::gtest_console::print_line("line_4:", line_4);

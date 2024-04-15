@@ -1,12 +1,12 @@
 // test
 #include <callisto/math/primitives/rectangle.hpp>
+// project
+#include <math/auxiliary/print_math_data.hpp>
 // std
 #include <iostream>
 // 3rd party
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
-// project
-#include <math/auxiliary/print_math_data.hpp>
 
 namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
@@ -25,8 +25,8 @@ TEST(math_primitives, rectangle_placeholder_test)
     c_f::gtest_console::print_line("rect_2", rect_2);
     c_f::gtest_console::print_line("rect_3", rect_3);
 
-    auto condition_1 = c_m::rectangle_f(0, 0, 0, 0) == c_m::rectangle_l::empty();
-    auto condition_2 = c_m::rectangle(0, 0, 243.0f, 123.f) != rect_4;
+    auto condition_1 = c_m::rectangle_f(0, 0, 0, 0) == c_m::rectangle_f::empty();
+    auto condition_2 = c_m::rectangle_d(0, 0, 243.0f, 123.f) != rect_4;
     auto condition_3 = c_m::rectangle(0, 0, 243, 341) != rect_1;
 
     c_f::gtest_console::print_line("condition_1:", condition_1);

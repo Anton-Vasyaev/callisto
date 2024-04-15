@@ -133,7 +133,7 @@ class CallistoConan(ConanFile):
     dependency_graph : DependencyGraph
 
     name = 'callisto'
-    version = '0.3.3'
+    version = '0.4.0d1'
     license = 'BSD'
     package_typ='library'
     settings = 'os', 'compiler', 'build_type', 'arch'
@@ -145,6 +145,7 @@ class CallistoConan(ConanFile):
     options = {
         'shared'         : [True, False],
         'build_math'     : [True, False],
+        'build_utility'  : [True, False],
         'build_opencv'   : [True, False],
         'build_graphics' : [True, False]
     }
@@ -153,6 +154,8 @@ class CallistoConan(ConanFile):
         'shared': False,
 
         'build_math':     True,
+        'build_utility':  True,
+
         'build_opencv':   True,
         'build_graphics': True
     }
@@ -178,7 +181,7 @@ class CallistoConan(ConanFile):
         )
         self.dependency_graph.append_require(
             'boost',    
-            'boost/1.71.0', 
+            'boost/1.84.0', 
             transitive_headers=True,
         )
         self.dependency_graph.append_require(
@@ -227,6 +230,13 @@ class CallistoConan(ConanFile):
             []
         )
     
+        # utility
+        self.dependency_graph.append_library(
+            'utility',
+            ['framework', 'math'],
+            []
+        )
+
         # opencv
         self.dependency_graph.append_library(
             'opencv', 
@@ -253,6 +263,9 @@ class CallistoConan(ConanFile):
     def configure(self):
         if not self.options.build_math:
             self.dependency_graph.disable_library('math')
+
+        if not self.options.build_utility:
+            self.dependency_graph.disable_library('utility')
         
         if not self.options.build_opencv:
             self.dependency_graph.disable_library('opencv')

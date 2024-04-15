@@ -22,8 +22,7 @@ namespace callisto::opencv
 
 namespace
 {
-namespace b_fs = boost::filesystem;
-namespace c_f  = callisto::framework;
+namespace c_f = callisto::framework;
 } // namespace
 
 cv::Mat imdecode(const void* buffer_ptr, size_t buffer_size, int flags = cv::IMREAD_UNCHANGED);
@@ -34,7 +33,9 @@ imencode(cv::Mat img, const char* ext, const std::vector<int>& params = std::vec
 template<typename path_type>
 cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
 {
-    b_fs::ifstream file_handler(path, std::ios::binary);
+    namespace b_fs = boost::filesystem;
+
+    auto file_handler = b_fs::ifstream(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {
@@ -61,7 +62,9 @@ cv::Mat imread(path_type&& path, int flags = cv::IMREAD_UNCHANGED)
 template<typename path_type>
 void imwrite(path_type* path, const cv::Mat& img)
 {
-    b_fs::ofstream file_handler(path, std::ios::binary);
+    namespace b_fs = boost::filesystem;
+
+    auto file_handler = b_fs::ofstream(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {

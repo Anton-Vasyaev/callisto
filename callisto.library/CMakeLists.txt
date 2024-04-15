@@ -4,7 +4,9 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.library)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
+
 option(CALLISTO_MATH_ENABLE "Build callisto.math" ON)
+option(CALLISTO_UTILITY_ENABLE "Build callisto.utility" ON)
 option(CALLISTO_OPENCV_ENABLE "Build callisto.opencv" ON)
 option(CALLISTO_GRAPHICS_ENABLE "Build callisto.graphics" ON)
 
@@ -78,6 +80,21 @@ if(CALLISTO_MATH_ENABLE)
 
     target_link_libraries(${MATH_TARGET} PUBLIC callisto_framework)
 endif()
+
+# callisto.utility
+if(CALLISTO_UTILITY_ENABLE)
+    set(UTILITY_TARGET callisto_utility)
+    file(GLOB_RECURSE CALLISTO_UTILITY_SRC "callisto.utility/src/*./c" "callisto.utility/src/*.cpp")
+    add_library(${UTILITY_TARGET} ${LIBRARY_TYPE} ${CALLISTO_UTILITY_SRC})
+
+    target_include_directories(${UTILITY_TARGET} PUBLIC  callisto.utility/include)
+    target_include_directories(${UTILITY_TARGET} PRIVATE callisto.utility/src)
+
+
+    target_link_libraries(${UTILITY_TARGET} PUBLIC callisto_framework)
+    target_link_libraries(${UTILITY_TARGET} PUBLIC callisto_math)
+endif()
+
 
 # callisto.opencv
 if(CALLISTO_OPENCV_ENABLE)

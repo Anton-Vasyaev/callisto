@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 
 #--------------------------------------------------------------------------------------------------
 # list of libraries names
-set(CALLISTO_LIBRARIES framework math opencv graphics)
+set(CALLISTO_LIBRARIES framework math utility opencv graphics)
 
 #--------------------------------------------------------------------------------------------------
 # configure project
