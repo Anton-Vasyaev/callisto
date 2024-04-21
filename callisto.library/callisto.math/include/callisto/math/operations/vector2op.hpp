@@ -21,7 +21,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr auto length(const vector2<type>& vector) noexcept
+    inline static constexpr double length(const vector2<type>& vector) noexcept
     {
         double square_len = square_of_length(vector);
         return std::sqrt(square_len);
@@ -36,12 +36,12 @@ struct vector2op
         auto x = vector.x * scale;
         auto y = vector.y * scale;
 
-        return vector2<decltype(x)>(x, y);
+        return vector2<type>(x, y);
     }
 
-    template<typename type_1, typename type_2>
+    template<typename type>
     inline static constexpr auto
-    dot_product(const vector2<type_1>& vec1, const vector2<type_2>& vec2) noexcept
+    dot_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -52,9 +52,9 @@ struct vector2op
         return x1 * x2 + y1 * y2;
     }
 
-    template<typename type_1, typename type_2>
-    inline static constexpr auto
-    cos_angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
+    template<typename type>
+    inline static constexpr double
+    cos_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto dot_prod       = dot_product(vec1, vec2);
         auto prod_of_length = length(vec1) * length(vec2);
@@ -62,17 +62,18 @@ struct vector2op
         return dot_prod / (prod_of_length + eps);
     }
 
-    template<typename type_1, typename type_2>
-    inline static constexpr auto angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
+    template<typename type>
+    inline static constexpr double
+    angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto cos_value = cos_angle(vec1, vec2, eps);
 
         return std::acos(cos_value);
     }
 
-    template<typename type_1, typename type_2>
-    inline static constexpr auto
-    pseudo_scalar_product(const vector2<type_1>& vec1, const vector2<type_2>& vec2) noexcept
+    template<typename type>
+    inline static constexpr double
+    pseudo_scalar_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -83,9 +84,9 @@ struct vector2op
         return x1 * y2 - x2 * y1;
     }
 
-    template<typename type_1, typename type_2>
-    inline static constexpr auto
-    sign_angle(const vector2<type_1>& vec1, const vector2<type_2>& vec2, double eps = 1e-9) noexcept
+    template<typename type>
+    inline static constexpr double
+    sign_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : -1;
 

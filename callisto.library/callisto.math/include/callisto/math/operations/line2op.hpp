@@ -9,9 +9,9 @@ namespace callisto::math
 
 struct line2op
 {
-    template<typename type_1, typename type_2>
+    template<typename type>
     static constexpr auto
-    cross_point(const line2<type_1>& line1, const line2<type_2>& line2, double eps = 1e-8) noexcept
+    cross_point(const line2<type>& line1, const line2<type>& line2, double eps = 1e-8) noexcept
     {
         double x1 = line1.x1;
         double y1 = line1.y1;
@@ -37,7 +37,7 @@ struct line2op
     }
 
     template<typename type>
-    inline static constexpr auto get_contour(const line2<type>& line) noexcept
+    inline static constexpr auto get_box_contour(const line2<type>& line) noexcept
     {
         auto [left, right] = std::minmax(line.x1, line.x2);
         auto [top, bottom] = std::minmax(line.y1, line.y2);
@@ -45,8 +45,8 @@ struct line2op
         return bbox2<type>(left, top, right, bottom);
     }
 
-    template<typename line_type, typename bbox_type>
-    inline static constexpr auto normalize(const line2<line_type>& line, const bbox2<bbox_type>& contour)
+    template<typename type>
+    inline static constexpr auto normalize(const line2<type>& line, const bbox2<type>& contour)
     {
         auto w = contour.width();
         auto h = contour.height();

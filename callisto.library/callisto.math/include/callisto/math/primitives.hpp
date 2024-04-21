@@ -7,4 +7,5 @@
 #include "primitives/bbox3.hpp"
 #include "primitives/line2.hpp"
 #include "primitives/line3.hpp"
+#include "primitives/range.hpp"
 #include "primitives/rectangle.hpp"

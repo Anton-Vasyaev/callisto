@@ -12,7 +12,7 @@ namespace
 namespace c_f = callisto::framework;
 }
 
-template<c_f::concept_fundamental _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 struct bbox3
 {
     using value_type = _value_type;
@@ -29,20 +29,13 @@ struct bbox3
 
 #pragma region construct_and_destruct
 
-    template<
-        c_f::concept_fundamental type_x1,
-        c_f::concept_fundamental type_y1,
-        c_f::concept_fundamental type_z1,
-        c_f::concept_fundamental type_x2,
-        c_f::concept_fundamental type_y2,
-        c_f::concept_fundamental type_z2>
     inline constexpr bbox3(
-        type_x1 x1,
-        type_y1 y1,
-        type_z1 z1,
-        type_x2 x2,
-        type_y2 y2,
-        type_z2 z2
+        value_type x1,
+        value_type y1,
+        value_type z1,
+        value_type x2,
+        value_type y2,
+        value_type z2
     ) noexcept
     {
         this->x1 = x1;
@@ -54,8 +47,18 @@ struct bbox3
         this->z2 = z2;
     }
 
-    template<c_f::concept_fundamental other_bbox_type>
-    inline constexpr bbox3(const other_bbox_type& other_bbox) noexcept
+    inline constexpr bbox3(const point3<value_type>& p1, const point3<value_type>& p2)
+    {
+        x1 = p1.x;
+        y1 = p1.y;
+        z1 = p1.z;
+
+        x2 = p2.x;
+        y2 = p2.y;
+        z2 = p2.z;
+    }
+
+    inline constexpr bbox3(const bbox3& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -70,7 +73,7 @@ struct bbox3
 
 #pragma region methods
 
-    template<c_f::concept_fundamental cast_type>
+    template<callisto::framework::concept_arithmetic cast_type>
     inline constexpr auto as() const noexcept
     {
         return bbox3<cast_type>(x1, y1, z1, x2, y2, z2);
@@ -117,16 +120,14 @@ struct bbox3
         return size3<value_type>(width(), height(), depth());
     }
 
-    template<c_f::concept_fundamental type>
-    inline constexpr void set_first(const point3<type>& point) noexcept
+    inline constexpr void set_first(const point3<value_type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
         z1 = point.z;
     }
 
-    template<c_f::concept_fundamental type>
-    inline constexpr void set_second(const point3<type>& point) noexcept
+    inline constexpr void set_second(const point3<value_type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -135,35 +136,26 @@ struct bbox3
 
 #pragma region operators
 
-    template<c_f::concept_fundamental other_type>
-    inline constexpr const bbox3& operator=(const bbox3<other_type>& other_bbox)
+    inline constexpr const bool operator==(const bbox3& other) const noexcept
     {
-        x1 = other_bbox.x1;
-        y1 = other_bbox.y1;
-        z1 = other_bbox.z1;
+        return (x1 == other.x1 && y1 == other.y1 && z1 == other.z1)
+               && (x2 == other.x2 && y2 == other.y2 && z2 == other.z2);
+    }
 
-        x2 = other_bbox.x2;
-        y2 = other_bbox.y2;
-        z2 = other_bbox.z2;
+    inline constexpr const bool operator!=(const bbox3& other) const noexcept
+    {
+        return (x1 != other.x1 || y1 != other.y1 || z1 != other.z1)
+               || (x2 != other.x2 || y2 != other.y2 || z2 != other.z2);
     }
 
 #pragma endregion
 };
 
-template<
-    c_f::concept_fundamental type_x1,
-    c_f::concept_fundamental type_y1,
-    c_f::concept_fundamental type_z1,
-    c_f::concept_fundamental type_x2,
-    c_f::concept_fundamental type_y2,
-    c_f::concept_fundamental type_z2>
-bbox3(type_x1, type_y1, type_z1, type_x2, type_y2, type_z2)
-    -> bbox3<c_f::senior_conversion_t<type_x1, type_y1, type_z1, type_x2, type_y2, type_z2>>;
+template<callisto::framework::concept_arithmetic val_type>
+bbox3(val_type, val_type, val_type, val_type, val_type, val_type) -> bbox3<val_type>;
 
-template<typename left_top_near_type, typename right_bottom_far_type>
-bbox3(left_top_near_type, right_bottom_far_type) -> bbox3<c_f::senior_conversion_t<
-    typename left_top_near_type::value_type,
-    typename right_bottom_far_type::value_type>>;
+template<typename point_type>
+bbox3(point_type, point_type) -> bbox3<typename point_type::value_type>;
 
 #pragma region alias
 

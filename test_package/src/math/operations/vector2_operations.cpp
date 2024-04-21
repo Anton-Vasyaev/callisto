@@ -61,7 +61,7 @@ TEST(vector2_operations, normalize_test)
 
     auto vec_f = c_m::vector2f(-544, -24);
     norm_len   = 12.545;
-    vec_f      = vec2::normalize(vec_f, norm_len);
+    vec_f      = vec2::normalize(vec_f, norm_len).as<float>();
     vec_len    = vec2::length(vec_f);
 
     ASSERT_TRUE(c_m::relative_error(vec_len, rel_double_acc) == norm_len);
@@ -109,8 +109,8 @@ TEST(vector2_operations, cos_angle_default_angle_test)
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
     auto rotate_angle = c_m::pi / 2.0;
-    vec1f             = p2::rotate(vec1f, rotate_angle);
-    vec2f             = p2::rotate(vec2f, rotate_angle);
+    vec1f             = p2::rotate(vec1f, rotate_angle).as<float>();
+    vec2f             = p2::rotate(vec2f, rotate_angle).as<float>();
     cos_f             = vec2::cos_angle(vec1f, vec2f);
     angle_f           = vec2::angle(vec1f, vec2f);
     ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6f);
@@ -131,7 +131,7 @@ TEST(vector2_operations, cos_angle_default_angle_test)
     ASSERT_TRUE(c_m::absolute_error(std::cos(angle_f), abs_float_acc) == cos_f);
 
     vec1f   = c_m::vector2f(-32.0f, 11.23f);
-    vec2f   = vec2::normalize(vec1f, 453.0);
+    vec2f   = vec2::normalize(vec1f, 453.0).as<float>();
     cos_f   = vec2::cos_angle(vec1f, vec2f);
     angle_f = vec2::angle(vec1f, vec2f);
     ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 1.0f);
@@ -155,13 +155,13 @@ TEST(vector2_operations, pseudo_scalar_product_test)
     ASSERT_TRUE(c_m::relative_error(prod, rel_float_acc) == -rev_prod);
 
     vec1 = c_m::vector2f(-34.0, 21.0);
-    vec2 = vec2::normalize(vec1, 5.0);
+    vec2 = vec2::normalize(vec1, 5.0).as<float>();
     prod = vec2::pseudo_scalar_product(vec1, vec2);
     ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0f);
 
     vec1 = c_m::vector2f(-20.0, 5.0);
     vec2 = c_m::vector2f(20.0, -5.0);
-    vec2 = vec2::normalize(vec2, 9.5);
+    vec2 = vec2::normalize(vec2, 9.5).as<float>();
     prod = vec2::pseudo_scalar_product(vec1, vec2);
     ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0f);
 }

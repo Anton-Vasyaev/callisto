@@ -73,18 +73,18 @@ TEST(poly2_operations, area_test)
 
     for (auto& test_data : test_data_list)
     {
-        auto calc_area = poly2op::area(test_data.polygon);
+        auto calc_area = poly2op::area(std::span(test_data.polygon));
 
         ASSERT_TRUE(c_m::relative_error(calc_area, rel_float_acc) == test_data.area);
 
         for (auto& contain_point : test_data.contain_point_list)
         {
-            ASSERT_TRUE(poly2op::contain(test_data.polygon, contain_point));
+            ASSERT_TRUE(poly2op::contain(std::span(test_data.polygon), contain_point));
         }
 
         for (auto& not_contain_point : test_data.not_contain_point_list)
         {
-            ASSERT_FALSE(poly2op::contain(test_data.polygon, not_contain_point));
+            ASSERT_FALSE(poly2op::contain(std::span(test_data.polygon), not_contain_point));
         }
     }
 }

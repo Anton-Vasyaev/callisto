@@ -2,6 +2,7 @@
 
 // std
 #include <cmath>
+#include <span>
 // project
 #include <callisto/math/operations/vector2op.hpp>
 #include <callisto/math/functions.hpp>
@@ -12,8 +13,8 @@ namespace callisto::math
 
 struct poly2op
 {
-    template<typename points_array_type>
-    static double area(const points_array_type& polygon) noexcept
+    template<typename type>
+    static double area(std::span<point2<type>> polygon) noexcept
     {
         auto n = polygon.size();
 
@@ -47,9 +48,9 @@ struct poly2op
         return poly_area;
     }
 
-    template<typename points_array_type, typename point_type>
+    template<typename type>
     static bool
-    contain(const points_array_type& polygon, const point_type& point, double eps = 1e-3) noexcept
+    contain(std::span<point2<type>> polygon, const point2<type>& point, double eps = 1e-3) noexcept
     {
         double sum_of_angles = 0.0;
 

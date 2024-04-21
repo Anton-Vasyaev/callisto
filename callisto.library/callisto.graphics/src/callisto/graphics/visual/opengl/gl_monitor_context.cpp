@@ -38,8 +38,8 @@ float gl_monitor_context::dpi() const { return this->_dpi; }
 
 std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_options options)
 {
-    auto window_position = options.area.position;
-    auto window_size     = options.area.size;
+    auto window_position = options.area.position();
+    auto window_size     = options.area.size();
 
     auto window_context = std::unique_ptr<i_window_context>();
     window_context.reset(new gl_window_context());

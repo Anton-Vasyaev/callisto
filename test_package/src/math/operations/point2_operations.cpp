@@ -112,9 +112,11 @@ TEST(point2_operations, rotate_default_rotate_anchor_test)
         start_point += offset_point;
 
         // positive rotate angle with offset
-        first_rotate_point = p2op::rotate_anchor(start_point, first_rotate_angle, offset_point);
+        first_rotate_point
+            = p2op::rotate_anchor(start_point, first_rotate_angle, offset_point).as<float>();
         second_rotate_point
-            = p2op::rotate_anchor(first_rotate_point, second_rotate_angle, offset_point);
+            = p2op::rotate_anchor(first_rotate_point, second_rotate_angle, offset_point)
+                  .as<float>();
         ASSERT_TRUE(rel_err_point2_equal(
             first_rotate_point - offset_point,
             c_m::point2f(x, y),
@@ -127,9 +129,11 @@ TEST(point2_operations, rotate_default_rotate_anchor_test)
         ));
 
         // negative rotate angle with offset
-        first_rotate_point = p2op::rotate_anchor(start_point, -first_rotate_angle, offset_point);
+        first_rotate_point
+            = p2op::rotate_anchor(start_point, -first_rotate_angle, offset_point).as<float>();
         second_rotate_point
-            = p2op::rotate_anchor(first_rotate_point, -second_rotate_angle, offset_point);
+            = p2op::rotate_anchor(first_rotate_point, -second_rotate_angle, offset_point)
+                  .as<float>();
         ASSERT_TRUE(rel_err_point2_equal(
             first_rotate_point - offset_point,
             c_m::point2f(x, -y),

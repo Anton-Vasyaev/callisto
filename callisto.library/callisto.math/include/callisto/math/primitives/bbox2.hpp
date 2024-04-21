@@ -12,7 +12,7 @@ namespace
 namespace c_f = callisto::framework;
 }
 
-template<c_f::concept_fundamental _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 struct bbox2
 {
     using value_type = _value_type;
@@ -26,12 +26,7 @@ struct bbox2
 
 #pragma region construct_and_destruct
 
-    template<
-        c_f::concept_fundamental type_x1,
-        c_f::concept_fundamental type_y1,
-        c_f::concept_fundamental type_x2,
-        c_f::concept_fundamental type_y2>
-    inline constexpr bbox2(type_x1 x1, type_y1 y1, type_x2 x2, type_y2 y2) noexcept
+    inline constexpr bbox2(value_type x1, value_type y1, value_type x2, value_type y2) noexcept
     {
         this->x1 = x1;
         this->y1 = y1;
@@ -39,10 +34,9 @@ struct bbox2
         this->y2 = y2;
     }
 
-    template<c_f::concept_fundamental lt_type, c_f::concept_fundamental rb_type>
     inline constexpr bbox2(
-        const point2<lt_type>& left_top,
-        const point2<rb_type>& right_bottom
+        const point2<value_type>& left_top,
+        const point2<value_type>& right_bottom
     ) noexcept
     {
         x1 = left_top.x;
@@ -52,8 +46,7 @@ struct bbox2
         y2 = right_bottom.y;
     }
 
-    template<c_f::concept_fundamental other_type>
-    inline constexpr bbox2(const bbox2<other_type>& other_bbox) noexcept
+    inline constexpr bbox2(const bbox2& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -65,7 +58,7 @@ struct bbox2
 
 #pragma region methods
 
-    template<c_f::concept_fundamental cast_type>
+    template<callisto::framework::concept_arithmetic cast_type>
     inline constexpr auto as() const noexcept
     {
         return bbox2<cast_type>(x1, y1, x2, y2);
@@ -90,15 +83,13 @@ struct bbox2
         return size2<value_type>(width(), height());
     }
 
-    template<c_f::concept_fundamental type>
-    inline constexpr void set_left_top(const point2<type>& point) noexcept
+    inline constexpr void set_first(const point2<value_type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
     }
 
-    template<c_f::concept_fundamental type>
-    inline constexpr void set_right_bottom(const point2<type>& point) noexcept
+    inline constexpr void set_second(const point2<value_type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -106,31 +97,24 @@ struct bbox2
 
 #pragma region operators
 
-    template<c_f::concept_fundamental other_type>
-    inline constexpr const bbox2& operator=(const bbox2<other_type>& other_bbox) noexcept
+    inline constexpr const bool operator==(const bbox2& other) const noexcept
     {
-        x1 = other_bbox.x1;
-        y1 = other_bbox.y1;
+        return x1 == other.x1 && y1 == other.y1 && x2 == other.x2 && y2 == other.y2;
+    }
 
-        x2 = other_bbox.x2;
-        y2 = other_bbox.y2;
+    inline constexpr const bool operator!=(const bbox2& other) const noexcept
+    {
+        return x1 != other.x1 || y1 != other.y1 || x2 != other.x2 || y2 != other.y2;
     }
 
 #pragma endregion
 };
 
-template<
-    c_f::concept_fundamental type_x1,
-    c_f::concept_fundamental type_y1,
-    c_f::concept_fundamental type_x2,
-    c_f::concept_fundamental type_y2>
-bbox2(type_x1, type_y1, type_x2, type_y2)
-    -> bbox2<c_f::senior_conversion_t<type_x1, type_y1, type_x2, type_y2>>;
+template<callisto::framework::concept_arithmetic val_type>
+bbox2(val_type, val_type, val_type, val_type) -> bbox2<val_type>;
 
-template<typename left_top_type, typename right_bottom_type>
-bbox2(left_top_type, right_bottom_type) -> bbox2<c_f::senior_conversion_t<
-    typename left_top_type::value_type,
-    typename right_bottom_type::value_type>>;
+template<typename point_type>
+bbox2(point_type, point_type) -> bbox2<typename point_type::value_type>;
 
 #pragma region alias
 

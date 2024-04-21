@@ -163,8 +163,8 @@ void gl_window_context::mouse_button_processing(int button, int action, int mods
 
 void gl_window_context::position_processing(int x_pos, int y_pos)
 {
-    auto pos                    = c_m::point2i { x_pos, y_pos };
-    this->options.area.position = pos;
+    auto pos = c_m::point2i { x_pos, y_pos };
+    this->options.area.set_position(pos);
 
     if (this->window_processor != nullptr) this->window_processor->on_change_position(pos);
     this->change_position_signal_handler(pos);
@@ -172,8 +172,8 @@ void gl_window_context::position_processing(int x_pos, int y_pos)
 
 void gl_window_context::resize_processing(int width, int height)
 {
-    auto size               = c_m::size2i { width, height };
-    this->options.area.size = size;
+    auto size = c_m::size2i { width, height };
+    this->options.area.set_size(size);
 
     if (this->window_processor != nullptr) this->window_processor->on_resize(size);
     this->resize_signal_handler(size);

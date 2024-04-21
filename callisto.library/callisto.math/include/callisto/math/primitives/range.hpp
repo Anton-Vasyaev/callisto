@@ -7,36 +7,35 @@
 namespace callisto::math
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
-template<typename _type>
+template<callisto::framework::concept_arithmetic _value_type>
 struct range
 {
-    using type = _type;
+    using value_type = _value_type;
 
-    type min;
+    value_type min;
 
-    type max;
+    value_type max;
 
     inline constexpr range() {}
 
-    template<typename min_type, typename max_type>
-    inline constexpr range(min_type min, max_type max) noexcept
+    inline constexpr range(value_type min, value_type max) noexcept
     {
-        this->min = static_cast<type>(min);
-
-        this->max = static_cast<type>(max);
+        this->min = min;
+        this->max = max;
     }
 
     // methods
     inline constexpr auto distance() const noexcept { return this->max - this->min; }
+
+    template<callisto::framework::concept_arithmetic cast_type>
+    inline constexpr auto as() const noexcept
+    {
+        return range<cast_type>(min, max);
+    }
 };
 
-template<typename min_type, typename max_type>
-range(min_type, max_type) -> range<c_f::senior_conversion_t<min_type, max_type>>;
+template<typename val_type>
+range(val_type, val_type) -> range<val_type>;
 
 using range_i = range<int32_t>;
 using range_l = range<int64_t>;
