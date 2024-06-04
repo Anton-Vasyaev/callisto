@@ -7,10 +7,6 @@
 
 namespace callisto::math
 {
-namespace
-{
-namespace c_f = callisto::framework;
-}
 
 template<callisto::framework::concept_arithmetic _value_type>
 struct bbox3
@@ -25,11 +21,13 @@ struct bbox3
     value_type y2;
     value_type z2;
 
-    inline static constexpr bbox3 empty() noexcept { return bbox3(0, 0, 0, 0, 0, 0); }
+    static constexpr bbox3 empty() noexcept { return bbox3(0, 0, 0, 0, 0, 0); }
 
 #pragma region construct_and_destruct
 
-    inline constexpr bbox3(
+    constexpr bbox3() noexcept = default;
+
+    constexpr bbox3(
         value_type x1,
         value_type y1,
         value_type z1,
@@ -47,7 +45,7 @@ struct bbox3
         this->z2 = z2;
     }
 
-    inline constexpr bbox3(const point3<value_type>& p1, const point3<value_type>& p2)
+    constexpr bbox3(const point3<value_type>& p1, const point3<value_type>& p2)
     {
         x1 = p1.x;
         y1 = p1.y;
@@ -58,7 +56,7 @@ struct bbox3
         z2 = p2.z;
     }
 
-    inline constexpr bbox3(const bbox3& other_bbox) noexcept
+    constexpr bbox3(const bbox3& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -74,60 +72,48 @@ struct bbox3
 #pragma region methods
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return bbox3<cast_type>(x1, y1, z1, x2, y2, z2);
     }
 
-    inline constexpr auto left_top_near() const noexcept { return point3<value_type>(x1, y1, z1); }
+    constexpr auto left_top_near() const noexcept { return point3<value_type>(x1, y1, z1); }
 
-    inline constexpr auto left_bottom_near() const noexcept
-    {
-        return point3<value_type>(x1, y2, z1);
-    }
+    constexpr auto left_bottom_near() const noexcept { return point3<value_type>(x1, y2, z1); }
 
-    inline constexpr auto right_bottom_near() const noexcept
-    {
-        return point3<value_type>(x2, y2, z1);
-    }
+    constexpr auto right_bottom_near() const noexcept { return point3<value_type>(x2, y2, z1); }
 
-    inline constexpr auto right_top_near() const noexcept { return point3<value_type>(x2, y1, z1); }
+    constexpr auto right_top_near() const noexcept { return point3<value_type>(x2, y1, z1); }
 
-    inline constexpr auto left_top_far() const noexcept { return point3<value_type>(x1, y1, z2); }
+    constexpr auto left_top_far() const noexcept { return point3<value_type>(x1, y1, z2); }
 
-    inline constexpr auto left_bottom_far() const noexcept
-    {
-        return point3<value_type>(x1, y2, z2);
-    }
+    constexpr auto left_bottom_far() const noexcept { return point3<value_type>(x1, y2, z2); }
 
-    inline constexpr auto right_bottom_far() const noexcept
-    {
-        return point3<value_type>(x2, y2, z2);
-    }
+    constexpr auto right_bottom_far() const noexcept { return point3<value_type>(x2, y2, z2); }
 
-    inline constexpr auto right_top_far() const noexcept { return point3<value_type>(x2, y1, z2); }
+    constexpr auto right_top_far() const noexcept { return point3<value_type>(x2, y1, z2); }
 
-    inline constexpr value_type width() const noexcept { return x2 - x1; }
+    constexpr value_type width() const noexcept { return x2 - x1; }
 
-    inline constexpr value_type height() const noexcept { return y2 - y1; }
+    constexpr value_type height() const noexcept { return y2 - y1; }
 
-    inline constexpr value_type depth() const noexcept { return z2 - z1; }
+    constexpr value_type depth() const noexcept { return z2 - z1; }
 
-    inline constexpr value_type volume() const noexcept { return width() * height() * depth(); }
+    constexpr value_type volume() const noexcept { return width() * height() * depth(); }
 
-    inline constexpr size3<value_type> size() const noexcept
+    constexpr size3<value_type> size() const noexcept
     {
         return size3<value_type>(width(), height(), depth());
     }
 
-    inline constexpr void set_first(const point3<value_type>& point) noexcept
+    constexpr void set_first(const point3<value_type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
         z1 = point.z;
     }
 
-    inline constexpr void set_second(const point3<value_type>& point) noexcept
+    constexpr void set_second(const point3<value_type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -136,13 +122,13 @@ struct bbox3
 
 #pragma region operators
 
-    inline constexpr const bool operator==(const bbox3& other) const noexcept
+    constexpr bool operator==(const bbox3& other) const noexcept
     {
         return (x1 == other.x1 && y1 == other.y1 && z1 == other.z1)
                && (x2 == other.x2 && y2 == other.y2 && z2 == other.z2);
     }
 
-    inline constexpr const bool operator!=(const bbox3& other) const noexcept
+    constexpr bool operator!=(const bbox3& other) const noexcept
     {
         return (x1 != other.x1 || y1 != other.y1 || z1 != other.z1)
                || (x2 != other.x2 || y2 != other.y2 || z2 != other.z2);

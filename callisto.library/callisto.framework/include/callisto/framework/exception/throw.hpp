@@ -30,7 +30,7 @@ struct throw_utils
 {
     static bool exception_trace_flag;
 
-    inline static stacktrace_error_tag_provider
+    static stacktrace_error_tag_provider
     error_tag_trace(const char* function_name, const char* file_name, int file_line)
     {
         return stacktrace_error_tag_provider { application_environment::exception_trace_flag,
@@ -43,33 +43,49 @@ struct throw_utils
 
 // clang-format off
 
-#define CALLISTO_THROW_EXCEPTION(exc_ob)                                            \
-    throw exc_ob                                                                    \
-        << callisto::framework::throw_utils::error_tag_trace(                       \
-            BOOST_CURRENT_FUNCTION,                                                 \
-            __FILE__,                                                               \
-            __LINE__                                                                \
-        )
+#define CALLISTO_THROW_EXCEPTION(exc_ob)                                               \
+                                                                                        \
+        throw exc_ob                                                                  \
+            << callisto::framework::throw_utils::error_tag_trace(                       \
+                BOOST_CURRENT_FUNCTION,                                                 \
+                __FILE__,                                                               \
+                __LINE__                                                                \
+            )
 
 // clang-format on
 
-template<class E>
-inline
-    typename boost::enable_if<boost::exception_detail::derives_boost_exception<E>, E const&>::type
-    operator<<(E const& x, stacktrace_error_tag_provider&& p)
+// NOLINTBEGIN(modernize-use-constraints)
+template<class exc_type>
+inline typename boost::
+    enable_if<boost::exception_detail::derives_boost_exception<exc_type>, const exc_type&>::type
+    operator<<(const exc_type& exception_data, stacktrace_error_tag_provider&& provider)
 {
-    if (p.stacktrace_flag)
+    if (provider.stacktrace_flag)
     {
-        boost::exception_detail::set_info(x, error_tag_trace(boost::stacktrace::stacktrace()));
+        boost::exception_detail::set_info(
+            exception_data,
+            error_tag_trace(boost::stacktrace::stacktrace())
+        );
     }
 
-    if (p.location_flag)
+    if (provider.location_flag)
     {
-        auto location_str
-            = _bs("file:", p.file_name, " [", p.file_line, " line] :", p.function_name);
-        boost::exception_detail::set_info(x, callisto::framework::error_tag_location(location_str));
+        auto location_str = _bs(
+            "file:",
+            provider.file_name,
+            " [",
+            provider.file_line,
+            " line] :",
+            provider.function_name
+        );
+        boost::exception_detail::set_info(
+            exception_data,
+            callisto::framework::error_tag_location(location_str)
+        );
     }
-    return x;
+    return exception_data;
 }
+
+// NOLINTEND(modernize-use-constraints)
 
 } // namespace callisto::framework

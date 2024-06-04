@@ -10,21 +10,16 @@
 
 namespace callisto::graphics
 {
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 class i_monitor_context
 {
 public:
     // construct and destruct
-    virtual ~i_monitor_context() {}
+    virtual ~i_monitor_context() = default;
 
     // methods
-    virtual c_m::size2i size() const = 0;
+    virtual callisto::math::size2i size() const = 0;
 
-    virtual c_m::size2i real_size() const = 0;
+    virtual callisto::math::size2i real_size() const = 0;
 
     virtual float dpi() const = 0;
 

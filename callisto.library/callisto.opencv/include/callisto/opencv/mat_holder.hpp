@@ -18,17 +18,8 @@ class mat_holder
     image_type img_type;
 
 public:
-    // deleted functions
-    mat_holder(const mat_holder& mat) = delete;
-
     // construct and destruct
     mat_holder() { img_type = image_type::unknown; }
-
-    mat_holder(mat_holder&& holder)
-    {
-        this->mat_data = std::move(holder.mat_data);
-        this->img_type = holder.img_type;
-    }
 
     mat_holder(cv::Mat& mat, image_type img_type)
     {
@@ -36,14 +27,14 @@ public:
         this->img_type = img_type;
     }
 
-    mat_holder(cv::Mat&& mat, image_type img_type)
+    mat_holder(cv::Mat&& mat, image_type img_type) noexcept
     {
         this->mat_data = std::move(mat);
         this->img_type = img_type;
     }
 
     // methods
-    inline mat_holder copy() const
+    mat_holder copy() const
     {
         auto holder     = mat_holder();
         holder.img_type = this->img_type;
@@ -52,23 +43,20 @@ public:
         return holder;
     }
 
-    inline void validate(const char* function_name = nullptr) const
-    {
-        match_image_type(this->mat_data, this->img_type, "mat_holder::validate");
-    }
+    void validate() const { match_image_type(this->mat_data, this->img_type); }
 
     // getters and setters
-    inline void set_mat(cv::Mat& mat) { this->mat_data = mat; }
+    void set_mat(cv::Mat& mat) { this->mat_data = mat; }
 
-    inline void set_mat(cv::Mat&& mat) { this->mat_data = std::move(mat); }
+    void set_mat(cv::Mat&& mat) { this->mat_data = std::move(mat); }
 
-    inline cv::Mat& mat() { return this->mat_data; }
+    cv::Mat& mat() { return this->mat_data; }
 
-    inline const cv::Mat& mat() const { return this->mat_data; }
+    const cv::Mat& mat() const { return this->mat_data; }
 
-    inline void set_image_type(image_type img_type) { this->img_type = img_type; }
+    void set_image_type(image_type img_type) { this->img_type = img_type; }
 
-    inline image_type get_image_type() const { return this->img_type; }
+    image_type get_image_type() const { return this->img_type; }
 };
 
 } // namespace callisto::opencv

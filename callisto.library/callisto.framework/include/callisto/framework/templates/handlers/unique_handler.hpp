@@ -23,7 +23,7 @@ private:
 
 #pragma region private_methods
 
-    inline void destroy()
+    void destroy() noexcept
     {
         if (this->has_data)
         {
@@ -32,7 +32,7 @@ private:
         }
     }
 
-    inline void move_from_other(unique_handler&& other_handler)
+    void move_from_other(unique_handler&& other_handler) noexcept
     {
         this->destroy();
         this->disposer         = other_handler.disposer;
@@ -46,11 +46,11 @@ private:
 public:
 #pragma region construct_and_destruct
 
-    unique_handler() {}
+    unique_handler() = default;
 
     ~unique_handler() { this->destroy(); }
 
-    unique_handler(data_type data)
+    explicit unique_handler(data_type data)
     {
         this->data     = data;
         this->has_data = true;
@@ -58,7 +58,7 @@ public:
 
     unique_handler(const unique_handler&) = delete;
 
-    unique_handler(unique_handler&& other_handler)
+    unique_handler(unique_handler&& other_handler) noexcept
     {
         this->move_from_other(std::move(other_handler));
     }
@@ -89,7 +89,7 @@ public:
 
     void operator=(unique_handler&) = delete;
 
-    void operator=(unique_handler&& other_handler)
+    unique_handler& operator=(unique_handler&& other_handler) noexcept
     {
         this->move_from_other(std::move(other_handler));
     }

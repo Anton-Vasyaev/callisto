@@ -11,7 +11,7 @@ namespace callisto::graphics
 class i_main_context
 {
 public:
-    virtual ~i_main_context() {}
+    virtual ~i_main_context() = default;
 
     virtual const std::vector<std::unique_ptr<i_monitor_context>>& get_monitors() = 0;
 

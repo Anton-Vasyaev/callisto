@@ -10,11 +10,6 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_cv = callisto::opencv;
-}
-
 class typing_garniture
 {
 public:
@@ -32,6 +27,7 @@ private:
     int32_t _space_vert_advance;
 
 public:
+    typing_garniture() = default;
     // construct and destruct
     typing_garniture(
         int32_t render_height_size,
@@ -41,18 +37,18 @@ public:
 
     typing_garniture(const typing_garniture&) = delete;
 
-    typing_garniture(typing_garniture&& garniture) = default;
+    typing_garniture(typing_garniture&& garniture) noexcept = default;
 
     // methods
     typing_garniture clone() const;
 
-    void add_symbol(int64_t symbol_code, font_symbol_data& symbol_data);
+    void add_symbol(uint64_t symbol_code, font_symbol_data& symbol_data);
 
-    void add_symbol(int64_t symbol_code, font_symbol_data&& symbol_data);
+    void add_symbol(uint64_t symbol_code, font_symbol_data&& symbol_data);
 
-    font_symbol_data& get_symbol_data(int64_t symbol_code);
+    font_symbol_data& get_symbol_data(uint64_t symbol_code);
 
-    const font_symbol_data& get_symbol_data(int64_t symbol_code) const;
+    const font_symbol_data& get_symbol_data(uint64_t symbol_code) const;
 
     // getters and setters
     int32_t get_render_height_size() const;
@@ -68,7 +64,7 @@ public:
     // operators
     typing_garniture& operator=(typing_garniture&) = delete;
 
-    typing_garniture& operator=(typing_garniture&& garniture) = default;
+    typing_garniture& operator=(typing_garniture&& garniture) noexcept = default;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(typing_garniture);

@@ -12,11 +12,6 @@
 namespace callisto::graphics::freetype
 {
 
-namespace
-{
-namespace c_cv = callisto::opencv;
-}
-
 class face
 {
     // data
@@ -25,15 +20,15 @@ class face
     // private methods
     void __destroy() noexcept;
 
-    void __move_from(face&& face);
+    void __move_from(face&& face) noexcept;
 
 public:
     // construct and destruct
-    face(FT_Face handler);
+    explicit face(FT_Face handler);
 
     face(const face&) = delete;
 
-    face(face&& face);
+    face(face&& face) noexcept;
 
     ~face();
 
@@ -60,7 +55,7 @@ public:
     // operators
     face& operator=(const face&) = delete;
 
-    face& operator=(face&& face);
+    face& operator=(face&& face) noexcept;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(face);

@@ -15,7 +15,7 @@
         std::vector<std::wstring> command_line_arguments;               \
         for(int i = 0; i < argc; i++) command_line_arguments.push_back( \
             std::wstring(argv[i])                                       \
-        );                                                                  
+        );                                                                      
 #endif
         
 

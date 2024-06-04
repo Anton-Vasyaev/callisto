@@ -5,13 +5,13 @@
 // 3rd party
 #include <boost/current_function.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include <opencv2/opencv.hpp>
 
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/ios/fstream_aux.hpp>
 #include <callisto/framework/string.hpp>
-#include <callisto/framework/exception.hpp>
 #include <callisto/framework/native/numeric_type.hpp>
 // project
 #include "auxiliary.hpp"
@@ -20,12 +20,7 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-} // namespace
-
-cv::Mat imdecode(const void* buffer_ptr, size_t buffer_size, int flags = cv::IMREAD_UNCHANGED);
+cv::Mat imdecode(const void* buffer_ptr, int buffer_size, int flags = cv::IMREAD_UNCHANGED);
 
 std::vector<uint8_t>
 imencode(cv::Mat img, const char* ext, const std::vector<int>& params = std::vector<int>());
@@ -34,6 +29,7 @@ template<typename path_type>
 cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
 {
     namespace b_fs = boost::filesystem;
+    namespace c_f  = callisto::framework;
 
     auto file_handler = b_fs::ifstream(path, std::ios::binary);
 
@@ -63,6 +59,7 @@ template<typename path_type>
 void imwrite(path_type* path, const cv::Mat& img)
 {
     namespace b_fs = boost::filesystem;
+    namespace c_f  = callisto::framework;
 
     auto file_handler = b_fs::ofstream(path, std::ios::binary);
 
@@ -85,7 +82,10 @@ void imwrite(path_type* path, const cv::Mat& img)
 
     cv::imencode(ext, img, encoded_data);
 
-    file_handler.write((const char*)encoded_data.data(), encoded_data.size());
+    file_handler.write(
+        reinterpret_cast<const char*>(encoded_data.data()),
+        static_cast<std::streamsize>(encoded_data.size())
+    );
 }
 
 template<typename path_type>

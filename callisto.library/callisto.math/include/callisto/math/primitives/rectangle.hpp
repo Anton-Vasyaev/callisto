@@ -26,20 +26,15 @@ struct rectangle
 
 #pragma region static_methods
 
-    inline static constexpr rectangle empty() noexcept { return rectangle(0, 0, 0, 0); }
+    static constexpr rectangle empty() noexcept { return rectangle(0, 0, 0, 0); }
 
 #pragma endregion
 
 #pragma region construct_and_destruct
 
-    inline constexpr rectangle() noexcept {}
+    constexpr rectangle() = default;
 
-    inline constexpr rectangle(
-        value_type x,
-        value_type y,
-        value_type width,
-        value_type height
-    ) noexcept
+    constexpr rectangle(value_type x, value_type y, value_type width, value_type height) noexcept
     {
         this->x = x;
         this->y = y;
@@ -48,10 +43,7 @@ struct rectangle
         this->height = height;
     }
 
-    inline constexpr rectangle(
-        const point2<value_type>& position,
-        const size2<value_type>&  size
-    ) noexcept
+    constexpr rectangle(const point2<value_type>& position, const size2<value_type>& size) noexcept
     {
         x = position.x;
         y = position.y;
@@ -65,12 +57,12 @@ struct rectangle
 #pragma region methods
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return rectangle<cast_type>(x, y, width, height);
     }
 
-    inline constexpr point2<value_type> center() const noexcept
+    constexpr point2<value_type> center() const noexcept
     {
         auto x_c = x + width / 2;
         auto y_c = y + height / 2;
@@ -78,23 +70,17 @@ struct rectangle
         return point2<value_type>(x_c, y_c);
     }
 
-    inline constexpr point2<value_type> position() const noexcept
-    {
-        return point2<value_type>(x, y);
-    }
+    constexpr point2<value_type> position() const noexcept { return point2<value_type>(x, y); }
 
-    inline void set_position(const point2<value_type>& point) noexcept
+    void set_position(const point2<value_type>& point) noexcept
     {
         x = point.x;
         y = point.y;
     }
 
-    inline constexpr size2<value_type> size() const noexcept
-    {
-        return size2<value_type>(width, height);
-    }
+    constexpr size2<value_type> size() const noexcept { return size2<value_type>(width, height); }
 
-    inline void set_size(const size2<value_type> size) noexcept
+    void set_size(const size2<value_type> size) noexcept
     {
         width  = size.width;
         height = size.height;
@@ -104,12 +90,12 @@ struct rectangle
 
 #pragma region operators
 
-    inline constexpr bool operator==(const rectangle& other) const noexcept
+    constexpr bool operator==(const rectangle& other) const noexcept
     {
         return x == other.x && y == other.y && other.width == width && other.height == height;
     }
 
-    inline constexpr bool operator!=(const rectangle& other) const noexcept
+    constexpr bool operator!=(const rectangle& other) const noexcept
     {
         return x != other.x || y != other.y || width != width || height != height;
     }

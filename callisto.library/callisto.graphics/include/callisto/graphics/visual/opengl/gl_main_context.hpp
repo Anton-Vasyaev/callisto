@@ -28,7 +28,7 @@ public:
     // construct and destruct
     gl_main_context();
 
-    virtual ~gl_main_context();
+    ~gl_main_context() override;
 
     // deleted
     gl_main_context(const gl_main_context&) = delete;
@@ -40,9 +40,9 @@ public:
     gl_main_context& operator=(gl_main_context&&) = delete;
 
     // implement i_main_context
-    virtual const std::vector<std::unique_ptr<i_monitor_context>>& get_monitors() override;
+    const std::vector<std::unique_ptr<i_monitor_context>>& get_monitors() override;
 
-    virtual i_monitor_context& get_primary_monitor() override;
+    i_monitor_context& get_primary_monitor() override;
 };
 
 } // namespace callisto::graphics

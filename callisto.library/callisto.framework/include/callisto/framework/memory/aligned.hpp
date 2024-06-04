@@ -27,13 +27,14 @@ void mem_aligned_free(void* pointer) noexcept;
 template<typename value_type>
 void aligned_free(value_type* ptr) noexcept
 {
-    mem_aligned_free((void*)ptr);
+    mem_aligned_free(reinterpret_cast<void*>(ptr));
 }
 
 template<typename value_type, typename other_type>
 unique_memory_type<value_type> cast_unique_memory(unique_memory_type<other_type>& memory)
 {
-    return unique_memory_type<value_type>((value_type*)memory.release(), aligned_free<value_type>);
+    return unique_memory_type<
+        value_type>(reinterpret_cast<value_type*>(memory.release()), aligned_free<value_type>);
 };
 
 /// @brief Allocates aligned type-present memory.
@@ -45,13 +46,12 @@ unique_memory_type<value_type> cast_unique_memory(unique_memory_type<other_type>
 template<typename value_type>
 value_type* aligned_alloc(size_t size, size_t aligned_size)
 {
-    auto ptr = mem_aligned_alloc(size * sizeof(value_type), aligned_size);
+    auto* ptr = mem_aligned_alloc(size * sizeof(value_type), aligned_size);
 
     if (ptr == nullptr) throw std::bad_alloc();
 
-    return (value_type*)ptr;
+    return reinterpret_cast<value_type*>(ptr);
 }
-
 
 /// @brief Allocates aligned type-memory and wrap to unique pointer.
 /// @tparam value_type Basic data type of memory.

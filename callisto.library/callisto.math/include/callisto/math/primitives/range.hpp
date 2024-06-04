@@ -16,19 +16,19 @@ struct range
 
     value_type max;
 
-    inline constexpr range() {}
+    constexpr range() = default;
 
-    inline constexpr range(value_type min, value_type max) noexcept
+    constexpr range(value_type min, value_type max) noexcept
     {
         this->min = min;
         this->max = max;
     }
 
     // methods
-    inline constexpr auto distance() const noexcept { return this->max - this->min; }
+    constexpr auto distance() const noexcept { return this->max - this->min; }
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return range<cast_type>(min, max);
     }

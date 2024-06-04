@@ -26,7 +26,7 @@ public:
 
     library(library&& lib) = delete;
 
-    ~library();
+    ~library() noexcept;
 
     // methods
     face new_face(std::string_view filepath_name, FT_Long face_index);

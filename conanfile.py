@@ -133,7 +133,7 @@ class CallistoConan(ConanFile):
     dependency_graph : DependencyGraph
 
     name = 'callisto'
-    version = '0.4.0d2'
+    version = '0.4.0d3'
     license = 'BSD'
     package_typ='library'
     settings = 'os', 'compiler', 'build_type', 'arch'

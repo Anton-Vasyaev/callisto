@@ -26,7 +26,7 @@ void face::__destroy() noexcept
     __handler = nullptr;
 }
 
-void face::__move_from(face&& face)
+void face::__move_from(face&& face) noexcept
 {
     __handler      = face.__handler;
     face.__handler = nullptr;
@@ -38,7 +38,7 @@ void face::__move_from(face&& face)
 
 face::face(FT_Face handler) { __handler = handler; }
 
-face::face(face&& face) { __move_from(std::move(face)); }
+face::face(face&& face) noexcept { __move_from(std::move(face)); }
 
 face::~face() { __destroy(); }
 
@@ -93,7 +93,7 @@ const FT_Face face::get_handler() const { return __handler; }
 
 #pragma region operators
 
-face& face::operator=(face&& face)
+face& face::operator=(face&& face) noexcept
 {
     __destroy();
     __move_from(std::move(face));

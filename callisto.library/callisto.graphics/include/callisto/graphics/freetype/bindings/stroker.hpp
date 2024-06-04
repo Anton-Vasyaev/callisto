@@ -22,11 +22,11 @@ class stroker
 
 public:
     // construct and destruct
-    stroker(FT_Stroker handler);
+    explicit stroker(FT_Stroker handler);
 
     stroker(const stroker&) = delete;
 
-    stroker(stroker&& stroker);
+    stroker(stroker&& stroker) noexcept;
 
     ~stroker();
 
@@ -45,7 +45,7 @@ public:
     // operators
     stroker& operator=(const stroker&) = delete;
 
-    stroker& operator=(stroker&& other_stroker);
+    stroker& operator=(stroker&& other_stroker) noexcept;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(stroker);

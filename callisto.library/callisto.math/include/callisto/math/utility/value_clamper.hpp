@@ -8,14 +8,9 @@
 namespace callisto::math
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 /// @brief Provides automatically value clamping on assignment.
 /// @tparam _value_type Arithmetic data type of clamped value.
-template<c_f::concept_arithmetic _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 class value_clamper
 {
 public:
@@ -28,20 +23,20 @@ private:
 
     value_type __max;
 
-    inline constexpr void set_value(value_type other_value)
+    constexpr void set_value(value_type other_value)
     {
         __value = std::clamp<value_type>(other_value, __min, __max);
     }
 
 public:
     /// @brief Constructs a new value clamper.
-    inline constexpr value_clamper() {}
+    constexpr value_clamper() = default;
 
     /// @brief Constructs a new value clamper.
     /// @param value Fixed value.
     /// @param min   Min value of clamping.
     /// @param max   Max value of clamping.
-    inline constexpr value_clamper(value_type value, value_type min, value_type max)
+    constexpr value_clamper(value_type value, value_type min, value_type max)
     {
         __min = min;
         __max = max;
@@ -51,14 +46,14 @@ public:
 
     /// @brief Returns value.
     /// @return value.
-    inline constexpr value_type value() const noexcept { return __value; }
+    constexpr value_type value() const noexcept { return __value; }
 
     /// @brief operator=
     /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
     template<typename other_value_type>
-    inline constexpr value_clamper& operator=(other_value_type v) noexcept
+    constexpr value_clamper& operator=(other_value_type v) noexcept
     {
         set_value(v);
 
@@ -70,7 +65,7 @@ public:
     /// @param v Value.
     /// @return value_clamper&
     template<typename other_value_type>
-    inline constexpr value_clamper& operator+=(other_value_type v) noexcept
+    constexpr value_clamper& operator+=(other_value_type v) noexcept
     {
         set_value(__value + v);
 
@@ -82,7 +77,7 @@ public:
     /// @param v Value.
     /// @return value_clamper&
     template<typename other_value_type>
-    inline constexpr value_clamper& operator-=(other_value_type v) noexcept
+    constexpr value_clamper& operator-=(other_value_type v) noexcept
     {
         set_value(__value - v);
 
@@ -94,7 +89,7 @@ public:
     /// @param v Value.
     /// @return value_clamper&
     template<typename other_value_type>
-    inline constexpr value_clamper& operator*=(other_value_type v) noexcept
+    constexpr value_clamper& operator*=(other_value_type v) noexcept
     {
         set_value(__value * v);
 
@@ -106,7 +101,7 @@ public:
     /// @param v Value.
     /// @return value_clamper&
     template<typename other_value_type>
-    inline constexpr value_clamper& operator/=(other_value_type v) noexcept
+    constexpr value_clamper& operator/=(other_value_type v) noexcept
     {
         set_value(__value / v);
 

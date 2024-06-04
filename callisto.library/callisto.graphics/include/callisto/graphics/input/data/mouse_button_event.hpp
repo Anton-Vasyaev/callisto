@@ -14,4 +14,4 @@ struct mouse_button_event
     input_action action;
 };
 
-}
+} // namespace callisto::graphics

@@ -8,14 +8,9 @@
 namespace callisto::math
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 /// @brief Provides automatically value looping on assignment.
 /// @tparam _value_type Arithmetic data type of looped value.
-template<c_f::concept_arithmetic _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 class value_looper
 {
 public:
@@ -28,7 +23,7 @@ private:
 
     value_type __size;
 
-    inline constexpr void __set_value(value_type value)
+    constexpr void __set_value(value_type value)
     {
         value        = value - __start;
         auto mod_res = tmod(value, __size);
@@ -36,27 +31,27 @@ private:
     }
 
 public:
-    inline constexpr value_looper() {}
+    constexpr value_looper() = default;
 
     /// @brief Constructs a new value looper.
     /// @param value Loop value.
     /// @param start Start of loop.
     /// @param end End of loop.
-    inline constexpr value_looper(value_type value, value_type start, value_type end)
+    constexpr value_looper(value_type value, value_type start, value_type end)
     {
         __value = value;
         __start = start;
         __size  = end - start;
     }
 
-    inline constexpr value_type value() const noexcept { return __value; }
+    constexpr value_type value() const noexcept { return __value; }
 
     /// @brief operator=
     /// @tparam other_value_type
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    inline constexpr value_looper& operator=(other_value_type v)
+    constexpr value_looper& operator=(other_value_type v)
     {
         __set_value(v);
 
@@ -68,7 +63,7 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    inline constexpr value_looper& operator+=(other_value_type v)
+    constexpr value_looper& operator+=(other_value_type v)
     {
         __set_value(__value + v);
 
@@ -80,7 +75,7 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    inline constexpr value_looper& operator-=(other_value_type v)
+    constexpr value_looper& operator-=(other_value_type v)
     {
         __set_value(__value - v);
 
@@ -92,7 +87,7 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    inline constexpr value_looper& operator*=(other_value_type v)
+    constexpr value_looper& operator*=(other_value_type v)
     {
         __set_value(__value * v);
 
@@ -104,7 +99,7 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    inline constexpr value_looper& operator/=(other_value_type v)
+    constexpr value_looper& operator/=(other_value_type v)
     {
         __set_value(__value / v);
 

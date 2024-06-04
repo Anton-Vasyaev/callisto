@@ -29,7 +29,7 @@ void stroker::__destroy()
 
 stroker::stroker(FT_Stroker handler) { __handler = handler; }
 
-stroker::stroker(stroker&& stroker) { __move_from(std::move(stroker)); }
+stroker::stroker(stroker&& stroker) noexcept { __move_from(std::move(stroker)); }
 
 stroker::~stroker() { __destroy(); }
 
@@ -59,7 +59,7 @@ const FT_Stroker stroker::get_handler() const { return __handler; }
 
 #pragma region operators
 
-stroker& stroker::operator=(stroker&& other_stroker)
+stroker& stroker::operator=(stroker&& other_stroker) noexcept
 {
     __destroy();
     __move_from(std::move(other_stroker));

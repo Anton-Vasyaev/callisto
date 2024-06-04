@@ -16,7 +16,7 @@ namespace callisto::math
 struct point3op
 {
     template<typename type>
-    inline static constexpr bbox3<type> get_box_contour(std::span<point3<type>> points)
+    static constexpr bbox3<type> get_box_contour(std::span<point3<type>> points)
     {
         type min_x = points[0].x;
         type max_x = points[0].x;

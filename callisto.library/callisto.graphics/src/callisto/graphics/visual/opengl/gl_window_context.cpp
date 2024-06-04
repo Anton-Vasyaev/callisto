@@ -17,6 +17,7 @@
 #include <callisto/graphics/visual/opengl/auxiliary/input_auxiliary.hpp>
 
 namespace c_m = callisto::math;
+namespace c_f = callisto::framework;
 
 namespace callisto::graphics
 {
@@ -27,6 +28,7 @@ std::mutex gl_window_context::call_functions_mutex;
 
 #pragma region helpers
 
+// NOLINTBEGIN(misc-unused-parameters)
 void GLAPIENTRY opengl_debug_message_callback(
     GLenum        source,
     GLenum        type,
@@ -36,6 +38,7 @@ void GLAPIENTRY opengl_debug_message_callback(
     const GLchar* message,
     const void*   userParam
 )
+// NOLINTEND(misc-unused-parameters)
 {
     auto debug_source   = gl_debug_source_from_original(source);
     auto debug_type     = gl_debug_type_from_original(type);
@@ -86,7 +89,7 @@ void gl_window_context::context_mouse_button_callback(
 
 void gl_window_context::change_position_callback(GLFWwindow* window, int x_pos, int y_pos)
 {
-    auto window_context = call_functions.at(window);
+    auto* window_context = call_functions.at(window);
     window_context->position_processing(x_pos, y_pos);
 }
 
@@ -98,7 +101,7 @@ void gl_window_context::resize_callback(GLFWwindow* window, int width, int heigh
 
 void gl_window_context::context_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    auto window_context = call_functions.at(window);
+    auto* window_context = call_functions.at(window);
 
     window_context->viewport_value = c_m::size2i(width, height);
 
@@ -112,7 +115,7 @@ void gl_window_context::context_framebuffer_size_callback(GLFWwindow* window, in
 
 void gl_window_context::processing()
 {
-    while (this->processing_flag && !glfwWindowShouldClose(this->window_handler))
+    while (this->processing_flag && !static_cast<bool>(glfwWindowShouldClose(this->window_handler)))
     {
         glfwPollEvents();
 
@@ -124,13 +127,14 @@ void gl_window_context::processing()
         this->processing_signal_handler(*this);
 
         ImGui::Render();
-        auto draw_data = ImGui::GetDrawData();
-        if (draw_data) ImGui_ImplOpenGL3_RenderDrawData(draw_data);
+        auto* draw_data = ImGui::GetDrawData();
+        if (draw_data != nullptr) ImGui_ImplOpenGL3_RenderDrawData(draw_data);
 
         glfwSwapBuffers(this->window_handler);
     }
 }
 
+// NOLINTNEXTLINE(misc-unused-parameters)
 void gl_window_context::key_processing(int key, int scancode, int action, int mods)
 {
     key_event event;
@@ -151,6 +155,7 @@ void gl_window_context::cursor_position_processing(double xpos, double ypos)
     this->cursor_event_signal_handler(event);
 }
 
+// NOLINTNEXTLINE(misc-unused-parameters)
 void gl_window_context::mouse_button_processing(int button, int action, int mods)
 {
     mouse_button_event event;
@@ -182,8 +187,6 @@ void gl_window_context::resize_processing(int width, int height)
 #pragma endregion
 
 #pragma region construct_and_destruct
-
-gl_window_context::gl_window_context() {}
 
 gl_window_context::~gl_window_context()
 {
@@ -255,7 +258,7 @@ void gl_window_context::start_processing()
     }
 
     {
-        std::lock_guard<std::mutex> locker(call_functions_mutex);
+        const std::lock_guard<std::mutex> locker(call_functions_mutex);
         call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
             this->window_handler,
             this
@@ -277,15 +280,15 @@ void gl_window_context::start_processing()
             << c_f::error_tag_message("Failed to initialize glew");
     }
 
-    std::cout << "Vendor name:" << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "Version:" << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Vendor name:" << glGetString(GL_VENDOR) << "\n";
+    std::cout << "Version:" << glGetString(GL_VERSION) << "\n";
 
     // CHECK. для интеропа между GLFW и  IMGUI
     glfwSwapInterval(1);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    const ImGuiIO& io = ImGui::GetIO();
     (void)io;
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -320,7 +323,8 @@ void gl_window_context::start_processing()
         gl_window_context::context_framebuffer_size_callback
     );
 
-    int width, height;
+    int width;
+    int height;
     glfwGetFramebufferSize(this->window_handler, &width, &height);
     glViewport(0, 0, width, height);
     this->viewport_value = c_m::size2i(width, height);

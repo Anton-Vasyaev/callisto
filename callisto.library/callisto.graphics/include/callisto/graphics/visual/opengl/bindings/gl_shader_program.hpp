@@ -17,22 +17,17 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 class gl_shader_program
 {
     GLuint handler;
 
-    inline void move_from(gl_shader_program&& program)
+    void move_from(gl_shader_program&& program) noexcept
     {
         this->handler   = program.handler;
         program.handler = 0;
     }
 
-    inline void destruct()
+    void destruct() noexcept
     {
         if (this->handler != 0)
         {
@@ -47,26 +42,27 @@ public:
     gl_shader_program& operator=(const gl_shader_program&) = delete;
 
     // construct and destruct
-    inline gl_shader_program() : handler(0) {}
+    gl_shader_program() : handler(0) {}
 
     gl_shader_program(gl_shader& vertex_shader, gl_shader& fragment_shader);
 
-    inline gl_shader_program(gl_shader_program&& program) { this->move_from(std::move(program)); }
+    gl_shader_program(gl_shader_program&& program) noexcept { this->move_from(std::move(program)); }
 
-    inline ~gl_shader_program() { this->destruct(); }
+    ~gl_shader_program() noexcept { this->destruct(); }
 
     // methods
-    inline void use() { glUseProgram(this->handler); }
+    void use() const { glUseProgram(this->handler); }
 
-    inline gl_location get_uniform_location_nothrow(const char* uniform_name)
+    gl_location get_uniform_location_nothrow(const char* uniform_name)
     {
         auto location_idx = glGetUniformLocation(this->handler, uniform_name);
 
         return gl_location(location_idx);
     }
 
-    inline gl_location get_uniform_location(const char* uniform_name)
+    gl_location get_uniform_location(const char* uniform_name)
     {
+        namespace c_f = callisto::framework;
         auto location = get_uniform_location_nothrow(uniform_name);
 
         if (!location.is_exist())
@@ -80,8 +76,7 @@ public:
 
     // matrix
     template<typename int_type>
-    inline void
-    uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, float* matrix_ptr)
+    void uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, float* matrix_ptr)
     {
         glUniformMatrix4fv(
             static_cast<GLint>(location),
@@ -92,7 +87,7 @@ public:
     }
 
     template<typename int_type>
-    inline void uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, glm::mat4& mat)
+    void uniform_matrix_4fv(int_type location, GLsizei count, bool transpose, glm::mat4& mat)
     {
         glUniformMatrix4fv(
             static_cast<GLint>(location),
@@ -103,10 +98,10 @@ public:
     }
 
     // getters and settters
-    inline GLuint get_handler() const { return this->handler; }
+    GLuint get_handler() const { return this->handler; }
 
     // operator
-    inline gl_shader_program& operator=(gl_shader_program&& program)
+    gl_shader_program& operator=(gl_shader_program&& program) noexcept
     {
         this->destruct();
         this->move_from(std::move(program));

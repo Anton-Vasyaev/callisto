@@ -18,14 +18,18 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
 {
     if (bitmap.pitch <= 0)
     {
+        auto r = c_f::runtime_exception()
+                 << c_f::error_tag_message(c_f::_bs("freetype bitmap pitch <= 0: ", bitmap.pitch));
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message(c_f::_bs("freetype bitmap pitch <= 0: ", bitmap.pitch));
     }
 
-    auto data_ptr = (uint8_t*)bitmap.buffer;
+    auto* data_ptr = reinterpret_cast<uint8_t*>(bitmap.buffer);
 
     c_cv::image_type img_type;
-    size_t           height, width, stride;
+    size_t           height;
+    size_t           width;
+    size_t           stride;
     if (bitmap.pixel_mode == FT_Pixel_Mode::FT_PIXEL_MODE_GRAY)
     {
         img_type = c_cv::image_type::grayscale;
@@ -48,7 +52,8 @@ cv::Mat bitmap_auxiliary::get_mat_present(FT_Bitmap bitmap)
 
     auto mat_type = c_cv::make_type(c_f::numeric_type::uint8, img_type);
 
-    auto present_mat = cv::Mat(height, width, mat_type, data_ptr, stride);
+    auto present_mat
+        = cv::Mat(static_cast<int>(height), static_cast<int>(width), mat_type, data_ptr, stride);
 
     return present_mat;
 }

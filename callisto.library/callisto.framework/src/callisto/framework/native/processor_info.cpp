@@ -130,7 +130,7 @@ processor_info::__static_init__::__static_init__()
 
 #pragma region cpu_standard
 
-    if (!cpuid_present())
+    if (!static_cast<bool>(cpuid_present()))
     {
         not_init_error_message = "CPU Id not present\n";
         return;
@@ -204,55 +204,55 @@ processor_info::__static_init__::__static_init__()
 
 #ifdef CALLISTO_ARCHITECTURE_FAMILY_X86
 
-    feature_mmx = data.flags[CPU_FEATURE_MMX];
+    feature_mmx = static_cast<bool>(data.flags[CPU_FEATURE_MMX]);
 
-    feature_sse = data.flags[CPU_FEATURE_SSE];
+    feature_sse = static_cast<bool>(data.flags[CPU_FEATURE_SSE]);
 
-    feature_sse = data.flags[CPU_FEATURE_SSE2];
+    feature_sse = static_cast<bool>(data.flags[CPU_FEATURE_SSE2]);
 
-    feature_ssse_3 = data.flags[CPU_FEATURE_SSSE3];
+    feature_ssse_3 = static_cast<bool>(data.flags[CPU_FEATURE_SSSE3]);
 
-    feature_sse_4_1 = data.flags[CPU_FEATURE_SSE4_1];
+    feature_sse_4_1 = static_cast<bool>(data.flags[CPU_FEATURE_SSE4_1]);
 
-    feature_sse_4_2 = data.flags[CPU_FEATURE_SSE4_2];
+    feature_sse_4_2 = static_cast<bool>(data.flags[CPU_FEATURE_SSE4_2]);
 
-    feature_avx = data.flags[CPU_FEATURE_AVX];
+    feature_avx = static_cast<bool>(data.flags[CPU_FEATURE_AVX]);
 
-    feature_mmxext = data.flags[CPU_FEATURE_MMXEXT];
+    feature_mmxext = static_cast<bool>(data.flags[CPU_FEATURE_MMXEXT]);
 
-    feature_3dnow = data.flags[CPU_FEATURE_3DNOW];
+    feature_3dnow = static_cast<bool>(data.flags[CPU_FEATURE_3DNOW]);
 
-    feature_3dnow_ext = data.flags[CPU_FEATURE_3DNOWEXT];
+    feature_3dnow_ext = static_cast<bool>(data.flags[CPU_FEATURE_3DNOWEXT]);
 
-    feature_sse_4a = data.flags[CPU_FEATURE_SSE4A];
+    feature_sse_4a = static_cast<bool>(data.flags[CPU_FEATURE_SSE4A]);
 
-    feature_3dnow_prefetch = data.flags[CPU_FEATURE_3DNOWPREFETCH];
+    feature_3dnow_prefetch = static_cast<bool>(data.flags[CPU_FEATURE_3DNOWPREFETCH]);
 
-    feature_fma_3 = data.flags[CPU_FEATURE_FMA3];
+    feature_fma_3 = static_cast<bool>(data.flags[CPU_FEATURE_FMA3]);
 
-    feature_fma_4 = data.flags[CPU_FEATURE_FMA4];
+    feature_fma_4 = static_cast<bool>(data.flags[CPU_FEATURE_FMA4]);
 
-    feature_avx_2 = data.flags[CPU_FEATURE_AVX2];
+    feature_avx_2 = static_cast<bool>(data.flags[CPU_FEATURE_AVX2]);
 
-    feature_avx_512_f = data.flags[CPU_FEATURE_AVX512F];
+    feature_avx_512_f = static_cast<bool>(data.flags[CPU_FEATURE_AVX512F]);
 
-    feature_avx_512_dq = data.flags[CPU_FEATURE_AVX512DQ];
+    feature_avx_512_dq = static_cast<bool>(data.flags[CPU_FEATURE_AVX512DQ]);
 
-    feature_avx_512_pf = data.flags[CPU_FEATURE_AVX512PF];
+    feature_avx_512_pf = static_cast<bool>(data.flags[CPU_FEATURE_AVX512PF]);
 
-    feature_avx_512_er = data.flags[CPU_FEATURE_AVX512ER];
+    feature_avx_512_er = static_cast<bool>(data.flags[CPU_FEATURE_AVX512ER]);
 
-    feature_avx_512_cd = data.flags[CPU_FEATURE_AVX512CD];
+    feature_avx_512_cd = static_cast<bool>(data.flags[CPU_FEATURE_AVX512CD]);
 
-    feature_avx_512_bw = data.flags[CPU_FEATURE_AVX512BW];
+    feature_avx_512_bw = static_cast<bool>(data.flags[CPU_FEATURE_AVX512BW]);
 
-    feature_avx_512_vl = data.flags[CPU_FEATURE_AVX512VL];
+    feature_avx_512_vl = static_cast<bool>(data.flags[CPU_FEATURE_AVX512VL]);
 
-    feature_avx_512_vnni = data.flags[CPU_FEATURE_AVX512VNNI];
+    feature_avx_512_vnni = static_cast<bool>(data.flags[CPU_FEATURE_AVX512VNNI]);
 
-    feature_avx_512_vbmi = data.flags[CPU_FEATURE_AVX512VBMI];
+    feature_avx_512_vbmi = static_cast<bool>(data.flags[CPU_FEATURE_AVX512VBMI]);
 
-    feature_avx_512_vbmi_2 = data.flags[CPU_FEATURE_AVX512VBMI2];
+    feature_avx_512_vbmi_2 = static_cast<bool>(data.flags[CPU_FEATURE_AVX512VBMI2]);
 
 #endif
 }

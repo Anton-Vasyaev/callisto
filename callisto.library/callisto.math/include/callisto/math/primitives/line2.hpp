@@ -18,13 +18,13 @@ struct line2
     value_type x2;
     value_type y2;
 
-    inline static constexpr line2 empty() noexcept { return line2(0, 0, 0, 0); }
+    static constexpr line2 empty() noexcept { return line2(0, 0, 0, 0); }
 
 #pragma region construct_and_destruct
 
-    inline constexpr line2() {}
+    constexpr line2() = default;
 
-    inline constexpr line2(value_type x1, value_type y1, value_type x2, value_type y2) noexcept
+    constexpr line2(value_type x1, value_type y1, value_type x2, value_type y2) noexcept
     {
         this->x1 = x1;
         this->y1 = y1;
@@ -33,7 +33,7 @@ struct line2
         this->y2 = y2;
     }
 
-    inline constexpr line2(const point2<value_type>& start, const point2<value_type>& end) noexcept
+    constexpr line2(const point2<value_type>& start, const point2<value_type>& end) noexcept
     {
         x1 = start.x;
         y1 = start.y;
@@ -42,7 +42,7 @@ struct line2
         y2 = end.y;
     }
 
-    inline constexpr line2(const line2& other_line) noexcept
+    constexpr line2(const line2& other_line) noexcept
     {
         x1 = other_line.x1;
         y1 = other_line.y1;
@@ -56,16 +56,16 @@ struct line2
 #pragma region methods
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return line2<cast_type>(x1, y1, x2, y2);
     }
 
-    inline constexpr auto first() const noexcept { return point2<value_type>(x1, y1); }
+    constexpr auto first() const noexcept { return point2<value_type>(x1, y1); }
 
-    inline constexpr auto second() const noexcept { return point2<value_type>(x2, y2); }
+    constexpr auto second() const noexcept { return point2<value_type>(x2, y2); }
 
-    inline constexpr auto center() const noexcept
+    constexpr auto center() const noexcept
     {
         auto x_c = (x1 + x2) / 2;
         auto y_c = (y1 + y2) / 2;
@@ -73,13 +73,13 @@ struct line2
         return point2<value_type>(x_c, y_c);
     }
 
-    inline constexpr void set_first(const point2<value_type>& point) noexcept
+    constexpr void set_first(const point2<value_type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
     }
 
-    inline constexpr void set_second(const point2<value_type>& point) noexcept
+    constexpr void set_second(const point2<value_type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -89,13 +89,13 @@ struct line2
 
 #pragma region operators
 
-    inline constexpr bool operator==(const line2& other_line) const noexcept
+    constexpr bool operator==(const line2& other_line) const noexcept
     {
         return this->x1 == other_line.x1 && this->x2 == other_line.x2 && this->y1 == other_line.y1
                && this->y2 == other_line.y2;
     }
 
-    inline constexpr bool operator!=(const line2& other_line) const noexcept
+    constexpr bool operator!=(const line2& other_line) const noexcept
     {
         return this->x1 != other_line.x1 || this->x2 != other_line.x2 || this->y1 != other_line.y1
                || this->y2 != other_line.y2;

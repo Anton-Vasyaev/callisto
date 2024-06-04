@@ -15,15 +15,9 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f  = callisto::framework;
-namespace c_cv = callisto::opencv;
-} // namespace
-
 class gl_texture2d
 {
-    GLuint handler;
+    GLuint __handler;
 
     struct conversion_formats
     {
@@ -32,9 +26,12 @@ class gl_texture2d
     };
 
     // static methods
-    inline static conversion_formats
-    get_format_from_img_type(c_cv::image_type t, bool validate = true)
+    static conversion_formats
+    get_format_from_img_type(callisto::opencv::image_type t, bool validate = true)
     {
+        namespace c_f  = callisto::framework;
+        namespace c_cv = callisto::opencv;
+
         switch (t)
         {
             case c_cv::image_type::bgr : return { GL_RGB, GL_BGR };
@@ -44,82 +41,104 @@ class gl_texture2d
             case c_cv::image_type::grayscale : return { GL_RED, GL_RED };
 
             default :
-                CALLISTO_THROW_EXCEPTION(opengl_exception()) << c_f::error_tag_message(
-                    c_f::_bs("invalid img type for generate gl_texture2d:", c_cv::image_type_str(t))
-                );
+                if (validate)
+                {
+                    CALLISTO_THROW_EXCEPTION(opengl_exception()) << c_f::error_tag_message(c_f::_bs(
+                        "invalid img type for generate gl_texture2d:",
+                        c_cv::image_type_str(t)
+                    ));
+                }
+                else
+                {
+                    return { GL_FALSE, GL_FALSE };
+                }
         }
     }
 
     // private methods
-    inline void destruct()
+    void destruct() noexcept
     {
-        if (this->handler != 0)
+        if (__handler != 0)
         {
-            glDeleteTextures(1, &(this->handler));
+            glDeleteTextures(1, &(__handler));
         }
     }
 
-    inline void move_from(gl_texture2d&& texture)
+    void move_from(gl_texture2d&& texture) noexcept
     {
-        this->handler   = texture.handler;
-        texture.handler = 0;
+        __handler         = texture.__handler;
+        texture.__handler = 0;
     }
+
+    void __initialize_data(const cv::Mat& img, callisto::opencv::image_type img_type);
 
 public:
-    // deleted functions
+    // construct and destruct
+    gl_texture2d() : __handler(0) {}
+
     gl_texture2d(const gl_texture2d&) = delete;
 
-    gl_texture2d& operator=(const gl_texture2d&) = delete;
+    gl_texture2d(gl_texture2d&& texture) noexcept { move_from(std::move(texture)); }
 
-    // construct and destruct
-    inline gl_texture2d() : handler(0) {}
-
-    inline gl_texture2d(gl_texture2d&& texture) { this->move_from(std::move(texture)); }
-
-    gl_texture2d(const cv::Mat& img, c_cv::image_type img_type = c_cv::image_type::unknown);
-
-    inline gl_texture2d(const c_cv::mat_holder& holder)
+    explicit gl_texture2d(
+        const cv::Mat&               img,
+        callisto::opencv::image_type img_type = callisto::opencv::image_type::unknown
+    )
     {
-        holder.validate(BOOST_CURRENT_FUNCTION);
-
-        gl_texture2d(holder.mat(), holder.get_image_type());
+        __initialize_data(img, img_type);
     }
 
-    inline ~gl_texture2d() { this->destruct(); }
+    explicit gl_texture2d(const callisto::opencv::mat_holder& holder)
+    {
+        holder.validate();
+
+        __initialize_data(holder.mat(), holder.get_image_type());
+    }
+
+    ~gl_texture2d() noexcept { destruct(); }
 
     // methods
-    inline void bind() { glBindTexture(GL_TEXTURE_2D, this->handler); }
+    void bind() { glBindTexture(GL_TEXTURE_2D, __handler); }
 
-    inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
 
-    inline void generate_mipmap() { glGenerateMipmap(GL_TEXTURE_2D); }
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void generate_mipmap() { glGenerateMipmap(GL_TEXTURE_2D); }
 
     // glTexParameteri getters & setters
-    inline void set_texture_wrap_s(GLint param)
+
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void set_texture_wrap_s(GLint param)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, param);
     }
 
-    inline void set_texture_wrap_t(GLint param)
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void set_texture_wrap_t(GLint param)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, param);
     }
 
-    inline void set_texture_min_filter(GLint param)
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void set_texture_min_filter(GLint param)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
     }
 
-    inline void set_texture_mag_filter(GLint param)
+    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+    void set_texture_mag_filter(GLint param)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
     }
 
     // operators
-    inline gl_texture2d& operator=(gl_texture2d&& texture)
+    gl_texture2d& operator=(const gl_texture2d&) = delete;
+
+    gl_texture2d& operator=(gl_texture2d&& texture) noexcept
     {
-        this->destruct();
-        this->move_from(std::move(texture));
+        destruct();
+        move_from(std::move(texture));
 
         return *this;
     }

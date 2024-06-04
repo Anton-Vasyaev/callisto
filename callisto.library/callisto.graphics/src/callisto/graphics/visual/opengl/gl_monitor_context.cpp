@@ -5,6 +5,8 @@
 // project
 #include <callisto/framework/exception.hpp>
 
+namespace c_f = callisto::framework;
+
 namespace callisto::graphics
 {
 
@@ -12,8 +14,9 @@ namespace callisto::graphics
 
 gl_monitor_context::gl_monitor_context(GLFWmonitor* monitor_handler)
 {
-    const GLFWvidmode* mode       = glfwGetVideoMode(monitor_handler);
-    int                real_width = 0, real_height = 0;
+    const GLFWvidmode* mode        = glfwGetVideoMode(monitor_handler);
+    int                real_width  = 0;
+    int                real_height = 0;
     glfwGetMonitorPhysicalSize(monitor_handler, &real_width, &real_height);
 
     this->monitor_handler   = monitor_handler;
@@ -21,7 +24,7 @@ gl_monitor_context::gl_monitor_context(GLFWmonitor* monitor_handler)
     this->_size.height      = mode->height;
     this->_real_size.width  = real_width;
     this->_real_size.height = real_height;
-    this->_dpi              = _size.width / (real_height / 25.4f);
+    this->_dpi = static_cast<float>(_size.width) / (static_cast<float>(real_height) / 25.4F);
 }
 
 gl_monitor_context::~gl_monitor_context() {}
@@ -30,9 +33,9 @@ gl_monitor_context::~gl_monitor_context() {}
 
 #pragma region implement_i_monitor_context
 
-c_m::size2i gl_monitor_context::size() const { return this->_size; }
+callisto::math::size2i gl_monitor_context::size() const { return this->_size; }
 
-c_m::size2i gl_monitor_context::real_size() const { return this->_real_size; }
+callisto::math::size2i gl_monitor_context::real_size() const { return this->_real_size; }
 
 float gl_monitor_context::dpi() const { return this->_dpi; }
 
@@ -44,7 +47,7 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
     auto window_context = std::unique_ptr<i_window_context>();
     window_context.reset(new gl_window_context());
 
-    auto window_handler = (GLFWwindow*)nullptr;
+    GLFWwindow* window_handler = nullptr;
 
     auto validate_glfw_window_nullptr = [](GLFWwindow* window_handler)
     {
@@ -68,7 +71,6 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
     }
     else if (options.mode == window_mode::borderless)
     {
-        int value = 0;
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         window_handler
             = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
@@ -84,7 +86,7 @@ std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_optio
 
     glfwSetWindowPos(window_handler, window_position.x, window_position.y);
 
-    auto window_ptr = reinterpret_cast<gl_window_context*>(window_context.get());
+    auto* window_ptr = reinterpret_cast<gl_window_context*>(window_context.get());
 
     window_ptr->options                = options;
     window_ptr->window_handler         = window_handler;

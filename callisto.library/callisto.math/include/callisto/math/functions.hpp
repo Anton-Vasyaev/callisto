@@ -12,13 +12,13 @@ namespace callisto::math
 {
 
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto min_f(type value, type min) noexcept
+constexpr auto min_f(type value, type min) noexcept
 {
     return value < min ? value : min;
 }
 
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto max_f(type value, type max) noexcept
+constexpr auto max_f(type value, type max) noexcept
 {
     return value > max ? value : max;
 }
@@ -32,7 +32,7 @@ inline constexpr auto max_f(type value, type max) noexcept
 /// @param max_val max value of clamping.
 /// @return Clamped value.
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto clamp_f(type value, type min_val, type max_val) noexcept
+constexpr auto clamp_f(type value, type min_val, type max_val) noexcept
 {
     return min_f(max_val, max_f(min_val, value));
 }
@@ -46,13 +46,13 @@ inline constexpr auto clamp_f(type value, type min_val, type max_val) noexcept
 /// @param right Right border of range.
 /// @return Range value.
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto norm_on_range(type value, type left, type right) noexcept
+constexpr auto norm_on_range(type value, type left, type right) noexcept
 {
     return left + value * (right - left);
 }
 
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto tmod(type value, type module) noexcept
+constexpr auto tmod(type value, type module) noexcept
 {
     if constexpr (std::is_floating_point_v<type>)
     {
@@ -65,13 +65,13 @@ inline constexpr auto tmod(type value, type module) noexcept
 }
 
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto deg2rad(type degree)
+constexpr auto deg2rad(type degree)
 {
     return degree / degree_per_radian;
 }
 
 template<callisto::framework::concept_arithmetic type>
-inline constexpr auto rad2deg(type radian)
+constexpr auto rad2deg(type radian)
 {
     return radian / radian_per_degree;
 }

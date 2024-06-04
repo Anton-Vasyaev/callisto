@@ -31,7 +31,7 @@ struct freetype_native_function_exception : public virtual freetype_exception
     {
     }
 
-    virtual std::string form_error_message() const
+    std::string form_error_message() const override
     {
         return c_f::_bs(
             "error during call freetype native function \'",

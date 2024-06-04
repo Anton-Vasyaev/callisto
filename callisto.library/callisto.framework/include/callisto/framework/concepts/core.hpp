@@ -4,17 +4,16 @@
 #include <concepts>
 #include <type_traits>
 
-
 namespace callisto::framework
 {
 
 /// @brief Sets the constraint: type must be arithmetic.
 template<typename type>
-concept concept_arithmetic = std::is_arithmetic<type>::value;
+concept concept_arithmetic = std::is_arithmetic_v<type>;
 
 /// @brief Sets the constraint: type must be fundamental.
 template<typename type>
-concept concept_fundamental = std::is_fundamental<type>::value;
+concept concept_fundamental = std::is_fundamental_v<type>;
 
 /// @brief Sets the constraint: type must be integer.
 template<typename type>

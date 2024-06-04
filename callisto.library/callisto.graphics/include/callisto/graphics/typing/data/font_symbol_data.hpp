@@ -18,7 +18,7 @@ class font_symbol_data
 
 public:
     // construct and destruct
-    font_symbol_data();
+    font_symbol_data() = default;
 
     font_symbol_data(const font_symbol_data&) = delete;
 
@@ -26,7 +26,7 @@ public:
 
     font_symbol_data(const font_symbol_metrics& metrics, cv::Mat&& bitmap);
 
-    font_symbol_data(font_symbol_data&& info) = default;
+    font_symbol_data(font_symbol_data&& info) noexcept = default;
 
     // methods
     font_symbol_data clone() const;
@@ -43,7 +43,7 @@ public:
     // operators
     font_symbol_data& operator=(const font_symbol_data&) = delete;
 
-    font_symbol_data& operator=(font_symbol_data&& info) = default;
+    font_symbol_data& operator=(font_symbol_data&& info) noexcept = default;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(font_symbol_data);

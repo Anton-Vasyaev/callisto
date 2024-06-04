@@ -12,7 +12,7 @@ namespace callisto::math
 struct vector2op
 {
     template<typename type>
-    inline static constexpr auto square_of_length(const vector2<type>& vector) noexcept
+    static constexpr auto square_of_length(const vector2<type>& vector) noexcept
     {
         auto& x = vector.x;
         auto& y = vector.y;
@@ -21,14 +21,14 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr double length(const vector2<type>& vector) noexcept
+    static constexpr double length(const vector2<type>& vector) noexcept
     {
         double square_len = square_of_length(vector);
         return std::sqrt(square_len);
     }
 
     template<typename type>
-    inline static constexpr auto
+    static constexpr auto
     normalize(const vector2<type>& vector, double normalize_value = 1.0) noexcept
     {
         auto scale = normalize_value / length(vector);
@@ -40,8 +40,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr auto
-    dot_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
+    static constexpr auto dot_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -53,7 +52,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr double
+    static constexpr double
     cos_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto dot_prod       = dot_product(vec1, vec2);
@@ -63,7 +62,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr double
+    static constexpr double
     angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto cos_value = cos_angle(vec1, vec2, eps);
@@ -72,7 +71,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr double
+    static constexpr double
     pseudo_scalar_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
@@ -85,7 +84,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr double
+    static constexpr double
     sign_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : -1;
@@ -96,7 +95,7 @@ struct vector2op
     }
 
     template<typename type>
-    inline static constexpr auto from_line(const line2<type>& line) noexcept
+    static constexpr auto from_line(const line2<type>& line) noexcept
     {
         return point2<type>(line.x2 - line.x1, line.y2 - line.y1);
     }

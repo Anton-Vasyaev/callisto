@@ -18,7 +18,7 @@ void bitmap_glyph::__destroy() noexcept
     __handler = nullptr;
 }
 
-void bitmap_glyph::__move_from(bitmap_glyph&& glyph)
+void bitmap_glyph::__move_from(bitmap_glyph&& glyph) noexcept
 {
     __handler       = glyph.__handler;
     glyph.__handler = nullptr;
@@ -30,7 +30,7 @@ void bitmap_glyph::__move_from(bitmap_glyph&& glyph)
 
 bitmap_glyph::bitmap_glyph(FT_Glyph handler) { __handler = handler; }
 
-bitmap_glyph::bitmap_glyph(bitmap_glyph&& glyph) { __move_from(std::move(glyph)); }
+bitmap_glyph::bitmap_glyph(bitmap_glyph&& glyph) noexcept { __move_from(std::move(glyph)); }
 
 bitmap_glyph::~bitmap_glyph() { __destroy(); }
 
@@ -40,7 +40,7 @@ bitmap_glyph::~bitmap_glyph() { __destroy(); }
 
 cv::Mat bitmap_glyph::get_mat_present()
 {
-    auto bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(__handler);
+    auto* bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(__handler);
 
     return bitmap_auxiliary::get_mat_present(bitmap_glyph->bitmap);
 }
@@ -60,7 +60,7 @@ const FT_BitmapGlyph bitmap_glyph::get_handler() const
 
 #pragma region operators
 
-bitmap_glyph& bitmap_glyph::operator=(bitmap_glyph&& glyph)
+bitmap_glyph& bitmap_glyph::operator=(bitmap_glyph&& glyph) noexcept
 {
     __destroy();
     __move_from(std::move(glyph));

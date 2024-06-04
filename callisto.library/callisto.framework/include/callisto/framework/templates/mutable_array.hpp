@@ -3,6 +3,7 @@
 // std
 #include <cstddef>
 #include <algorithm>
+#include <array>
 
 namespace callisto::framework
 {
@@ -23,92 +24,84 @@ public:
     static const size_t array_size = n;
 
 private:
-    value_type data_array[array_size];
+    std::array<value_type, n> __data_array;
 
-    size_t mutable_size = 0;
+    size_t __mutable_size = 0;
 
-public:
-    inline mutable_array() noexcept {}
-
-    inline mutable_array(const mutable_array& array) noexcept { this->copy_from(array); }
-
-    inline mutable_array(mutable_array&& array) noexcept { this->move_from(std::move(array)); }
-
-    // methods
-    inline void copy_from(const mutable_array& array) noexcept
+    void __copy_from(const mutable_array& array) noexcept
     {
-        std::copy_n(array.data_array, array.mutable_size, this->data_array);
-        this->mutable_size = array.mutable_size;
+        std::copy_n(array.data_array, array.mutable_size, __data_array);
+        __mutable_size = array.mutable_size;
     }
 
-    inline void move_from(mutable_array&& array) noexcept
+    void __move_from(mutable_array&& array) noexcept
     {
-        this->copy_from(array);
+        __copy_from(array);
         array.mutable_size = 0;
     }
 
+public:
+    mutable_array() = default;
+
+    mutable_array(const mutable_array& array) noexcept { __copy_from(array); }
+
+    mutable_array(mutable_array&& array) noexcept { __move_from(std::move(array)); }
+
     void resize(size_t new_size)
     {
-        if (new_size > array_size)
-            throw std::bad_alloc("failed in mutable_array: resize > static_size");
-        this->mutable_size = new_size;
+        if (new_size > array_size) throw std::bad_alloc();
+        __mutable_size = new_size;
     }
 
     // getters and setters
-    inline size_t size() const noexcept { return this->mutable_size; }
+    size_t size() const noexcept { return __mutable_size; }
 
-    inline value_type* data() noexcept { return this->data_array; }
+    value_type* data() noexcept { return __data_array; }
 
-    inline const value_type* data() const noexcept { return this->data_array; }
+    const value_type* data() const noexcept { return __data_array; }
 
-    inline iterator begin() noexcept { return this->data_array; }
+    iterator begin() noexcept { return __data_array; }
 
-    inline const_iterator begin() const noexcept { return this->data_array; }
+    const_iterator begin() const noexcept { return __data_array; }
 
-    inline iterator end() noexcept { return this->data_array + this->mutable_size; }
+    iterator end() noexcept { return __data_array + __mutable_size; }
 
-    inline const_iterator end() const noexcept { return this->data_array + this->mutable_size; }
+    const_iterator end() const noexcept { return __data_array + __mutable_size; }
 
-    inline reverse_iterator rbegin() noexcept
+    reverse_iterator rbegin() noexcept
     {
-        return std::reverse_iterator<value_type*>(this->data_array + this->mutable_size);
+        return std::reverse_iterator<value_type*>(__data_array + __mutable_size);
     }
 
-    inline const_reverse_iterator rbegin() const noexcept
+    const_reverse_iterator rbegin() const noexcept
     {
-        return std::reverse_iterator<const value_type*>(this->data_array + this->mutable_size);
+        return std::reverse_iterator<const value_type*>(__data_array + __mutable_size);
     }
 
-    inline reverse_iterator rend() noexcept
-    {
-        return std::reverse_iterator<value_type*>(this->data_array);
-    }
+    reverse_iterator rend() noexcept { return std::reverse_iterator<value_type*>(__data_array); }
 
-    inline const_reverse_iterator rend() const noexcept
+    const_reverse_iterator rend() const noexcept
     {
-        return std::reverse_iterator<const value_type*>(this->data_array);
+        return std::reverse_iterator<const value_type*>(__data_array);
     }
 
     // operators
-    inline const mutable_array& operator=(const mutable_array& array) noexcept
+    mutable_array& operator=(const mutable_array& array) noexcept
     {
-        this->copy_from(array);
+        __copy_from(array);
 
         return *this;
     }
 
-    inline const mutable_array& operator=(mutable_array&& array) noexcept
+    mutable_array& operator=(mutable_array&& array) noexcept
     {
-        this->move_from(std::move(array));
+        __move_from(std::move(array));
 
         return *this;
     }
 
-    inline value_type& operator[](std::size_t index) noexcept { return this->data_array[index]; }
+    value_type& operator[](std::size_t index) noexcept { return __data_array[index]; }
 
-    inline const value_type& operator[](std::size_t index) const noexcept
-    {
-        return this->data_array[index];
-    }
+    const value_type& operator[](std::size_t index) const noexcept { return __data_array[index]; }
 };
 } // namespace callisto::framework

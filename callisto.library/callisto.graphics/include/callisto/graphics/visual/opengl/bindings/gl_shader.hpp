@@ -13,26 +13,21 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 class gl_shader
 {
-    GLuint handler;
+    GLuint __handler;
 
-    inline void move_from(gl_shader&& shader)
+    void move_from(gl_shader&& shader) noexcept
     {
-        this->handler  = shader.handler;
-        shader.handler = 0;
+        __handler        = shader.__handler;
+        shader.__handler = 0;
     }
 
-    inline void destruct()
+    void destruct() noexcept
     {
-        if (this->handler != 0)
+        if (__handler != 0)
         {
-            glDeleteShader(this->handler);
+            glDeleteShader(__handler);
         }
     }
 
@@ -42,6 +37,8 @@ public:
     template<typename str_type>
     static gl_shader load_from_file(str_type& shader_path, gl_shader_type shader_type)
     {
+        namespace c_f = callisto::framework;
+
         std::fstream file(shader_path);
 
         if (!file.is_open())
@@ -64,22 +61,22 @@ public:
     gl_shader& operator=(const gl_shader&) = delete;
 
     // construct and destruct
-    gl_shader() : handler(0) {}
+    gl_shader() : __handler(0) {}
 
-    inline gl_shader(gl_shader&& shader) { this->move_from(std::move(shader)); }
+    gl_shader(gl_shader&& shader) noexcept { move_from(std::move(shader)); }
 
     gl_shader(const char* source, gl_shader_type shader_type);
 
-    inline ~gl_shader() { this->destruct(); }
+    ~gl_shader() noexcept { destruct(); }
 
     // getters and setters
-    inline GLuint get_handler() const { return this->handler; }
+    GLuint get_handler() const { return __handler; }
 
     // operators
-    inline gl_shader& operator=(gl_shader&& shader)
+    gl_shader& operator=(gl_shader&& shader) noexcept
     {
-        this->destruct();
-        this->move_from(std::move(shader));
+        destruct();
+        move_from(std::move(shader));
 
         return *this;
     }

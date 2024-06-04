@@ -26,7 +26,7 @@ typing_garniture typing_garniture::clone() const
     auto new_garniture
         = typing_garniture(_render_height_size, _space_hori_advance, _space_vert_advance);
 
-    for (auto& item : _symbols_data)
+    for (const auto& item : _symbols_data)
     {
         new_garniture.add_symbol(item.first, item.second.clone());
     }
@@ -34,22 +34,22 @@ typing_garniture typing_garniture::clone() const
     return std::move(new_garniture);
 }
 
-void typing_garniture::add_symbol(int64_t symbol_code, font_symbol_data& symbol_data)
+void typing_garniture::add_symbol(uint64_t symbol_code, font_symbol_data& symbol_data)
 {
     _symbols_data.emplace(symbol_code, symbol_data.clone());
 }
 
-void typing_garniture::add_symbol(int64_t symbol_code, font_symbol_data&& symbol_data)
+void typing_garniture::add_symbol(uint64_t symbol_code, font_symbol_data&& symbol_data)
 {
     _symbols_data.emplace(symbol_code, std::move(symbol_data));
 }
 
-font_symbol_data& typing_garniture::get_symbol_data(int64_t symbol_code)
+font_symbol_data& typing_garniture::get_symbol_data(uint64_t symbol_code)
 {
     return _symbols_data.at(symbol_code);
 }
 
-const font_symbol_data& typing_garniture::get_symbol_data(int64_t symbol_code) const
+const font_symbol_data& typing_garniture::get_symbol_data(uint64_t symbol_code) const
 {
     return _symbols_data.at(symbol_code);
 }

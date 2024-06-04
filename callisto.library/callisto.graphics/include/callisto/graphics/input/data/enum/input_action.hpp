@@ -1,9 +1,11 @@
 #pragma once
 
+#include <cstdint>
+
 namespace callisto::graphics
 {
 
-enum class input_action
+enum class input_action : uint8_t
 {
     unknown,
 
@@ -14,7 +16,7 @@ enum class input_action
     release
 };
 
-inline constexpr const char* input_action_str(input_action action) noexcept
+constexpr const char* input_action_str(input_action action) noexcept
 {
     switch (action)
     {

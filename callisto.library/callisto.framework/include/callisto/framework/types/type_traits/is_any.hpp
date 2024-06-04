@@ -20,7 +20,7 @@ template<typename type, typename first_type, typename... rest_type>
 struct is_any<type, first_type, rest_type...> :
     std::integral_constant<
         bool,
-        std::is_same<type, first_type>::value || is_any<type, rest_type...>::value>
+        std::is_same_v<type, first_type> || is_any<type, rest_type...>::value>
 {
 };
 

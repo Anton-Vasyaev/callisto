@@ -29,21 +29,21 @@ struct alg_tuple2
         value_type height;
     };
 
-    inline static constexpr alg_tuple2 empty() noexcept { return alg_tuple2(0, 0); }
+    static constexpr alg_tuple2 empty() noexcept { return alg_tuple2(0, 0); }
 
-    inline static constexpr alg_tuple2 from_scalar(value_type val) { return alg_tuple2(val, val); }
+    static constexpr alg_tuple2 from_scalar(value_type val) { return alg_tuple2(val, val); }
 
 #pragma region construct_and_destruct
 
-    inline constexpr alg_tuple2() noexcept {}
+    constexpr alg_tuple2() noexcept {}
 
-    inline constexpr alg_tuple2(value_type v1, value_type v2) noexcept
+    constexpr alg_tuple2(value_type v1, value_type v2) noexcept
     {
         this->v1 = v1;
         this->v2 = v2;
     }
 
-    inline constexpr alg_tuple2(const alg_tuple2& values) noexcept
+    constexpr alg_tuple2(const alg_tuple2& values) noexcept
     {
         v1 = values.v1;
         v2 = values.v2;
@@ -54,7 +54,7 @@ struct alg_tuple2
 #pragma region methods
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return alg_tuple2<cast_type>(v1, v2);
     }
@@ -63,7 +63,7 @@ struct alg_tuple2
 
 #pragma region operators
 
-    inline constexpr const alg_tuple2& operator=(const alg_tuple2& other_tuple) noexcept
+    constexpr alg_tuple2& operator=(const alg_tuple2& other_tuple) noexcept
     {
         v1 = other_tuple.v1;
         v2 = other_tuple.v2;
@@ -72,17 +72,17 @@ struct alg_tuple2
     }
 
     // ADDITION
-    inline constexpr auto operator+(const alg_tuple2& other_tuple) const noexcept
+    constexpr auto operator+(const alg_tuple2& other_tuple) const noexcept
     {
         return alg_tuple2(v1 + other_tuple.v1, v2 + other_tuple.v2);
     }
 
-    inline constexpr auto operator+(value_type value) const noexcept
+    constexpr auto operator+(value_type value) const noexcept
     {
         return alg_tuple2(v1 + value, v2 + value);
     }
 
-    inline constexpr const alg_tuple2& operator+=(const alg_tuple2& other_tuple) noexcept
+    constexpr const alg_tuple2& operator+=(const alg_tuple2& other_tuple) noexcept
     {
         v1 += other_tuple.v1;
         v2 += other_tuple.v2;
@@ -90,7 +90,7 @@ struct alg_tuple2
         return *this;
     }
 
-    inline constexpr const alg_tuple2& operator+=(value_type value) noexcept
+    constexpr const alg_tuple2& operator+=(value_type value) noexcept
     {
         v1 += value;
         v2 += value;
@@ -99,20 +99,20 @@ struct alg_tuple2
     }
 
     // INVERSE
-    inline constexpr auto operator-() const noexcept { return alg_tuple2(-v1, -v2); }
+    constexpr auto operator-() const noexcept { return alg_tuple2(-v1, -v2); }
 
     // SUBSTRACTION
-    inline constexpr auto operator-(const alg_tuple2& other_tuple) const noexcept
+    constexpr auto operator-(const alg_tuple2& other_tuple) const noexcept
     {
         return alg_tuple2(v1 - other_tuple.v1, v2 - other_tuple.v2);
     }
 
-    inline constexpr auto operator-(value_type value) const noexcept
+    constexpr auto operator-(value_type value) const noexcept
     {
         return alg_tuple2(v1 - value, v2 - value);
     }
 
-    inline constexpr const alg_tuple2& operator-=(const alg_tuple2& other_tuple) noexcept
+    constexpr const alg_tuple2& operator-=(const alg_tuple2& other_tuple) noexcept
     {
         v1 -= other_tuple.v1;
         v2 -= other_tuple.v2;
@@ -120,7 +120,7 @@ struct alg_tuple2
         return *this;
     }
 
-    inline constexpr const alg_tuple2& operator-=(value_type value) noexcept
+    constexpr const alg_tuple2& operator-=(value_type value) noexcept
     {
         v1 -= value;
         v2 -= value;
@@ -129,17 +129,17 @@ struct alg_tuple2
     }
 
     // MULTIPLICATION
-    inline constexpr auto operator*(const alg_tuple2& other_tuple) const noexcept
+    constexpr auto operator*(const alg_tuple2& other_tuple) const noexcept
     {
         return alg_tuple2(v1 * other_tuple.v1, v2 * other_tuple.v2);
     }
 
-    inline constexpr auto operator*(value_type value) const noexcept
+    constexpr auto operator*(value_type value) const noexcept
     {
         return alg_tuple2(v1 * value, v2 * value);
     }
 
-    inline constexpr const alg_tuple2& operator*=(const alg_tuple2& other_tuple) noexcept
+    constexpr const alg_tuple2& operator*=(const alg_tuple2& other_tuple) noexcept
     {
         v1 *= other_tuple.v1;
         v2 *= other_tuple.v2;
@@ -147,7 +147,7 @@ struct alg_tuple2
         return *this;
     }
 
-    inline constexpr const alg_tuple2& operator*=(value_type value) noexcept
+    constexpr const alg_tuple2& operator*=(value_type value) noexcept
     {
         v1 *= value;
         v2 *= value;
@@ -156,17 +156,17 @@ struct alg_tuple2
     }
 
     // DIVISION
-    inline constexpr auto operator/(const alg_tuple2& other_tuple) const noexcept
+    constexpr auto operator/(const alg_tuple2& other_tuple) const noexcept
     {
         return alg_tuple2(v1 / other_tuple.v1, v2 / other_tuple.v2);
     }
 
-    inline constexpr auto operator/(value_type value) const noexcept
+    constexpr auto operator/(value_type value) const noexcept
     {
         return alg_tuple2(v1 / value, v2 / value);
     }
 
-    inline constexpr const alg_tuple2& operator/=(const alg_tuple2& other_tuple) noexcept
+    constexpr const alg_tuple2& operator/=(const alg_tuple2& other_tuple) noexcept
     {
         v1 /= other_tuple.v1;
         v2 /= other_tuple.v2;
@@ -174,7 +174,7 @@ struct alg_tuple2
         return *this;
     }
 
-    inline constexpr const alg_tuple2& operator/=(value_type value) noexcept
+    constexpr const alg_tuple2& operator/=(value_type value) noexcept
     {
         v1 /= value;
         v2 /= value;
@@ -182,12 +182,12 @@ struct alg_tuple2
         return *this;
     }
 
-    inline constexpr bool operator==(const alg_tuple2& other_tuple) const noexcept
+    constexpr bool operator==(const alg_tuple2& other_tuple) const noexcept
     {
         return v1 == other_tuple.v1 && v2 == other_tuple.v2;
     }
 
-    inline constexpr bool operator!=(const alg_tuple2& other_tuple) const noexcept
+    constexpr bool operator!=(const alg_tuple2& other_tuple) const noexcept
     {
         return v1 != other_tuple.v1 || v2 != other_tuple.v2;
     }

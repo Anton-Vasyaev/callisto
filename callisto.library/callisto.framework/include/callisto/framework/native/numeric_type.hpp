@@ -13,7 +13,7 @@ namespace callisto::framework
 {
 
 /// @brief Type of native basic numeric type.
-enum class numeric_type
+enum class numeric_type : uint8_t
 {
     /// @brief Unknown type.
     unknown,
@@ -67,7 +67,7 @@ using float64 = double;
 /// @brief Returns size in bytes of given type.
 /// @param num_type numeric type.
 /// @return Size of numeric type in bytes.
-inline constexpr int numeric_type_size(numeric_type num_type) noexcept
+constexpr int numeric_type_size(numeric_type num_type) noexcept
 {
     switch (num_type)
     {
@@ -89,7 +89,7 @@ inline constexpr int numeric_type_size(numeric_type num_type) noexcept
     }
 }
 
-inline constexpr const char* numeric_type_str(numeric_type num_type) noexcept
+constexpr const char* numeric_type_str(numeric_type num_type) noexcept
 {
     switch (num_type)
     {
@@ -113,19 +113,19 @@ inline constexpr const char* numeric_type_str(numeric_type num_type) noexcept
 }
 
 template<typename type>
-inline constexpr numeric_type numeric_type_instance() noexcept;
+constexpr numeric_type numeric_type_instance() noexcept;
 
-#define DECLARE_GET_TYPE_SPECIALIZATION(type)                                  \
-    template<>                                                                 \
-    inline constexpr numeric_type numeric_type_instance<type>() noexcept       \
-    {                                                                          \
-        return numeric_type::type;                                             \
-    }                                                                          \
-                                                                               \
-    template<>                                                                 \
-    inline constexpr numeric_type numeric_type_instance<const type>() noexcept \
-    {                                                                          \
-        return numeric_type::type;                                             \
+#define DECLARE_GET_TYPE_SPECIALIZATION(type)                           \
+    template<>                                                          \
+    constexpr numeric_type numeric_type_instance<type>() noexcept       \
+    {                                                                   \
+        return numeric_type::type;                                      \
+    }                                                                   \
+                                                                        \
+    template<>                                                          \
+    constexpr numeric_type numeric_type_instance<const type>() noexcept \
+    {                                                                   \
+        return numeric_type::type;                                      \
     }
 
 DECLARE_GET_TYPE_SPECIALIZATION(uint8);

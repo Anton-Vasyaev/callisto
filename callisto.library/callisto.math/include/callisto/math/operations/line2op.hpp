@@ -25,19 +25,19 @@ struct line2op
         double x4 = line2.x2;
         double y4 = line2.y2;
 
-        double x_num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
-        double y_num = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4);
+        const double x_num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
+        const double y_num = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4);
 
-        double div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        const double div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
-        double x = x_num / (div + eps);
-        double y = y_num / (div + eps);
+        const double x = x_num / (div + eps);
+        const double y = y_num / (div + eps);
 
         return point2d(x, y);
     }
 
     template<typename type>
-    inline static constexpr auto get_box_contour(const line2<type>& line) noexcept
+    static constexpr auto get_box_contour(const line2<type>& line) noexcept
     {
         auto [left, right] = std::minmax(line.x1, line.x2);
         auto [top, bottom] = std::minmax(line.y1, line.y2);
@@ -46,7 +46,7 @@ struct line2op
     }
 
     template<typename type>
-    inline static constexpr auto normalize(const line2<type>& line, const bbox2<type>& contour)
+    static constexpr auto normalize(const line2<type>& line, const bbox2<type>& contour)
     {
         auto w = contour.width();
         auto h = contour.height();

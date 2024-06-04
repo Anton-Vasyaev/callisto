@@ -16,7 +16,7 @@ gl_shader_program::gl_shader_program(gl_shader& vertex_shader, gl_shader& fragme
 
     GLint success_status;
     glGetProgramiv(this->handler, GL_LINK_STATUS, &success_status);
-    if (!success_status)
+    if (!static_cast<bool>(success_status))
     {
         GLint log_length = 0;
         glGetShaderiv(this->handler, GL_INFO_LOG_LENGTH, &log_length);

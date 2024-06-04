@@ -13,29 +13,23 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-namespace c_m = callisto::math;
-} // namespace
-
 class gl_window_context : public i_window_context
 {
     friend class gl_monitor_context;
 
 private:
     // handlers
-    c_f::signal<void(key_event)> key_event_signal_handler;
+    callisto::framework::signal<void(key_event)> key_event_signal_handler;
 
-    c_f::signal<void(mouse_button_event)> mouse_button_event_signal_handler;
+    callisto::framework::signal<void(mouse_button_event)> mouse_button_event_signal_handler;
 
-    c_f::signal<void(cursor_event)> cursor_event_signal_handler;
+    callisto::framework::signal<void(cursor_event)> cursor_event_signal_handler;
 
-    c_f::signal<void(c_m::point2i)> change_position_signal_handler;
+    callisto::framework::signal<void(callisto::math::point2i)> change_position_signal_handler;
 
-    c_f::signal<void(c_m::size2i)> resize_signal_handler;
+    callisto::framework::signal<void(callisto::math::size2i)> resize_signal_handler;
 
-    c_f::signal<void(i_window_context&)> processing_signal_handler;
+    callisto::framework::signal<void(i_window_context&)> processing_signal_handler;
 
     std::shared_ptr<a_window_processor> window_processor;
 
@@ -52,7 +46,7 @@ private:
 
     window_options options; // window properties
 
-    c_m::size2i viewport_value;
+    callisto::math::size2i viewport_value;
 
     // static callbacks
     static void
@@ -82,10 +76,10 @@ private:
     void resize_processing(int width, int height);
 
     // construct and destruct
-    gl_window_context();
+    gl_window_context() = default;
 
 public:
-    virtual ~gl_window_context();
+    ~gl_window_context() override;
 
     // deleted
     gl_window_context(const gl_window_context&) = delete;
@@ -97,30 +91,30 @@ public:
     gl_window_context& operator=(gl_window_context&&) = delete;
 
     // interface signals
-    virtual c_f::signal<void(key_event)>& key_event_signal() override;
+    callisto::framework::signal<void(key_event)>& key_event_signal() override;
 
-    virtual c_f::signal<void(mouse_button_event)>& mouse_button_event_signal() override;
+    callisto::framework::signal<void(mouse_button_event)>& mouse_button_event_signal() override;
 
-    virtual c_f::signal<void(cursor_event)>& cursor_event_signal() override;
+    callisto::framework::signal<void(cursor_event)>& cursor_event_signal() override;
 
-    virtual c_f::signal<void(c_m::point2i)>& change_position_signal() override;
+    callisto::framework::signal<void(callisto::math::point2i)>& change_position_signal() override;
 
-    virtual c_f::signal<void(c_m::size2i)>& resize_signal() override;
+    callisto::framework::signal<void(callisto::math::size2i)>& resize_signal() override;
 
-    virtual c_f::signal<void(i_window_context&)>& processing_signal() override;
+    callisto::framework::signal<void(i_window_context&)>& processing_signal() override;
 
     // interface methods
-    virtual c_m::rectangle_i get_area() const override;
+    callisto::math::rectangle_i get_area() const override;
 
-    virtual c_m::size2i get_viewport() const override;
+    callisto::math::size2i get_viewport() const override;
 
-    virtual window_mode get_window_mode() const override;
+    window_mode get_window_mode() const override;
 
-    virtual void set_processor(std::shared_ptr<a_window_processor> processor) override;
+    void set_processor(std::shared_ptr<a_window_processor> processor) override;
 
-    virtual void start_processing() override;
+    void start_processing() override;
 
-    virtual void stop_processing() override;
+    void stop_processing() override;
 
     // getters and setters
     inline GLFWwindow* get_window_handler() const;

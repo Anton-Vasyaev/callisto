@@ -11,7 +11,7 @@ namespace callisto::framework
 /// @brief Present base exception.
 struct panic_exception : virtual std::exception, virtual boost::exception
 {
-    panic_exception() {}
+    panic_exception() = default;
 };
 
 } // namespace callisto::framework

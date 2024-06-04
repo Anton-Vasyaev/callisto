@@ -38,7 +38,10 @@ public:
         this->has_connection = true;
     }
 
-    raii_connection(raii_connection&& connection) { this->move_from(std::move(connection)); }
+    raii_connection(raii_connection&& connection) noexcept
+    {
+        this->move_from(std::move(connection));
+    }
 
     ~raii_connection()
     {
@@ -48,13 +51,13 @@ public:
         }
     }
 
-    inline void disconnect()
+    void disconnect()
     {
         this->connections.erase(this->connection);
         this->has_connection = false;
     }
 
-    raii_connection& operator=(raii_connection&& connection)
+    raii_connection& operator=(raii_connection&& connection) noexcept
     {
         this->move_from(std::move(connection));
     }
@@ -102,7 +105,7 @@ class signal
     connections_place_type connections;
 
 public:
-    signal() {};
+    signal() = default;
 
     connection_type connect(func_type& func)
     {

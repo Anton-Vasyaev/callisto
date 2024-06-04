@@ -5,9 +5,6 @@
 
 namespace callisto::graphics
 {
-
-graphics_context::graphics_context() {}
-
 i_main_context& graphics_context::get_context(const char* context_name)
 {
     if (this->contexts.contains(context_name)) return *(this->contexts[context_name]);

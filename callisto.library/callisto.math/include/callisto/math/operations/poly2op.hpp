@@ -43,7 +43,7 @@ struct poly2op
         }
         second_sum += x1 * yn;
 
-        double poly_area = std::abs(first_sum - second_sum) / 2;
+        const double poly_area = std::abs(first_sum - second_sum) / 2;
 
         return poly_area;
     }

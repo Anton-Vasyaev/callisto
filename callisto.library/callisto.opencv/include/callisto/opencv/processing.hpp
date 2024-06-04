@@ -9,11 +9,6 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 void resize_frame(
     cv::InputArray  src,
     cv::OutputArray dst,
@@ -22,18 +17,18 @@ void resize_frame(
 );
 
 template<typename rectangle_type>
-cv::Mat roi(cv::Mat& img, c_m::rectangle<rectangle_type> rect)
+cv::Mat roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
 {
-    auto x = (int)rect.position.x;
-    auto y = (int)rect.position.y;
-    auto w = (int)rect.size.width;
-    auto h = (int)rect.size.height;
+    auto x = static_cast<int>(rect.position.x);
+    auto y = static_cast<int>(rect.position.y);
+    auto w = static_cast<int>(rect.size.width);
+    auto h = static_cast<int>(rect.size.height);
 
     return img({ x, y, w, h });
 }
 
 template<typename rectangle_type>
-cv::Mat norm_roi(cv::Mat& img, c_m::rectangle<rectangle_type> rect)
+cv::Mat norm_roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
 {
     auto size = mat_size(img);
 
@@ -44,20 +39,26 @@ cv::Mat norm_roi(cv::Mat& img, c_m::rectangle<rectangle_type> rect)
 }
 
 template<typename lt_type, typename rb_type>
-cv::Mat roi(cv::Mat& img, c_m::alg_tuple2<lt_type> left_top, c_m::alg_tuple2<rb_type> right_bottom)
+cv::Mat
+roi(cv::Mat&                            img,
+    callisto::math::alg_tuple2<lt_type> left_top,
+    callisto::math::alg_tuple2<rb_type> right_bottom)
 {
-    auto l = (int)left_top.x;
-    auto t = (int)left_top.y;
+    auto l = static_cast<int>(left_top.x);
+    auto t = static_cast<int>(left_top.y);
 
-    auto r = (int)right_bottom.x;
-    auto b = (int)right_bottom.y;
+    auto r = static_cast<int>(right_bottom.x);
+    auto b = static_cast<int>(right_bottom.y);
 
     return img({ t, b }, { l, r });
 }
 
 template<typename lt_type, typename rb_type>
-cv::Mat
-norm_roi(cv::Mat& img, c_m::alg_tuple2<lt_type> left_top, c_m::alg_tuple2<rb_type> right_bottom)
+cv::Mat norm_roi(
+    cv::Mat&                            img,
+    callisto::math::alg_tuple2<lt_type> left_top,
+    callisto::math::alg_tuple2<rb_type> right_bottom
+)
 {
     auto size = mat_size(img);
 
@@ -68,13 +69,13 @@ norm_roi(cv::Mat& img, c_m::alg_tuple2<lt_type> left_top, c_m::alg_tuple2<rb_typ
 }
 
 template<typename box_type>
-cv::Mat roi(cv::Mat& img, c_m::bbox2<box_type> box)
+cv::Mat roi(cv::Mat& img, callisto::math::bbox2<box_type> box)
 {
     return roi(img, box.left_top(), box.right_bottom());
 }
 
 template<typename box_type>
-cv::Mat norm_roi(cv::Mat& img, c_m::bbox2<box_type> box)
+cv::Mat norm_roi(cv::Mat& img, callisto::math::bbox2<box_type> box)
 {
     return norm_roi(img, box.left_top(), box.right_bottom());
 }

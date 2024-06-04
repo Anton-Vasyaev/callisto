@@ -7,13 +7,13 @@ namespace callisto::graphics::freetype
 {
 #pragma region private_methods
 
-void glyph::__move_from(glyph&& glyph)
+void glyph::__move_from(glyph&& glyph) noexcept
 {
     __handler       = glyph.__handler;
     glyph.__handler = nullptr;
 }
 
-void glyph::__destroy()
+void glyph::__destroy() noexcept
 {
     if (__handler != nullptr)
     {
@@ -28,7 +28,7 @@ void glyph::__destroy()
 
 glyph::glyph(FT_Glyph handler) { __handler = handler; }
 
-glyph::glyph(glyph&& glyph) { __move_from(std::move(glyph)); }
+glyph::glyph(glyph&& glyph) noexcept { __move_from(std::move(glyph)); }
 
 glyph::~glyph() { __destroy(); }
 
@@ -47,8 +47,8 @@ glyph glyph::copy() const
 
 bitmap_glyph glyph::to_bitmap(FT_Render_Mode render_mode, FT_Vector* origin)
 {
-    auto bitmap_handler = __handler;
-    FT_Glyph_To_Bitmap(&bitmap_handler, render_mode, origin, false);
+    auto* bitmap_handler = __handler;
+    FT_Glyph_To_Bitmap(&bitmap_handler, render_mode, origin, static_cast<FT_Bool>(false));
 
     return bitmap_glyph(bitmap_handler);
 }
@@ -70,7 +70,7 @@ const FT_Glyph glyph::get_handler() const { return __handler; }
 
 #pragma region operators
 
-glyph& glyph::operator=(glyph&& glyph)
+glyph& glyph::operator=(glyph&& glyph) noexcept
 {
     __destroy();
     __move_from(std::move(glyph));

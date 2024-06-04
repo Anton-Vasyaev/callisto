@@ -18,7 +18,7 @@ private:
 
 public:
     // construct and destruct
-    graphics_context();
+    graphics_context() = default;
 
     graphics_context(const graphics_context&) = delete;
 

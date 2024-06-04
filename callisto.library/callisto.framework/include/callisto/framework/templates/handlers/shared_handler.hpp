@@ -28,7 +28,7 @@ private:
 
 #pragma region private_methods
 
-    inline void destroy()
+    void destroy() noexcept
     {
         if (!(this->has_handler)) return;
 
@@ -59,7 +59,7 @@ private:
         this->has_handler = false;
     }
 
-    inline void copy_from(shared_handler& other_handler)
+    void copy_from(shared_handler& other_handler)
     {
         std::unique_lock(*(other_handler.mutex));
 
@@ -73,7 +73,7 @@ private:
         (*(this->ref_counter))++;
     }
 
-    inline void move_from(shared_handler&& other_handler)
+    void move_from(shared_handler&& other_handler) noexcept
     {
         this->destroy();
 
@@ -87,7 +87,7 @@ private:
         other_handler.has_handler = false;
     }
 
-    inline void create_new(data_type data)
+    void create_new(data_type data)
     {
         this->destroy();
 
@@ -116,13 +116,13 @@ private:
 public:
 #pragma region construct_and_destruct
 
-    shared_handler() {};
+    shared_handler() = default;
 
-    shared_handler(data_type data) { this->create_new(data); }
+    explicit shared_handler(data_type data) { this->create_new(data); }
 
     shared_handler(shared_handler& other_handler) { this->copy_from(other_handler); }
 
-    shared_handler(shared_handler&& other_handler) { this->move_from(other_handler); }
+    shared_handler(shared_handler&& other_handler) noexcept { this->move_from(other_handler); }
 
     ~shared_handler() { this->destroy(); }
 
@@ -136,14 +136,16 @@ public:
 
 #pragma region operators
 
-    shared_handler& operator=(shared_handler& other_handler)
+    shared_handler& operator=(const shared_handler& other_handler)
     {
+        if (this == &other_handler) return *this;
+
         this->copy_from(other_handler);
 
         return *this;
     }
 
-    shared_handler& operator=(shared_handler&& other_handler)
+    shared_handler& operator=(shared_handler&& other_handler) noexcept
     {
         this->move_from(std::move(other_handler));
 

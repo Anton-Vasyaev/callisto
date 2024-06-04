@@ -9,28 +9,23 @@
 namespace callisto::graphics::freetype
 {
 
-namespace
-{
-namespace c_cv = callisto::opencv;
-}
-
 class glyph
 {
     // data
     FT_Glyph __handler = nullptr;
 
     // private methods
-    void __move_from(glyph&& glyph);
+    void __move_from(glyph&& glyph) noexcept;
 
-    void __destroy();
+    void __destroy() noexcept;
 
 public:
     // construct and destruct
-    glyph(FT_Glyph handler);
+    explicit glyph(FT_Glyph handler);
 
     glyph(const glyph&) = delete;
 
-    glyph(glyph&& glyph);
+    glyph(glyph&& glyph) noexcept;
 
     ~glyph();
 
@@ -49,7 +44,7 @@ public:
     // operators
     glyph& operator=(const glyph&) = delete;
 
-    glyph& operator=(glyph&&);
+    glyph& operator=(glyph&& glyph) noexcept;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(glyph);

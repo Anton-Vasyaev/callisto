@@ -24,9 +24,9 @@ constexpr const char* pixel_mode_str(FT_Pixel_Mode mode)
     }
 }
 
-inline constexpr const char* pixel_mode_str(unsigned char mode)
+constexpr const char* pixel_mode_str(unsigned char mode)
 {
-    return pixel_mode_str((FT_Pixel_Mode)mode);
+    return pixel_mode_str(static_cast<FT_Pixel_Mode>(mode));
 }
 
 } // namespace callisto::graphics::freetype

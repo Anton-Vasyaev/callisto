@@ -14,26 +14,26 @@ struct exception : virtual std::exception, virtual boost::exception
 private:
     static constexpr const char* default_message = "default error message (not exist).";
 
-    mutable std::string _formed_error_message;
+    mutable std::string __formed_error_message;
 
 public:
     virtual std::string form_error_message() const { return exception::default_message; }
 
-    virtual const char* what() const noexcept
+    const char* what() const noexcept override
     {
         try
         {
-            if (_formed_error_message.empty())
+            if (__formed_error_message.empty())
             {
-                _formed_error_message = std::move(form_error_message());
+                __formed_error_message = std::move(form_error_message());
             }
         }
-        catch(...)
+        catch (...)
         {
             return exception::default_message;
         }
 
-        return _formed_error_message.c_str();
+        return __formed_error_message.c_str();
     }
 };
 

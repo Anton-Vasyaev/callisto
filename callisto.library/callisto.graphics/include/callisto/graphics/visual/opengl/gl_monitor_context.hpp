@@ -5,8 +5,6 @@
 #include <callisto/graphics/visual/data/window_options.hpp>
 #include "gl_window_context.hpp"
 
-namespace c_m = callisto::math;
-
 namespace callisto::graphics
 {
 
@@ -18,17 +16,17 @@ private:
     // data
     GLFWmonitor* monitor_handler;
 
-    c_m::size2i _size;
+    callisto::math::size2i _size;
 
-    c_m::size2i _real_size;
+    callisto::math::size2i _real_size;
 
     float _dpi;
 
     // construct and destruct
-    gl_monitor_context(GLFWmonitor* monitor_handler);
+    explicit gl_monitor_context(GLFWmonitor* monitor_handler);
 
 public:
-    virtual ~gl_monitor_context();
+    ~gl_monitor_context() override;
 
     // deleted
     gl_monitor_context() = delete;
@@ -42,13 +40,13 @@ public:
     gl_monitor_context& operator=(gl_monitor_context&&) = delete;
 
     // implement i_monitor_context
-    virtual c_m::size2i size() const override;
+    callisto::math::size2i size() const override;
 
-    virtual c_m::size2i real_size() const override;
+    callisto::math::size2i real_size() const override;
 
-    virtual float dpi() const override;
+    float dpi() const override;
 
-    virtual std::unique_ptr<i_window_context> create_window(window_options options) override;
+    std::unique_ptr<i_window_context> create_window(window_options options) override;
 };
 
 } // namespace callisto::graphics

@@ -6,12 +6,14 @@
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/string/build_string.hpp>
 
+namespace c_f = callisto::framework;
+
 namespace callisto::graphics
 {
 
 void glfw_error_callback(int error, const char* description)
 {
-    std::cerr << "GLFW Error, code:" << error << ", description:" << description << std::endl;
+    std::cerr << "GLFW Error, code:" << error << ", description:" << description << "\n";
 }
 
 #pragma region initialize_methods
@@ -31,7 +33,7 @@ void gl_main_context::init_monitors()
 
 void gl_main_context::init_primary_monitor()
 {
-    auto primary_monitor_handler = glfwGetPrimaryMonitor();
+    auto* primary_monitor_handler = glfwGetPrimaryMonitor();
     if (primary_monitor_handler == nullptr)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
@@ -49,7 +51,7 @@ void gl_main_context::init_primary_monitor()
 gl_main_context::gl_main_context()
 {
     glfwSetErrorCallback(glfw_error_callback);
-    int glfw_status = glfwInit();
+    const int glfw_status = glfwInit();
     if (glfw_status != GLFW_TRUE)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())

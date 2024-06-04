@@ -10,7 +10,8 @@ option(CALLISTO_UTILITY_ENABLE "Build callisto.utility" ON)
 option(CALLISTO_OPENCV_ENABLE "Build callisto.opencv" ON)
 option(CALLISTO_GRAPHICS_ENABLE "Build callisto.graphics" ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)

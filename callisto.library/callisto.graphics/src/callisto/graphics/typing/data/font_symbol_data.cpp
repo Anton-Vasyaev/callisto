@@ -5,8 +5,6 @@ namespace callisto::graphics
 {
 #pragma region construct_and_destruct
 
-font_symbol_data::font_symbol_data() {}
-
 font_symbol_data::font_symbol_data(const font_symbol_metrics& metrics, const cv::Mat& bitmap)
 {
     _metrics = metrics;

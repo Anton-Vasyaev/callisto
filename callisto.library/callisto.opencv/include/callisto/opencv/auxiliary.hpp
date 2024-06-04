@@ -16,16 +16,10 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-namespace c_m = callisto::math;
-} // namespace
-
 /// @brief Returns base CV type of given CV type. For example, for CV_32FC3 return CV_32F.
 /// @param cv_type CV type.
 /// @return Base CV type.
-inline constexpr int base_type(int cv_type);
+constexpr int base_type(int cv_type);
 
 /// @brief Returns base CV type of givet @see cv::Mat.
 /// @param mat @see cv::Mat.
@@ -35,7 +29,7 @@ inline int base_type(const cv::Mat& mat);
 /// @brief Returns number of channels for CV type.
 /// @param cv_type CV type.
 /// @return Number of channels.
-inline constexpr int type_channels(int cv_type);
+constexpr int type_channels(int cv_type);
 
 /// @brief Returns number of channels for CV type.
 /// @param cv_type CV type.
@@ -45,41 +39,41 @@ inline int mat_channels(const cv::Mat& mat);
 /// @brief Returns numeric type represent by mat type.
 /// @param cv_type Mat type.
 /// @return Numeric type.
-constexpr c_f::numeric_type cv2numeric(int cv_type);
+constexpr callisto::framework::numeric_type cv2numeric(int cv_type);
 
 /// @brief Returns numeric type of mat.
 /// @param mat Given mat.
 /// @return Numeric type of mat.
-inline c_f::numeric_type mat_numeric_type(const cv::Mat& mat);
+inline callisto::framework::numeric_type mat_numeric_type(const cv::Mat& mat);
 
 /// @brief Converts numeric type for base mat type.
 /// @param num_type Numeric type.
 /// @return Base mat type.
-constexpr int numeric2cv(c_f::numeric_type num_type);
+constexpr int numeric2cv(callisto::framework::numeric_type num_type);
 
 /// @brief Constructs CV type from base type and number of channels.
 /// @param base_type Base CV type.
 /// @param channels  Number of channels
 /// @return Constructed CV type.
-inline constexpr int make_type(int base_type, int channels);
+constexpr int make_type(int base_type, int channels);
 
 /// @brief Constructs CV type from base type and image type..
 /// @param base_type Base CV type.
 /// @param img_type  Image type.
 /// @return Constructed CV type.
-inline constexpr int make_type(int base_type, image_type img_type);
+constexpr int make_type(int base_type, image_type img_type);
 
 /// @brief Constructs CV type from numeric type and number of channels.
 /// @param num_type Numeric type.
 /// @param channels Number of channels.
 /// @return Constructed CV type.
-constexpr int make_type(c_f::numeric_type num_type, int channels);
+constexpr int make_type(callisto::framework::numeric_type num_type, int channels);
 
 /// @brief Constructs CV type from numeric type and image type.
 /// @param num_type Numeric type.
 /// @param img_type Image type.
 /// @return Constructed CV type.
-inline constexpr int make_type(c_f::numeric_type num_type, image_type img_type);
+constexpr int make_type(callisto::framework::numeric_type num_type, image_type img_type);
 
 /// @brief Matches mat and image type. If number of channels of mat and number of channels of image
 /// type not matched, throws exception.
@@ -98,33 +92,33 @@ image_type default_image_type(const cv::Mat& mat);
 /// @param dst Destination mat.
 /// @param num_type Numeric type.
 inline void convert(
-    const cv::Mat&    src,
-    cv::Mat&          dst,
-    c_f::numeric_type num_type,
-    double            alpha = 1.0,
-    double            beta  = 0.0
+    const cv::Mat&                    src,
+    cv::Mat&                          dst,
+    callisto::framework::numeric_type num_type,
+    double                            alpha = 1.0,
+    double                            beta  = 0.0
 );
 
 /// @brief Converts mat bye basic arithmetic type.
 /// @tparam type Basic arithmetic type.
 /// @param src Source mat.
 /// @param dst Destination mat.
-template<c_f::concept_arithmetic type>
+template<callisto::framework::concept_arithmetic type>
 inline void convert(const cv::Mat& src, cv::Mat& dst, double alpha = 1.0, double beta = 0.0);
 
 /// @brief Returns size of mat.
 /// @param src Given mat.
 /// @return Size of mat.
-inline c_m::size2i mat_size(const cv::Mat& src);
+inline callisto::math::size2i mat_size(const cv::Mat& src);
 
 /// @brief Returns stride of mat.
 /// @param src Given mat.
 /// @return Size of mat.
 inline size_t mat_stride(const cv::Mat& src);
 
-#pragma region realisation
+#pragma region inline_realisation
 
-inline constexpr int base_type(int cv_type)
+constexpr int base_type(int cv_type)
 {
     if (cv_type < 0 || cv_type >= 64) return -1;
 
@@ -133,13 +127,14 @@ inline constexpr int base_type(int cv_type)
 
 inline int base_type(const cv::Mat& mat) { return base_type(mat.type()); }
 
-inline constexpr int type_channels(int cv_type) { return cv_type / 8 + 1; }
+constexpr int type_channels(int cv_type) { return cv_type / 8 + 1; }
 
 inline int mat_channels(const cv::Mat& mat) { return type_channels(mat.type()); }
 
-constexpr c_f::numeric_type cv2numeric(int cv_type)
+constexpr callisto::framework::numeric_type cv2numeric(int cv_type)
 {
-    auto type = base_type(cv_type);
+    namespace c_f = callisto::framework;
+    auto type     = base_type(cv_type);
 
     switch (type)
     {
@@ -154,10 +149,14 @@ constexpr c_f::numeric_type cv2numeric(int cv_type)
     }
 }
 
-inline c_f::numeric_type mat_numeric_type(const cv::Mat& mat) { return cv2numeric(mat.type()); }
-
-constexpr int numeric2cv(c_f::numeric_type num_type)
+inline callisto::framework::numeric_type mat_numeric_type(const cv::Mat& mat)
 {
+    return cv2numeric(mat.type());
+}
+
+constexpr int numeric2cv(callisto::framework::numeric_type num_type)
+{
+    namespace c_f = callisto::framework;
     switch (num_type)
     {
         case c_f::numeric_type::uint8 : return CV_8U;
@@ -171,18 +170,16 @@ constexpr int numeric2cv(c_f::numeric_type num_type)
     }
 }
 
-inline constexpr int make_type(int base_type, int channels)
-{
-    return base_type + 8 * (channels - 1);
-}
+constexpr int make_type(int base_type, int channels) { return base_type + 8 * (channels - 1); }
 
-inline constexpr int make_type(int base_type, image_type img_type)
+constexpr int make_type(int base_type, image_type img_type)
 {
     return make_type(base_type, image_type_channels(img_type));
 }
 
-constexpr int make_type(c_f::numeric_type num_type, int channels)
+constexpr int make_type(callisto::framework::numeric_type num_type, int channels)
 {
+    namespace c_f = callisto::framework;
     if (channels > 8 || channels <= 0)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
@@ -194,7 +191,7 @@ constexpr int make_type(c_f::numeric_type num_type, int channels)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
             "failed to make_type, not valid numeric_type for create cv::Mat:",
-            c_f::numeric_type_str(num_type),
+            callisto::framework::numeric_type_str(num_type),
             ", code:",
             static_cast<int>(num_type)
         ));
@@ -203,13 +200,18 @@ constexpr int make_type(c_f::numeric_type num_type, int channels)
     return make_type(base_type, channels);
 }
 
-inline constexpr int make_type(c_f::numeric_type num_type, image_type img_type)
+constexpr int make_type(callisto::framework::numeric_type num_type, image_type img_type)
 {
     return make_type(num_type, image_type_channels(img_type));
 }
 
-inline void
-convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type, double alpha, double beta)
+inline void convert(
+    const cv::Mat&                    src,
+    cv::Mat&                          dst,
+    callisto::framework::numeric_type num_type,
+    double                            alpha,
+    double                            beta
+)
 {
     auto channels        = type_channels(src.type());
     auto convert_cv_type = make_type(num_type, channels);
@@ -217,13 +219,17 @@ convert(const cv::Mat& src, cv::Mat& dst, c_f::numeric_type num_type, double alp
     src.convertTo(dst, convert_cv_type, alpha, beta);
 }
 
-template<c_f::concept_arithmetic type>
+template<callisto::framework::concept_arithmetic type>
+// NOLINTNEXTLINE(misc-unused-parameters)
 inline void convert(const cv::Mat& src, cv::Mat& dst, double alpha, double beta)
 {
-    return convert(src, dst, c_f::numeric_type_instance<type>());
+    return convert(src, dst, callisto::framework::numeric_type_instance<type>());
 }
 
-inline c_m::size2i mat_size(const cv::Mat& src) { return c_m::size2i(src.cols, src.rows); }
+inline callisto::math::size2i mat_size(const cv::Mat& src)
+{
+    return callisto::math::size2i(src.cols, src.rows);
+}
 
 inline size_t mat_stride(const cv::Mat& src) { return static_cast<size_t>(src.step); }
 

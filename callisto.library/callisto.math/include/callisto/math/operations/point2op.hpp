@@ -16,8 +16,7 @@ namespace callisto::math
 struct point2op
 {
     template<typename type>
-    inline static constexpr auto
-    square_distance(const point2<type>& p1, const point2<type>& p2) noexcept
+    static constexpr auto square_distance(const point2<type>& p1, const point2<type>& p2) noexcept
     {
         auto dx = p1.x - p2.x;
         auto dy = p1.y - p2.y;
@@ -26,7 +25,7 @@ struct point2op
     }
 
     template<typename type>
-    inline static constexpr double distance(const point2<type>& p1, const point2<type>& p2) noexcept
+    static constexpr double distance(const point2<type>& p1, const point2<type>& p2) noexcept
     {
         auto square_dist = square_distance(p1, p2);
 
@@ -34,7 +33,7 @@ struct point2op
     }
 
     template<typename type>
-    inline static constexpr auto rotate(const point2<type>& point, double angle) noexcept
+    static constexpr auto rotate(const point2<type>& point, double angle) noexcept
     {
         auto& x = point.x;
         auto& y = point.y;
@@ -49,7 +48,7 @@ struct point2op
     }
 
     template<typename type>
-    inline static constexpr auto
+    static constexpr auto
     rotate_anchor(const point2<type>& point, double angle, const point2<type>& anchor) noexcept
     {
         auto x = point.x - anchor.x;
@@ -68,7 +67,7 @@ struct point2op
     }
 
     template<typename type>
-    inline static constexpr auto clamp(const point2<type>& point, const bbox2<type>& bbox) noexcept
+    static constexpr auto clamp(const point2<type>& point, const bbox2<type>& bbox) noexcept
     {
         auto x = clamp_f(point.x, bbox.x1, bbox.x2);
         auto y = clamp_f(point.y, bbox.y1, bbox.y2);
@@ -77,8 +76,7 @@ struct point2op
     };
 
     template<typename type>
-    inline static constexpr auto
-    normalize(const point2<type>& point, const bbox2<type>& bbox) noexcept
+    static constexpr auto normalize(const point2<type>& point, const bbox2<type>& bbox) noexcept
     {
         auto w = bbox.width();
         auto h = bbox.height();
@@ -90,7 +88,7 @@ struct point2op
     }
 
     template<typename p2_type, typename bb2_type>
-    inline static constexpr auto
+    static constexpr auto
     reverse_normalize(const point2<p2_type>& point, const bbox2<bb2_type>& bbox) noexcept
     {
         auto contour_w = bbox.width();
@@ -103,7 +101,7 @@ struct point2op
     }
 
     template<typename type>
-    inline static constexpr bbox2<type> get_box_contour(std::span<point2<type>> points)
+    static constexpr bbox2<type> get_box_contour(std::span<point2<type>> points)
     {
         type min_x = points[0].x;
         type max_x = points[0].x;

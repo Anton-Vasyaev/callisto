@@ -19,16 +19,16 @@ class bitmap_glyph
     // private methods
     void __destroy() noexcept;
 
-    void __move_from(bitmap_glyph&& glyph);
+    void __move_from(bitmap_glyph&& glyph) noexcept;
 
 public:
     // construct and destruct
-    bitmap_glyph(FT_Glyph handler);
+    explicit bitmap_glyph(FT_Glyph handler);
 
     // construct and destruct
     bitmap_glyph(const bitmap_glyph&) = delete;
 
-    bitmap_glyph(bitmap_glyph&& glyph);
+    bitmap_glyph(bitmap_glyph&& glyph) noexcept;
 
     ~bitmap_glyph();
 
@@ -43,7 +43,7 @@ public:
     // operators
     bitmap_glyph& operator=(const bitmap_glyph&) = delete;
 
-    bitmap_glyph& operator=(bitmap_glyph&& glyph);
+    bitmap_glyph& operator=(bitmap_glyph&& glyph) noexcept;
 };
 
 CALLISTO_ASSERT_TRAIT_ONLY_MOVE(bitmap_glyph);

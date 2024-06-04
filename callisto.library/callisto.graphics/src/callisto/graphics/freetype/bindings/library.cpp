@@ -9,11 +9,11 @@ namespace callisto::graphics::freetype
 
 library::library() { WRAP_CALL_FREETYPE_FUNC(FT_Init_FreeType, &_handler); }
 
-library::~library()
+library::~library() noexcept
 {
     if (this->_handler != nullptr)
     {
-        WRAP_CALL_FREETYPE_FUNC(FT_Done_FreeType, _handler);
+        FT_Done_FreeType(_handler);
     }
 }
 

@@ -7,10 +7,6 @@
 
 namespace callisto::math
 {
-namespace
-{
-namespace c_f = callisto::framework;
-}
 
 template<callisto::framework::concept_arithmetic _value_type>
 struct bbox2
@@ -22,11 +18,13 @@ struct bbox2
     value_type x2;
     value_type y2;
 
-    inline static constexpr bbox2 empty() noexcept { return bbox2(0, 0, 0, 0); }
+    static constexpr bbox2 empty() noexcept { return bbox2(0, 0, 0, 0); }
 
 #pragma region construct_and_destruct
 
-    inline constexpr bbox2(value_type x1, value_type y1, value_type x2, value_type y2) noexcept
+    constexpr bbox2() = default;
+
+    constexpr bbox2(value_type x1, value_type y1, value_type x2, value_type y2) noexcept
     {
         this->x1 = x1;
         this->y1 = y1;
@@ -34,7 +32,7 @@ struct bbox2
         this->y2 = y2;
     }
 
-    inline constexpr bbox2(
+    constexpr bbox2(
         const point2<value_type>& left_top,
         const point2<value_type>& right_bottom
     ) noexcept
@@ -46,7 +44,7 @@ struct bbox2
         y2 = right_bottom.y;
     }
 
-    inline constexpr bbox2(const bbox2& other_bbox) noexcept
+    constexpr bbox2(const bbox2& other_bbox) noexcept
     {
         x1 = other_bbox.x1;
         y1 = other_bbox.y1;
@@ -59,37 +57,37 @@ struct bbox2
 #pragma region methods
 
     template<callisto::framework::concept_arithmetic cast_type>
-    inline constexpr auto as() const noexcept
+    constexpr auto as() const noexcept
     {
         return bbox2<cast_type>(x1, y1, x2, y2);
     }
 
-    inline constexpr auto left_top() const noexcept { return point2<value_type>(x1, y1); }
+    constexpr auto left_top() const noexcept { return point2<value_type>(x1, y1); }
 
-    inline constexpr auto left_bottom() const noexcept { return point2<value_type>(x1, y2); }
+    constexpr auto left_bottom() const noexcept { return point2<value_type>(x1, y2); }
 
-    inline constexpr auto right_bottom() const noexcept { return point2<value_type>(x2, y2); }
+    constexpr auto right_bottom() const noexcept { return point2<value_type>(x2, y2); }
 
-    inline constexpr auto right_top() const noexcept { return point2<value_type>(x2, y1); }
+    constexpr auto right_top() const noexcept { return point2<value_type>(x2, y1); }
 
-    inline constexpr value_type width() const noexcept { return x2 - x1; }
+    constexpr value_type width() const noexcept { return x2 - x1; }
 
-    inline constexpr value_type height() const noexcept { return y2 - y1; }
+    constexpr value_type height() const noexcept { return y2 - y1; }
 
-    inline constexpr value_type area() const noexcept { return width() * height(); }
+    constexpr value_type area() const noexcept { return width() * height(); }
 
-    inline constexpr size2<value_type> size() const noexcept
+    constexpr size2<value_type> size() const noexcept
     {
         return size2<value_type>(width(), height());
     }
 
-    inline constexpr void set_first(const point2<value_type>& point) noexcept
+    constexpr void set_first(const point2<value_type>& point) noexcept
     {
         x1 = point.x;
         y1 = point.y;
     }
 
-    inline constexpr void set_second(const point2<value_type>& point) noexcept
+    constexpr void set_second(const point2<value_type>& point) noexcept
     {
         x2 = point.x;
         y2 = point.y;
@@ -97,12 +95,12 @@ struct bbox2
 
 #pragma region operators
 
-    inline constexpr const bool operator==(const bbox2& other) const noexcept
+    constexpr bool operator==(const bbox2& other) const noexcept
     {
         return x1 == other.x1 && y1 == other.y1 && x2 == other.x2 && y2 == other.y2;
     }
 
-    inline constexpr const bool operator!=(const bbox2& other) const noexcept
+    constexpr bool operator!=(const bbox2& other) const noexcept
     {
         return x1 != other.x1 || y1 != other.y1 || x2 != other.x2 || y2 != other.y2;
     }

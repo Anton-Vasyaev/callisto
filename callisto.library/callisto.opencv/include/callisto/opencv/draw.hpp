@@ -13,11 +13,6 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 /// @brief Draws rectangle on the image.
 /// @tparam value_type_1 Value type of left-top point.
 /// @tparam value_type_2 Value type of right-bottom point.
@@ -31,15 +26,17 @@ namespace c_m = callisto::math;
 /// to 1.0)
 template<typename value_type_1, typename value_type_2>
 void draw_rectangle(
-    cv::Mat&                  img,
-    c_m::point2<value_type_1> p1,
-    c_m::point2<value_type_2> p2,
-    c_m::color3i              color,
-    int                       thickness  = 1,
-    int                       line_type  = cv::LINE_8,
-    bool                      normalized = true
+    cv::Mat&                                    img,
+    const callisto::math::point2<value_type_1>& p1,
+    const callisto::math::point2<value_type_2>& p2,
+    const callisto::math::color3i&              color,
+    int                                         thickness  = 1,
+    int                                         line_type  = cv::LINE_8,
+    bool                                        normalized = true
 )
 {
+    namespace c_m = callisto::math;
+
     auto size = mat_size(img);
     if (normalized)
     {
@@ -50,7 +47,7 @@ void draw_rectangle(
     auto p1i = c_m::point2i(p1);
     auto p2i = c_m::point2i(p2);
 
-    auto clr_d = c_m::color3d(color);
+    auto clr_d = color.as<double>();
 
     cv::rectangle(
         img,
@@ -73,12 +70,12 @@ void draw_rectangle(
 /// to 1.0)
 template<typename value_type>
 void draw_bbox(
-    cv::Mat&                      img,
-    const c_m::bbox2<value_type>& box,
-    c_m::color3i                  color,
-    int                           thickness  = 1,
-    int                           line_type  = cv::LINE_8,
-    bool                          normalized = true
+    cv::Mat&                                 img,
+    const callisto::math::bbox2<value_type>& box,
+    const callisto::math::color3i&           color,
+    int                                      thickness  = 1,
+    int                                      line_type  = cv::LINE_8,
+    bool                                     normalized = true
 )
 {
     draw_rectangle(
@@ -105,15 +102,17 @@ void draw_bbox(
 /// to 1.0)
 template<typename value_type_1, typename value_type_2>
 void draw_line(
-    cv::Mat&                  img,
-    c_m::point2<value_type_1> p1,
-    c_m::point2<value_type_2> p2,
-    c_m::color3i              color,
-    int                       thickness  = 1,
-    int                       line_type  = cv::LINE_8,
-    bool                      normalized = true
+    cv::Mat&                                    img,
+    const callisto::math::point2<value_type_1>& p1,
+    const callisto::math::point2<value_type_2>& p2,
+    const callisto::math::color3i&              color,
+    int                                         thickness  = 1,
+    int                                         line_type  = cv::LINE_8,
+    bool                                        normalized = true
 )
 {
+    namespace c_m = callisto::math;
+
     auto size = mat_size(img);
     if (normalized)
     {
@@ -124,7 +123,7 @@ void draw_line(
     auto p1i = c_m::point2i(p1);
     auto p2i = c_m::point2i(p2);
 
-    auto clr_d = c_m::color3d(color);
+    auto clr_d = color.as<double>();
 
     cv::line(
         img,
@@ -147,12 +146,12 @@ void draw_line(
 /// to 1.0)
 template<typename value_type>
 void draw_line(
-    cv::Mat&               img,
-    c_m::line2<value_type> line,
-    c_m::color3i           color,
-    int                    thickness  = 1,
-    int                    line_type  = cv::LINE_8,
-    bool                   normalized = true
+    cv::Mat&                                 img,
+    const callisto::math::line2<value_type>& line,
+    const callisto::math::color3i&           color,
+    int                                      thickness  = 1,
+    int                                      line_type  = cv::LINE_8,
+    bool                                     normalized = true
 )
 {
     draw_line(img, line.first(), line.second(), color, thickness, line_type, normalized);
@@ -168,14 +167,16 @@ void draw_line(
 /// to 1.0)
 template<typename value_type>
 void point(
-    cv::Mat                 img,
-    c_m::point2<value_type> point,
-    c_m::color3i            color,
-    int                     radius     = 1,
-    bool                    normalized = true
+    cv::Mat                                   img,
+    const callisto::math::point2<value_type>& point,
+    const callisto::math::color3i&            color,
+    int                                       radius     = 1,
+    bool                                      normalized = true
 )
 {
-    int thickness = radius + 1;
+    namespace c_m = callisto::math;
+
+    const int thickness = radius + 1;
 
     auto size = mat_size(img);
     if (normalized)
@@ -185,40 +186,40 @@ void point(
 
     auto p_i = c_m::point2i(point);
 
-    auto clr_d = c_m::color3d(color);
+    auto clr_d = color.as<double>();
 
     cv::circle(img, { p_i.x, p_i.y }, radius, { clr_d.b, clr_d.g, clr_d.r }, thickness);
 }
 
 template<typename point_container_type>
 void fill_polygon(
-    cv::Mat&                    img,
-    const point_container_type& points,
-    c_m::color3i                color,
-    int                         line_type  = cv::LINE_8,
-    bool                        normalized = true
+    cv::Mat&                       img,
+    const point_container_type&    points,
+    const callisto::math::color3i& color,
+    int                            line_type  = cv::LINE_8,
+    bool                           normalized = true
 )
 {
-    auto size = mat_size(img);
+    auto size = mat_size(img).as<double>();
 
     std::vector<cv::Point> cv_points;
     cv_points.reserve(points.size());
 
     for (auto point : points)
     {
-        auto p = c_m::point2d(point);
+        auto p = point.as<double>();
 
         if (normalized) p *= size;
 
-        cv_points.emplace_back((int)p.x, (int)p.y);
+        cv_points.emplace_back(static_cast<int>(p.x), static_cast<int>(p.y));
     }
 
-    auto points_ptr      = cv_points.data();
-    auto points_pp       = &points_ptr;
-    auto const_points_pp = (const cv::Point**)(points_pp);
+    auto* points_ptr      = cv_points.data();
+    auto* points_pp       = &points_ptr;
+    auto* const_points_pp = reinterpret_cast<cv::Point**>(points_pp);
 
-    auto points_size = (int)points.size();
-    auto size_ptr    = (const int*)(&points_size);
+    auto  points_size = static_cast<int>(points.size());
+    auto* size_ptr    = &points_size;
 
     auto cv_color = cv::Scalar(color.b, color.g, color.r);
 

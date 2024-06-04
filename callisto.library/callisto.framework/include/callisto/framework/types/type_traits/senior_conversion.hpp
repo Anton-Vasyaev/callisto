@@ -118,6 +118,6 @@ public:
 template<concept_arithmetic... rest_type>
 using senior_conversion_t = typename senior_conversion<rest_type...>::type;
 
-}
+} // namespace callisto::framework
 
 // clang-format on
