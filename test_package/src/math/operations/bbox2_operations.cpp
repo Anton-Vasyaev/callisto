@@ -11,7 +11,6 @@
 #include <math/auxiliary/print_math_data.hpp>
 #include <math/auxiliary/data_equal.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 using bbox2op = c_m::bbox2op;
@@ -56,7 +55,8 @@ TEST(bbox2_operations, center_test)
     auto expect_center = c_m::point2f(-106.3, -8288.2);
 
     auto center = c_m::bbox2op::center(box);
-    ASSERT_TRUE(abs_err_point2_equal(center, expect_center, abs_float_acc));
+    std::cout << "center:" << center << "\n";
+    ASSERT_TRUE(rel_err_point2_equal(center, expect_center, rel_float_acc));
 }
 
 TEST(bbox2_operations, scale_size_test)
@@ -78,12 +78,12 @@ TEST(bbox2_operations, scale_size_test)
     };
 
     scale_box = box;
-    for (int i = 0; i < scale_sizes.size(); i++)
+    for (const auto& scale_size : scale_sizes)
     {
-        scale_box = c_m::bbox2op::scale(scale_box, scale_sizes[i]);
+        scale_box = c_m::bbox2op::scale(scale_box, scale_size);
     }
 
-    for (int i = scale_sizes.size() - 1; i >= 0; i--)
+    for (auto i = static_cast<int>(scale_sizes.size()) - 1; i >= 0; i--)
     {
         scale_box = c_m::bbox2op::scale(scale_box, c_m::size2f(1.0, 1.0) / scale_sizes[i]);
     }
@@ -101,22 +101,22 @@ TEST(bbox2_operations, move_test)
     ASSERT_TRUE(rel_err_bbox2_equal(move_box, expect_box, rel_float_acc));
 
     auto move_vectors = std::vector<c_m::vector2f> {
-        { 12.4, 56.2},
-        {  0.5, 0.34},
-        {-18.2, 16.1},
-        {  9.2, -4.5},
-        { 10.0, 10.0},
-        {  1.0,  2.0},
-        {  2.0,  3.0}
+        { 12.4F, 56.2F},
+        {  0.5F, 0.34F},
+        {-18.2F, 16.1F},
+        {  9.2F, -4.5F},
+        { 10.0F, 10.0F},
+        {  1.0F,  2.0F},
+        {  2.0F,  3.0F}
     };
 
     move_box = box;
-    for (int i = 0; i < move_vectors.size(); i++)
+    for (const auto& move_vector : move_vectors)
     {
-        move_box = c_m::bbox2op::move(move_box, move_vectors[i]);
+        move_box = c_m::bbox2op::move(move_box, move_vector);
     }
 
-    for (int i = move_vectors.size() - 1; i >= 0; i--)
+    for (auto i = static_cast<int>(move_vectors.size()) - 1; i >= 0; i--)
     {
         move_box = c_m::bbox2op::move(move_box, -move_vectors[i]);
     }
@@ -139,8 +139,8 @@ TEST(bbox2_operations, from_center_test)
         auto w = test_box.width();
         auto h = test_box.height();
 
-        auto x_c = test_box.x1 + w / 2.0f;
-        auto y_c = test_box.y1 + h / 2.0f;
+        auto x_c = test_box.x1 + w / 2.0F;
+        auto y_c = test_box.y1 + h / 2.0F;
 
         auto center = c_m::point2f(x_c, y_c);
         auto size   = c_m::size2d(w, h);

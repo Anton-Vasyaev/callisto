@@ -77,7 +77,7 @@ TEST(vector2_operations, dot_product_test)
     vec1    = c_m::vector2d(7, -8);
     vec2    = c_m::vector2d(-11, 23);
     product = vec2::dot_product(vec1, vec2);
-    ASSERT_TRUE(c_m::relative_error(product, rel_float_acc) == -261.0);
+    ASSERT_TRUE(c_m::relative_error(product, rel_double_acc) == -261.0);
 }
 
 TEST(vector2_operations, cos_angle_default_angle_test)
@@ -96,52 +96,52 @@ TEST(vector2_operations, cos_angle_default_angle_test)
     ASSERT_TRUE(c_m::absolute_error(cos_d, abs_double_acc) == 0.0);
     ASSERT_TRUE(c_m::absolute_error(std::cos(angle_d), abs_double_acc) == cos_d);
 
-    auto vec1f   = c_m::vector2f(1.0f, 0.0f);
-    auto vec2f   = c_m::vector2f(3.0f, 4.0f);
-    auto cos_f   = vec2::cos_angle(vec1f, vec2f);
-    auto angle_f = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6f);
+    auto vec1f   = c_m::vector2f(1.0, 0.0);
+    auto vec2f   = c_m::vector2f(3.0, 4.0);
+    auto cos_f   = static_cast<float>(vec2::cos_angle(vec1f, vec2f));
+    auto angle_f = static_cast<float>(vec2::angle(vec1f, vec2f));
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
-    cos_f   = vec2::cos_angle(vec2f, vec1f);
-    angle_f = vec2::angle(vec2f, vec1f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6f);
+    cos_f   = static_cast<float>(vec2::cos_angle(vec2f, vec1f));
+    angle_f = static_cast<float>(vec2::angle(vec2f, vec1f));
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
     auto rotate_angle = c_m::pi / 2.0;
     vec1f             = p2::rotate(vec1f, rotate_angle).as<float>();
     vec2f             = p2::rotate(vec2f, rotate_angle).as<float>();
-    cos_f             = vec2::cos_angle(vec1f, vec2f);
-    angle_f           = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6f);
+    cos_f             = static_cast<float>(vec2::cos_angle(vec1f, vec2f));
+    angle_f           = static_cast<float>(vec2::angle(vec1f, vec2f));
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 0.6);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
-    vec1f   = c_m::vector2f(1.0f, 0.0f);
-    vec2f   = c_m::vector2f(-3.0f, 4.0f);
+    vec1f   = c_m::vector2f(1.0, 0.0);
+    vec2f   = c_m::vector2f(-3.0, 4.0);
     cos_f   = vec2::cos_angle(vec1f, vec2f);
     angle_f = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == -0.6f);
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == -0.6);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
     vec1f   = c_m::vector2f(-5.0, 5.0);
     vec2f   = c_m::vector2f(-30.0, -30.0);
     cos_f   = vec2::cos_angle(vec1f, vec2f);
     angle_f = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::absolute_error(cos_f, abs_float_acc) == 0.0f);
+    ASSERT_TRUE(c_m::absolute_error(cos_f, abs_float_acc) == 0.0);
     ASSERT_TRUE(c_m::absolute_error(std::cos(angle_f), abs_float_acc) == cos_f);
 
-    vec1f   = c_m::vector2f(-32.0f, 11.23f);
+    vec1f   = c_m::vector2f(-32.0, 11.23);
     vec2f   = vec2::normalize(vec1f, 453.0).as<float>();
     cos_f   = vec2::cos_angle(vec1f, vec2f);
     angle_f = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 1.0f);
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == 1.0);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 
     vec1f   = c_m::vector2f(-5.0, 2.3);
     vec2f   = c_m::vector2f(5.0, -2.3);
     cos_f   = vec2::cos_angle(vec1f, vec2f);
     angle_f = vec2::angle(vec1f, vec2f);
-    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == -1.0f);
+    ASSERT_TRUE(c_m::relative_error(cos_f, rel_float_acc) == -1.0);
     ASSERT_TRUE(c_m::relative_error(std::cos(angle_f), rel_float_acc) == cos_f);
 }
 
@@ -157,13 +157,13 @@ TEST(vector2_operations, pseudo_scalar_product_test)
     vec1 = c_m::vector2f(-34.0, 21.0);
     vec2 = vec2::normalize(vec1, 5.0).as<float>();
     prod = vec2::pseudo_scalar_product(vec1, vec2);
-    ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0f);
+    ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0);
 
     vec1 = c_m::vector2f(-20.0, 5.0);
     vec2 = c_m::vector2f(20.0, -5.0);
     vec2 = vec2::normalize(vec2, 9.5).as<float>();
     prod = vec2::pseudo_scalar_product(vec1, vec2);
-    ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0f);
+    ASSERT_TRUE(c_m::absolute_error(prod, abs_float_acc) == 0.0);
 }
 
 TEST(vector2_operations, sign_angle_test)
@@ -172,14 +172,14 @@ TEST(vector2_operations, sign_angle_test)
     auto vec2      = c_m::vector2f(4.0, 4.0);
     auto angle     = vec2::sign_angle(vec1, vec2);
     auto rev_angle = vec2::sign_angle(vec2, vec1);
-    ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == 45.0f / c_m::degree_per_radian);
+    ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == 45.0 / c_m::degree_per_radian);
     ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == -rev_angle);
 
     vec1      = c_m::vector2f(-2.0, 6.0);
     vec2      = c_m::vector2f(6.0, 2.0);
     angle     = vec2::sign_angle(vec1, vec2);
     rev_angle = vec2::sign_angle(vec2, vec1);
-    ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == -90.0f / c_m::degree_per_radian);
+    ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == -90.0 / c_m::degree_per_radian);
     ASSERT_TRUE(c_m::relative_error(angle, rel_float_acc) == -rev_angle);
 
     vec1  = c_m::vector2f(6.0, 4.0);
@@ -208,11 +208,11 @@ TEST(vector2_operations, from_line_test)
 TEST(vector2_operations, sin_cos_test)
 {
     auto pythagorean_triple_list = std::vector<std::tuple<float, float, float>> {
-        {  3.0f,   4.0f,   5.0f},
-        { 20.0f,  21.0f,  29.0f},
-        { 11.0f,  60.0f,  61.0f},
-        { 39.0f,  80.0f,  89.0f},
-        {115.0f, 252.0f, 277.0f}
+        {  3.0,   4.0,   5.0},
+        { 20.0,  21.0,  29.0},
+        { 11.0,  60.0,  61.0},
+        { 39.0,  80.0,  89.0},
+        {115.0, 252.0, 277.0}
     };
 
     for (auto& pyth_triple : pythagorean_triple_list)

@@ -21,7 +21,8 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr double length(const vector2<type>& vector) noexcept
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
+    length(const vector2<type>& vector) noexcept
     {
         double square_len = square_of_length(vector);
         return std::sqrt(square_len);
@@ -40,7 +41,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr auto dot_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
+    static constexpr type dot_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
         auto& y1 = vec1.y;
@@ -52,7 +53,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr double
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
     cos_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto dot_prod       = dot_product(vec1, vec2);
@@ -62,7 +63,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr double
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
     angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto cos_value = cos_angle(vec1, vec2, eps);
@@ -71,7 +72,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr double
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
     pseudo_scalar_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;
@@ -84,7 +85,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr double
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
     sign_angle(const vector2<type>& vec1, const vector2<type>& vec2, double eps = 1e-9) noexcept
     {
         auto sign = pseudo_scalar_product(vec1, vec2) > 0.0 ? 1 : -1;
@@ -101,7 +102,8 @@ struct vector2op
     }
 
     template<typename type>
-    static double sin(const vector2<type>& point) noexcept
+    static std::conditional_t<std::is_same_v<type, double>, double, float>
+    sin(const vector2<type>& point) noexcept
     {
         auto length = vector2op::length(point);
 
@@ -109,7 +111,8 @@ struct vector2op
     }
 
     template<typename type>
-    static double cos(const vector2<type>& point) noexcept
+    static std::conditional_t<std::is_same_v<type, double>, double, float>
+    cos(const vector2<type>& point) noexcept
     {
         auto length = vector2op::length(point);
 

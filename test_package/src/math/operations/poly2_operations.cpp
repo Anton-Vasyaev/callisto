@@ -11,7 +11,6 @@
 #include <math/auxiliary/print_math_data.hpp>
 #include <math/auxiliary/data_equal.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 using poly2op = c_m::poly2op;
@@ -22,21 +21,21 @@ constexpr double abs_double_acc = 1e-6;
 constexpr float rel_float_acc = 1e-4;
 constexpr float abs_float_acc = 1e-4;
 
+struct area_test_data
+{
+    std::vector<c_m::point2f> polygon;
+
+    float area;
+
+    std::vector<c_m::point2f> contain_point_list;
+
+    std::vector<c_m::point2f> not_contain_point_list;
+};
+
 TEST(poly2_operations, area_test)
 {
-    struct test_data
-    {
-        std::vector<c_m::point2f> polygon;
-
-        float area;
-
-        std::vector<c_m::point2f> contain_point_list;
-
-        std::vector<c_m::point2f> not_contain_point_list;
-    };
-
     // clang-format off
-    auto test_data_list = std::vector<test_data> {
+    auto test_data_list = std::vector<area_test_data> {
         {
             {
                 c_m::point2f(1.0, 1.0),

@@ -20,13 +20,13 @@ struct random_point_exception : public c_f::exception
 
     random_point_exception(float x, float y) : x(x), y(y) {}
 
-    virtual std::string form_error_message() const
+    std::string form_error_message() const override
     {
         return c_f::_bs("Ivalid point coords: (", x, ", ", y, ").");
     }
 };
 
-enum class custom_error_code
+enum class custom_error_code : std::uint8_t
 {
     not_found,
     not_allocated,
@@ -77,7 +77,7 @@ void exception_example()
 
         c_f::gtest_console::print_line("Catch boost exception:", boost_d_i);
 
-        auto error_code = boost::get_error_info<error_tag_code<custom_error_code>>(e);
+        auto* error_code = boost::get_error_info<error_tag_code<custom_error_code>>(e);
 
         if (error_code == nullptr)
         {
@@ -85,7 +85,7 @@ void exception_example()
         }
         else
         {
-            c_f::gtest_console::print_line("Error code:", int(*error_code));
+            c_f::gtest_console::print_line("Error code:", static_cast<int>(*error_code));
         }
     }
 }

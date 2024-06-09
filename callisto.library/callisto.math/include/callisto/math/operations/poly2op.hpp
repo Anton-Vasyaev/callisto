@@ -14,7 +14,8 @@ namespace callisto::math
 struct poly2op
 {
     template<typename type>
-    static double area(std::span<point2<type>> polygon) noexcept
+    static std::conditional_t<std::is_same_v<type, double>, double, float>
+    area(std::span<point2<type>> polygon) noexcept
     {
         auto n = polygon.size();
 

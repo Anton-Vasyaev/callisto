@@ -11,7 +11,7 @@ namespace c_f = callisto::framework;
 
 using user_info = std::tuple<std::string, std::string, uint8_t>;
 
-enum user_field
+enum user_field : std::uint8_t
 {
     name,
     email,
@@ -20,9 +20,9 @@ enum user_field
 
 TEST(framework_types, enum_utype_test)
 {
-    auto john_name  = "john";
-    auto john_email = "jonny@soap.net";
-    auto john_age   = (uint8_t)32;
+    const auto* john_name  = "john";
+    const auto* john_email = "jonny@soap.net";
+    auto        john_age   = static_cast<uint8_t>(32);
 
     auto john_data = user_info { john_name, john_email, john_age };
 

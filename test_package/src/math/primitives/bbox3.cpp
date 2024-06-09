@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 TEST(math_primitives, bbox3_placeholder_test)
@@ -45,6 +44,6 @@ TEST(math_primitives, bbox3_placeholder_test)
     b = c_m::bbox3(c_m::point3l(1, 2, 3), c_m::point3l(4, 5, 6));
     ASSERT_TRUE(b == c_m::bbox3l(1, 2, 3, 4, 5, 6));
 
-    auto c = c_m::bbox3(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f);
-    ASSERT_TRUE(c != c_m::bbox3f(0.01f, 1.0f, 2.0f, 3.0f, -3.0f, 1.0f));
+    auto c = c_m::bbox3(0.0F, 1.F, 2.0F, 3.0F, 4.0F, 5.0F);
+    ASSERT_TRUE(c != c_m::bbox3f(0.01, 1.0, 2.0, 3.0, -3.0, 1.0));
 }

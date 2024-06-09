@@ -63,7 +63,7 @@ TEST(framework_templates, signal_test_1)
 
     signal();
 
-    std::string expected_string = ""
+    const std::string expected_string = ""
         "[print_func][print_lambda][print_functor]"
         "[print_func][print_lambda][print_functor][print_functor_raii]"
         "[print_func][print_lambda][print_func][print_func][print_func][print_lambda_2]";
@@ -101,7 +101,8 @@ TEST(framework_templates, signal_test_2)
     );
     signal.connect(functor);
 
-    int a = 1, b = 2;
+    int a = 1;
+    int b = 2;
 
     signal(a, b);
 

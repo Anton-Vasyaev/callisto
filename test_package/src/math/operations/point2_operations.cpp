@@ -13,7 +13,6 @@
 #include <math/auxiliary/print_math_data.hpp>
 #include <math/auxiliary/data_equal.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 using p2op = c_m::point2op;
@@ -56,31 +55,30 @@ TEST(point2_operations, square_distance_default_distance_test)
         auto len1 = p2op::distance(p1, p2);
         auto len2 = p2op::distance(p2, p1);
 
-        ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == std::sqrt(square_len1));
+        ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == std::sqrtf(square_len1));
         ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == len2);
     }
 }
 
-TEST(point2_operations, rotate_default_rotate_anchor_test)
-
+struct rotate_anchor_operation_data
 {
-    struct rotate_operation_data
-    {
-        float x;
+    float x;
 
-        float y;
+    float y;
 
-        float len;
+    float len;
 
-        c_m::point2f offset_point;
-    };
+    c_m::point2f offset_point;
+};
 
-    auto test_data_list = std::vector<rotate_operation_data> {
-        {  3.0f,   4.0f,   5.0f,  { -23.5, 43.2f }},
-        { 20.0f,  21.0f,  29.0f,  { 17.63, 10.0f }},
-        { 11.0f,  60.0f,  61.0f,  { 18.21, 74.2f }},
-        { 39.0f,  80.0f,  89.0f, { -45.15, 51.9f }},
-        {115.0f, 252.0f, 277.0f,  { 67.25, 73.2f }}
+TEST(point2_operations, rotate_default_rotate_anchor_test)
+{
+    auto test_data_list = std::vector<rotate_anchor_operation_data> {
+        {  3.0F,   4.0F,   5.0F,  { -23.5F, 43.2F }},
+        { 20.0F,  21.0F,  29.0F,  { 17.63F, 10.0F }},
+        { 11.0F,  60.0F,  61.0F,  { 18.21F, 74.2F }},
+        { 39.0F,  80.0F,  89.0F, { -45.15F, 51.9F }},
+        {115.0F, 252.0F, 277.0F,  { 67.25F, 73.2F }}
     };
 
     for (auto& data : test_data_list)
@@ -167,8 +165,6 @@ TEST(point2_operations, clamp_test)
 
 TEST(point2_operations, normalize_reverse_normalize_test)
 {
-    using namespace std::placeholders;
-
     auto p   = c_m::point2f(9, 12);
     auto box = c_m::bbox2f(5, 4, 17, 14);
     p        = p2op::normalize(p, box);
@@ -194,22 +190,24 @@ TEST(point2_operations, normalize_reverse_normalize_test)
         {-11.0, -14.0, -9.0, -12.0}
     };
 
-    for (auto test_point : test_points)
+    for (const auto& test_point : test_points)
     {
-        for (auto test_box : test_boxes)
+        for (const auto& test_box : test_boxes)
         {
             auto norm_point = c_m::point2op::normalize(test_point, test_box);
             auto rev_point  = c_m::point2op::reverse_normalize(norm_point, test_box);
 
-            std::function<bool(c_m::point2f, c_m::point2f)> accuracy_func;
+            std::function<bool(const c_m::point2f&, const c_m::point2f&)> accuracy_func;
 
             if (test_point == c_m::point2f(0.0, 0.0))
             {
-                accuracy_func = std::bind(abs_err_point2_equal<float>, _1, _2, abs_float_acc);
+                accuracy_func = [](const c_m::point2f& a, const c_m::point2f& b)
+                { return abs_err_point2_equal(a, b, abs_float_acc); };
             }
             else
             {
-                accuracy_func = std::bind(rel_err_point2_equal<float>, _1, _2, 1e-3);
+                accuracy_func = [](const c_m::point2f& a, const c_m::point2f& b)
+                { return rel_err_point2_equal(a, b, 1e-3F); };
             }
 
             ASSERT_TRUE(accuracy_func(test_point, rev_point));

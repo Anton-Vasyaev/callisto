@@ -7,7 +7,6 @@
 #include <callisto/math/primitives.hpp>
 #include <callisto/math/error/relative_error.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 template<typename numeric_type>

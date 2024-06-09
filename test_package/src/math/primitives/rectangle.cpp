@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 TEST(math_primitives, rectangle_placeholder_test)

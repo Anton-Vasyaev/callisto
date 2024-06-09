@@ -49,11 +49,9 @@ public:
     constexpr value_type value() const noexcept { return __value; }
 
     /// @brief operator=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr value_clamper& operator=(other_value_type v) noexcept
+    constexpr value_clamper& operator=(value_type v) noexcept
     {
         set_value(v);
 
@@ -61,11 +59,9 @@ public:
     }
 
     /// @brief operator+=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr value_clamper& operator+=(other_value_type v) noexcept
+    constexpr value_clamper& operator+=(value_type v) noexcept
     {
         set_value(__value + v);
 
@@ -73,11 +69,9 @@ public:
     }
 
     /// @brief operator-=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr value_clamper& operator-=(other_value_type v) noexcept
+    constexpr value_clamper& operator-=(value_type v) noexcept
     {
         set_value(__value - v);
 
@@ -85,11 +79,9 @@ public:
     }
 
     /// @brief operator*=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr value_clamper& operator*=(other_value_type v) noexcept
+    constexpr value_clamper& operator*=(value_type v) noexcept
     {
         set_value(__value * v);
 
@@ -97,11 +89,9 @@ public:
     }
 
     /// @brief operator/=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr value_clamper& operator/=(other_value_type v) noexcept
+    constexpr value_clamper& operator/=(value_type v) noexcept
     {
         set_value(__value / v);
 

@@ -10,14 +10,13 @@
 
 #include <callisto/math/error/relative_error.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 TEST(math_primitives, range_placeholder_test)
 {
-    auto r = c_m::range_f(0.0f, 1.0f);
+    auto r = c_m::range_f(0.0, 1.0);
 
-    ASSERT_TRUE(c_m::relative_error(r.distance(), 1e-6) == 1.0f);
+    ASSERT_TRUE(c_m::relative_error(r.distance(), 1e-6F) == 1.0F);
 
     auto r_l = r.as<int64_t>();
 

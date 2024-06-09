@@ -25,7 +25,8 @@ struct point2op
     }
 
     template<typename type>
-    static constexpr double distance(const point2<type>& p1, const point2<type>& p2) noexcept
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
+    distance(const point2<type>& p1, const point2<type>& p2) noexcept
     {
         auto square_dist = square_distance(p1, p2);
 

@@ -11,7 +11,7 @@ namespace callisto::math
 struct vector3op
 {
     template<typename type>
-    static constexpr auto square_of_length(const vector3<type>& vector) noexcept
+    static constexpr type square_of_length(const vector3<type>& vector) noexcept
     {
         auto& x = vector.x;
         auto& y = vector.y;
@@ -21,7 +21,8 @@ struct vector3op
     }
 
     template<typename type>
-    static constexpr auto length(const vector3<type>& vector) noexcept
+    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
+    length(const vector3<type>& vector) noexcept
     {
         auto square_len = square_of_length(vector);
 
@@ -32,13 +33,15 @@ struct vector3op
     static constexpr auto
     normalize(const vector3<type>& vector, double normalize_value = 1.0) noexcept
     {
-        auto scale = normalize_value / length(vector);
+        using calc_type = std::conditional_t<std::is_same_v<type, double>, double, float>;
+
+        auto scale = static_cast<calc_type>(normalize_value) / length(vector);
 
         auto x = vector.x * scale;
         auto y = vector.y * scale;
         auto z = vector.z * scale;
 
-        return vector3<decltype(x)>(x, y, z);
+        return vector3<calc_type>(x, y, z);
     }
 
     template<typename type>

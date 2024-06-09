@@ -5,20 +5,20 @@
 #include <callisto/math/error.hpp>
 
 template<typename type>
-inline constexpr bool rel_err_point2_equal(
+constexpr bool rel_err_point2_equal(
     const callisto::math::point2<type>& a,
     const callisto::math::point2<type>& b,
-    double                              rel_acc
+    type                                rel_acc
 ) noexcept
 {
     return c_m::relative_error(a.x, rel_acc) == b.x && c_m::relative_error(a.y, rel_acc) == b.y;
 }
 
 template<typename type>
-inline constexpr bool abs_err_point2_equal(
+constexpr bool abs_err_point2_equal(
     const callisto::math::point2<type>& a,
     const callisto::math::point2<type>& b,
-    double                              abs_acc
+    type                                abs_acc
 ) noexcept
 {
     return c_m::absolute_error(a.x, abs_acc) == b.x && c_m::absolute_error(a.y, abs_acc) == b.y;
@@ -26,10 +26,10 @@ inline constexpr bool abs_err_point2_equal(
 
 // FUTURE
 template<typename type>
-inline constexpr bool rel_err_point3_equal(
+constexpr bool rel_err_point3_equal(
     const callisto::math::point3<type>& a,
     const callisto::math::point3<type>& b,
-    double                              rel_acc
+    type                                rel_acc
 ) noexcept
 {
     return c_m::relative_error(a.x, rel_acc) == b.x && c_m::relative_error(a.y, rel_acc) == b.y
@@ -37,10 +37,10 @@ inline constexpr bool rel_err_point3_equal(
 }
 
 template<typename type>
-inline constexpr bool abs_err_point3_equal(
+constexpr bool abs_err_point3_equal(
     const callisto::math::point3<type>& a,
     const callisto::math::point3<type>& b,
-    double                              abs_acc
+    type                                abs_acc
 ) noexcept
 {
     return c_m::absolute_error(a.x, abs_acc) == b.x && c_m::absolute_error(a.y, abs_acc) == b.y
@@ -48,10 +48,10 @@ inline constexpr bool abs_err_point3_equal(
 }
 
 template<typename type>
-inline constexpr bool rel_err_bbox2_equal(
+constexpr bool rel_err_bbox2_equal(
     const callisto::math::bbox2<type>& a,
     const callisto::math::bbox2<type>& b,
-    double                             rel_acc
+    type                               rel_acc
 ) noexcept
 {
     return c_m::relative_error(a.x1, rel_acc) == b.x1 && c_m::relative_error(a.y1, rel_acc) == b.y1
@@ -60,10 +60,10 @@ inline constexpr bool rel_err_bbox2_equal(
 }
 
 template<typename type>
-inline constexpr bool abs_err_bbox2_equal(
+constexpr bool abs_err_bbox2_equal(
     const callisto::math::bbox2<type>& a,
     const callisto::math::bbox2<type>& b,
-    double                             abs_acc
+    type                               abs_acc
 ) noexcept
 {
     return c_m::absolute_error(a.x1, abs_acc) == b.x1 && c_m::absolute_error(a.y1, abs_acc) == b.y1
@@ -73,10 +73,10 @@ inline constexpr bool abs_err_bbox2_equal(
 
 // FUTURE
 template<typename type>
-inline constexpr bool rel_err_bbox3_equal(
+constexpr bool rel_err_bbox3_equal(
     const callisto::math::bbox3<type>& a,
     const callisto::math::bbox3<type>& b,
-    double                             rel_acc
+    type                               rel_acc
 ) noexcept
 {
     return c_m::relative_error(a.x1, rel_acc) == b.x1 && c_m::relative_error(a.y1, rel_acc) == b.y1
@@ -88,10 +88,10 @@ inline constexpr bool rel_err_bbox3_equal(
 
 // FUTURE
 template<typename type>
-inline constexpr bool abs_err_bbox3_equal(
+constexpr bool abs_err_bbox3_equal(
     const callisto::math::bbox2<type>& a,
     const callisto::math::bbox2<type>& b,
-    double                             abs_acc
+    type                               abs_acc
 ) noexcept
 {
     return c_m::absolute_error(a.x1, abs_acc) == b.x1 && c_m::absolute_error(a.y1, abs_acc) == b.y1
@@ -102,10 +102,10 @@ inline constexpr bool abs_err_bbox3_equal(
 }
 
 template<typename type>
-inline constexpr bool rel_err_line2_equal(
+constexpr bool rel_err_line2_equal(
     const callisto::math::line2<type>& a,
     const callisto::math::line2<type>& b,
-    double                             rel_acc
+    type                               rel_acc
 ) noexcept
 {
     return (c_m::relative_error(a.x1, rel_acc) == b.x1 && c_m::relative_error(a.y1, rel_acc) == b.y1
@@ -118,10 +118,10 @@ inline constexpr bool rel_err_line2_equal(
 }
 
 template<typename type>
-inline constexpr bool abs_err_line2_equal(
+constexpr bool abs_err_line2_equal(
     const callisto::math::line2<type>& a,
     const callisto::math::line2<type>& b,
-    double                             abs_acc
+    type                               abs_acc
 ) noexcept
 {
     return (c_m::absolute_error(a.x1, abs_acc) == b.x1 && c_m::absolute_error(a.y1, abs_acc) == b.y1

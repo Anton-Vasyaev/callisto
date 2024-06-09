@@ -172,9 +172,7 @@ private:
     static std::vector<size_t> get_max_cells_sizes(const rows_array_type& table)
     {
         // FUTURE fix for collision min/max word in Windows
-        auto max_lambda = [](size_t a, size_t b) {
-            return a > b ? a : b;
-        };
+        auto max_lambda_f = [](size_t a, size_t b) { return a > b ? a : b; };
 
         std::vector<size_t> max_cell_sizes;
 
@@ -185,8 +183,7 @@ private:
 
             for (size_t cell_i = 0; cell_i < row.size(); cell_i++)
             {
-                max_cell_sizes[cell_i]
-                    = max_labmda(max_cell_sizes[cell_i], row[cell_i].length());
+                max_cell_sizes[cell_i] = max_lambda_f(max_cell_sizes[cell_i], row[cell_i].length());
             }
         }
 

@@ -13,7 +13,6 @@
 #include <math/auxiliary/print_math_data.hpp>
 #include <math/auxiliary/data_equal.hpp>
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 
 constexpr double rel_double_acc = 1e-6;

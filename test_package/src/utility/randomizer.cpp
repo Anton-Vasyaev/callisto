@@ -6,7 +6,6 @@
 #include <gtest/gtest.h>
 // project
 
-namespace c_f = callisto::framework;
 namespace c_m = callisto::math;
 namespace c_u = callisto::utility;
 
@@ -48,6 +47,6 @@ TEST(math_utility, randomizer_test)
 
     test_int_range(randomizer, c_m::range_l(2, 3));
     test_int_range(randomizer, c_m::range_l(5, 10));
-    test_int_range(randomizer, c_m::range_l(-1024 * 1024, -1024));
+    test_int_range(randomizer, c_m::range_l(-1024LL * 1024LL, -1024));
     test_int_range(randomizer, c_m::range_l(-100, 100));
 }

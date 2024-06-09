@@ -16,32 +16,32 @@ void test_func(float a) { c_f::gtest_console::print_line("float val:", a); }
 
 TEST(math_utility, value_clamper_test)
 {
-    c_m::value_clamper<float> a(5.0, -2.0, 10.0);
+    c_m::value_clamper<float> a(5.0F, -2.0F, 10.0F);
 
-    a += 3.0;
-    a += 5.0;
-    a -= 15.3;
-    a *= 30.0;
-    a += 2.3;
-    a += 5.4;
+    a += 3.0F;
+    a += 5.0F;
+    a -= 15.3F;
+    a *= 30.0F;
+    a += 2.3F;
+    a += 5.4F;
 
-    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6) == 5.7);
+    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6F) == 5.7F);
 }
 
 TEST(math_utility, value_looper_test)
 {
-    c_m::value_looper<float> a(5.0, -15.0, 15.0);
+    c_m::value_looper<float> a(5.0F, -15.0F, 15.0F);
 
-    a += 11.0; // -14.0
-    a *= 2.0;  // 2.0;
-    a += 37.0; // 9.0;
-    a -= 30.0; // 9.0;
-    a /= 4.5;  // 2.0;
+    a += 11.0F; // -14.0
+    a *= 2.0F;  // 2.0;
+    a += 37.0F; // 9.0;
+    a -= 30.0F; // 9.0;
+    a /= 4.5F;  // 2.0;
 
-    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6) == 2.0);
+    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6F) == 2.0F);
 
     a = c_m::value_looper<float>(10.0, 5.0, 11.9);
-    a /= 100.0;
+    a /= 100.0F;
 
-    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6) == 7.0);
+    ASSERT_TRUE(c_m::relative_error(a.value(), 1e-6F) == 7.0F);
 }

@@ -9,12 +9,7 @@
 #include <gtest/gtest.h>
 #include <callisto/framework/test/gtest.hpp>
 
-// TODO
-#include <callisto/graphics/visual/opengl/bindings/gl_shader.hpp>
-
 namespace c_f = callisto::framework;
-
-namespace c_cv = callisto::opencv;
 
 TEST(callisto, include_test)
 {

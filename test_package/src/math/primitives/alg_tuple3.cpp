@@ -53,7 +53,7 @@ TEST(math_primitives, alg_tuple3_placeholder_test)
     p2      = p2 * 1.1;
     c_f::gtest_console::print_line("p2:", p2);
 
-    auto p3 = c_m::vector3<uint8_t>(15, 64, 21) * 0.3445f;
+    auto p3 = c_m::vector3<uint8_t>(15, 64, 21) * static_cast<uint8_t>(2);
     c_f::gtest_console::print_line("p3:", p3);
 
     auto size_1 = c_m::size3l::from_scalar(1024);
@@ -61,7 +61,7 @@ TEST(math_primitives, alg_tuple3_placeholder_test)
     c_f::gtest_console::print_line("p4:", p4);
 
     auto p5 = c_m::point3d::from_scalar(1024);
-    p5 += 0.5f;
+    p5 += 0.5F;
     c_f::gtest_console::print_line("p5:", p5);
 
     auto p6 = c_m::point3d::from_scalar(512) - c_m::point3f(12.0, 15.0, 16.0).as<double>();
@@ -70,7 +70,7 @@ TEST(math_primitives, alg_tuple3_placeholder_test)
 
     auto condition_1 = c_m::point3i(102, 66, 21) == c_m::point3i(102, 66, 21);
     auto condition_2 = c_m::point3l(0, 0, 0) == c_m::point3l::empty();
-    auto condition_3 = c_m::point3f(0.0f, 0.0f, 0.0f) == c_m::point3f::empty();
+    auto condition_3 = c_m::point3f(0.0, 0.0, 0.0) == c_m::point3f::empty();
     auto condition_4 = c_m::point3l(102, 36, 21) != c_m::point3l(36, 102, 21);
     auto condition_5 = c_m::point3l(102, 36, 22) != c_m::point3l(102, 36, 22);
 
