@@ -100,7 +100,7 @@ struct alg_tuple3
         return alg_tuple3(v1 + value, v2 + value, v3 + value);
     }
 
-    constexpr const alg_tuple3& operator+=(const alg_tuple3& other_tuple) noexcept
+    constexpr alg_tuple3& operator+=(const alg_tuple3& other_tuple) noexcept
     {
         v1 += other_tuple.v1;
         v2 += other_tuple.v2;
@@ -109,7 +109,7 @@ struct alg_tuple3
         return *this;
     }
 
-    constexpr const alg_tuple3& operator+=(value_type value) noexcept
+    constexpr alg_tuple3& operator+=(value_type value) noexcept
     {
         v1 += value;
         v2 += value;
@@ -132,7 +132,7 @@ struct alg_tuple3
         return alg_tuple3(v1 - value, v2 - value, v3 - value);
     }
 
-    constexpr const alg_tuple3& operator-=(const alg_tuple3& other_tuple) noexcept
+    constexpr alg_tuple3& operator-=(const alg_tuple3& other_tuple) noexcept
     {
         v1 -= other_tuple.v1;
         v2 -= other_tuple.v2;
@@ -141,7 +141,7 @@ struct alg_tuple3
         return *this;
     }
 
-    constexpr const alg_tuple3& operator-=(value_type value) noexcept
+    constexpr alg_tuple3& operator-=(value_type value) noexcept
     {
         v1 -= value;
         v2 -= value;
@@ -161,7 +161,7 @@ struct alg_tuple3
         return alg_tuple3(v1 * value, v2 * value, v3 * value);
     }
 
-    constexpr const alg_tuple3& operator*=(const alg_tuple3& other_tuple) noexcept
+    constexpr alg_tuple3& operator*=(const alg_tuple3& other_tuple) noexcept
     {
         v1 *= other_tuple.v1;
         v2 *= other_tuple.v2;
@@ -170,7 +170,7 @@ struct alg_tuple3
         return *this;
     }
 
-    constexpr const alg_tuple3& operator*=(value_type value) noexcept
+    constexpr alg_tuple3& operator*=(value_type value) noexcept
     {
         v1 *= value;
         v2 *= value;
@@ -190,7 +190,7 @@ struct alg_tuple3
         return alg_tuple3(v1 / value, v2 / value, v3 / value);
     }
 
-    constexpr const alg_tuple3& operator/=(const alg_tuple3& other_tuple) noexcept
+    constexpr alg_tuple3& operator/=(const alg_tuple3& other_tuple) noexcept
     {
         v1 /= other_tuple.v1;
         v2 /= other_tuple.v2;
@@ -199,7 +199,7 @@ struct alg_tuple3
         return *this;
     }
 
-    constexpr const alg_tuple3& operator/=(value_type value) noexcept
+    constexpr alg_tuple3& operator/=(value_type value) noexcept
     {
         v1 /= value;
         v2 /= value;

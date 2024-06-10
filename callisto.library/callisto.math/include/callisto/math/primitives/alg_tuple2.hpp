@@ -82,7 +82,7 @@ struct alg_tuple2
         return alg_tuple2(v1 + value, v2 + value);
     }
 
-    constexpr const alg_tuple2& operator+=(const alg_tuple2& other_tuple) noexcept
+    constexpr alg_tuple2& operator+=(const alg_tuple2& other_tuple) noexcept
     {
         v1 += other_tuple.v1;
         v2 += other_tuple.v2;
@@ -90,7 +90,7 @@ struct alg_tuple2
         return *this;
     }
 
-    constexpr const alg_tuple2& operator+=(value_type value) noexcept
+    constexpr alg_tuple2& operator+=(value_type value) noexcept
     {
         v1 += value;
         v2 += value;
@@ -112,7 +112,7 @@ struct alg_tuple2
         return alg_tuple2(v1 - value, v2 - value);
     }
 
-    constexpr const alg_tuple2& operator-=(const alg_tuple2& other_tuple) noexcept
+    constexpr alg_tuple2& operator-=(const alg_tuple2& other_tuple) noexcept
     {
         v1 -= other_tuple.v1;
         v2 -= other_tuple.v2;
@@ -120,7 +120,7 @@ struct alg_tuple2
         return *this;
     }
 
-    constexpr const alg_tuple2& operator-=(value_type value) noexcept
+    constexpr alg_tuple2& operator-=(value_type value) noexcept
     {
         v1 -= value;
         v2 -= value;
@@ -139,7 +139,7 @@ struct alg_tuple2
         return alg_tuple2(v1 * value, v2 * value);
     }
 
-    constexpr const alg_tuple2& operator*=(const alg_tuple2& other_tuple) noexcept
+    constexpr alg_tuple2& operator*=(const alg_tuple2& other_tuple) noexcept
     {
         v1 *= other_tuple.v1;
         v2 *= other_tuple.v2;
@@ -147,7 +147,7 @@ struct alg_tuple2
         return *this;
     }
 
-    constexpr const alg_tuple2& operator*=(value_type value) noexcept
+    constexpr alg_tuple2& operator*=(value_type value) noexcept
     {
         v1 *= value;
         v2 *= value;
