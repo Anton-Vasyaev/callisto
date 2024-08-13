@@ -80,7 +80,7 @@ public:
     inline bool next_bool(double probability = 0.5)
     {
         auto next_val = next();
-        return next_val < probability ? true : false;
+        return next_val < probability;
     }
 };
 

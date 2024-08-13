@@ -16,13 +16,12 @@ void resize_frame(
     int             interpolation = cv::INTER_AREA
 );
 
-template<typename rectangle_type>
-cv::Mat roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
+cv::Mat roi(cv::Mat& img, callisto::math::rectangle_i rect)
 {
-    auto x = static_cast<int>(rect.position.x);
-    auto y = static_cast<int>(rect.position.y);
-    auto w = static_cast<int>(rect.size.width);
-    auto h = static_cast<int>(rect.size.height);
+    auto x = rect.x;
+    auto y = rect.y;
+    auto w = rect.width;
+    auto h = rect.height;
 
     return img({ x, y, w, h });
 }
@@ -35,20 +34,17 @@ cv::Mat norm_roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
     rect.position *= size;
     rect.size *= size;
 
-    return roi(img, rect);
+    return roi(img, rect.as<int32_t>());
 }
 
 template<typename lt_type, typename rb_type>
-cv::Mat
-roi(cv::Mat&                            img,
-    callisto::math::alg_tuple2<lt_type> left_top,
-    callisto::math::alg_tuple2<rb_type> right_bottom)
+cv::Mat roi(cv::Mat& img, callisto::math::point2i left_top, callisto::math::point2i right_bottom)
 {
-    auto l = static_cast<int>(left_top.x);
-    auto t = static_cast<int>(left_top.y);
+    auto l = left_top.x;
+    auto t = left_top.y;
 
-    auto r = static_cast<int>(right_bottom.x);
-    auto b = static_cast<int>(right_bottom.y);
+    auto r = right_bottom.x;
+    auto b = right_bottom.y;
 
     return img({ t, b }, { l, r });
 }
@@ -65,11 +61,11 @@ cv::Mat norm_roi(
     left_top *= size;
     right_bottom *= size;
 
-    return roi(img, left_top, right_bottom);
+    return roi(img, left_top.as<int32_t>(), right_bottom.as<int32_t>());
 }
 
 template<typename box_type>
-cv::Mat roi(cv::Mat& img, callisto::math::bbox2<box_type> box)
+cv::Mat roi(cv::Mat& img, callisto::math::bbox2i box)
 {
     return roi(img, box.left_top(), box.right_bottom());
 }

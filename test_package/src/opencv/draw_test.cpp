@@ -50,5 +50,7 @@ TEST(opencv_auxiliary, draw_test_placeholder)
 
     c_cv::draw_polyline(mat, curve_line, { 0, 0, 255 }, 3);
 
+    c_cv::draw_circle(mat, { 0.25, 0.75 }, { 64, 95, 180 }, 5);
+
     c_cv::imwrite("opencv_draw_output.png", mat);
 }

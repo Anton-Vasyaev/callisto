@@ -33,34 +33,7 @@ void draw_bbox_p(
     int                            thickness  = 1,
     int                            line_type  = cv::LINE_8,
     bool                           normalized = true
-)
-{
-    namespace c_m = callisto::math;
-
-    auto size = mat_size(img);
-
-    c_m::point2f p1_t = p1;
-    c_m::point2f p2_t = p2;
-    if (normalized)
-    {
-        p1_t *= size.as<float>();
-        p2_t *= size.as<float>();
-    }
-
-    auto p1i = p1_t.as<int32_t>();
-    auto p2i = p2_t.as<int32_t>();
-
-    auto clr_d = color.as<double>();
-
-    cv::rectangle(
-        img,
-        { p1i.x, p1i.y },
-        { p2i.x, p2i.y },
-        { clr_d.b, clr_d.g, clr_d.r },
-        thickness,
-        line_type
-    );
-}
+);
 
 /// @brief Draws bounding box on the image.
 /// @param img Given image.
@@ -77,10 +50,7 @@ void draw_bbox(
     int                            thickness  = 1,
     int                            line_type  = cv::LINE_8,
     bool                           normalized = true
-)
-{
-    draw_bbox_p(img, box.left_top(), box.right_bottom(), color, thickness, line_type, normalized);
-}
+);
 
 /// @brief Draws line on image.
 /// @param img        Given image.
@@ -99,34 +69,7 @@ void draw_line_p(
     int                            thickness  = 1,
     int                            line_type  = cv::LINE_8,
     bool                           normalized = true
-)
-{
-    namespace c_m = callisto::math;
-
-    auto size = mat_size(img);
-
-    c_m::point2f p1_t = p1;
-    c_m::point2f p2_t = p2;
-    if (normalized)
-    {
-        p1_t *= size.as<float>();
-        p2_t *= size.as<float>();
-    }
-
-    auto p1i = p1_t.as<int32_t>();
-    auto p2i = p2_t.as<int32_t>();
-
-    auto clr_d = color.as<double>();
-
-    cv::line(
-        img,
-        { p1i.x, p1i.y },
-        { p2i.x, p2i.y },
-        { clr_d.b, clr_d.g, clr_d.r },
-        thickness,
-        line_type
-    );
-}
+);
 
 /// @brief Draws line on image.
 /// @param img        Given image.
@@ -143,10 +86,7 @@ void draw_line(
     int                            thickness  = 1,
     int                            line_type  = cv::LINE_8,
     bool                           normalized = true
-)
-{
-    draw_line_p(img, line.first(), line.second(), color, thickness, line_type, normalized);
-}
+);
 
 /// @brief Draws point on image.
 /// @param img Given image.
@@ -155,32 +95,13 @@ void draw_line(
 /// @param radius Radius of point.
 /// @param normalized Flag indicating that the coordinates are given in normalized form (from 0.0
 /// to 1.0)
-void point(
-    cv::Mat                        img,
+void draw_circle(
+    cv::Mat&                       img,
     const callisto::math::point2f& point,
     const callisto::math::color3i& color,
     int                            radius     = 1,
     bool                           normalized = true
-)
-{
-    namespace c_m = callisto::math;
-
-    const int thickness = radius + 1;
-
-    auto size = mat_size(img);
-
-    auto point_t = point;
-    if (normalized)
-    {
-        point_t *= size.as<float>();
-    }
-
-    auto p_i = point_t.as<int32_t>();
-
-    auto clr_d = color.as<double>();
-
-    cv::circle(img, { p_i.x, p_i.y }, radius, { clr_d.b, clr_d.g, clr_d.r }, thickness);
-}
+);
 
 template<typename point_container_type>
 void fill_polygon(

@@ -14,7 +14,7 @@ class a_window_processor
 public:
     a_window_processor() = default;
 
-    virtual ~a_window_processor();
+    virtual ~a_window_processor() = default;
 
     virtual void init(i_window_context& context) = 0;
 

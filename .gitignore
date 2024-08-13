@@ -1,6 +1,7 @@
 .vs
 .vscode
 .main_cache
+.idea
 
 build
 out
