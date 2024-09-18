@@ -37,7 +37,6 @@ cv::Mat norm_roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
     return roi(img, rect.as<int32_t>());
 }
 
-template<typename lt_type, typename rb_type>
 cv::Mat roi(cv::Mat& img, callisto::math::point2i left_top, callisto::math::point2i right_bottom)
 {
     auto l = left_top.x;
@@ -64,7 +63,6 @@ cv::Mat norm_roi(
     return roi(img, left_top.as<int32_t>(), right_bottom.as<int32_t>());
 }
 
-template<typename box_type>
 cv::Mat roi(cv::Mat& img, callisto::math::bbox2i box)
 {
     return roi(img, box.left_top(), box.right_bottom());

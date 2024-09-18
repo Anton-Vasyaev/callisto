@@ -55,7 +55,7 @@ TEST(bbox2_operations, center_test)
     auto expect_center = c_m::point2f(-106.3, -8288.2);
 
     auto center = c_m::bbox2op::center(box);
-    std::cout << "center:" << center << "\n";
+
     ASSERT_TRUE(rel_err_point2_equal(center, expect_center, rel_float_acc));
 }
 
