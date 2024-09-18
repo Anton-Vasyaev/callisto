@@ -119,7 +119,7 @@ void fill_polygon(
 
     for (auto point : points)
     {
-        auto p = point.as<double>();
+        auto p = point.template as<double>();
 
         if (normalized) p *= size;
 

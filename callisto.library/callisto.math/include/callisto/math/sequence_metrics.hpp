@@ -37,7 +37,7 @@ struct sequence_metrics
         namespace c_f = callisto::framework;
 
         using value_type
-            = c_f::senior_conversion_t<sequence_type_1::value_type, sequence_type_2::value_type>;
+            = c_f::senior_conversion_t<typename sequence_type_1::value_type, typename sequence_type_2::value_type>;
 
         std::vector<value_type> g_new;
         g_new.reserve(g_func.size());

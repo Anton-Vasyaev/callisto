@@ -1,5 +1,7 @@
 #pragma once
 
+// std
+#include <cstdint>
 // project
 #include <callisto/framework/concepts.hpp>
 #include <callisto/framework/types/type_traits.hpp>

@@ -55,7 +55,7 @@ TEST(point2_operations, square_distance_default_distance_test)
         auto len1 = p2op::distance(p1, p2);
         auto len2 = p2op::distance(p2, p1);
 
-        ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == std::sqrtf(square_len1));
+        ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == std::sqrt(square_len1));
         ASSERT_TRUE(c_m::relative_error(len1, rel_float_acc) == len2);
     }
 }

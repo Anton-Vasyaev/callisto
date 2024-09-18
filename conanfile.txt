@@ -3,7 +3,7 @@ libcpuid/0.5.1
 gtest/1.8.1
 boost/1.84.0
 nameof/0.10.1
-freetype/2.13.0
+freetype/2.13.2
 opencv/4.5.3
 zlib/1.2.12
 glfw/3.3.2

@@ -1,6 +1,5 @@
 // parent header
 #include <callisto/opencv/draw.hpp>
-#pragma once
 
 // std
 #include <vector>

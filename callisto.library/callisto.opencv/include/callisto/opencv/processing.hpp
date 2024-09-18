@@ -16,7 +16,7 @@ void resize_frame(
     int             interpolation = cv::INTER_AREA
 );
 
-cv::Mat roi(cv::Mat& img, callisto::math::rectangle_i rect)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::rectangle_i& rect)
 {
     auto x = rect.x;
     auto y = rect.y;
@@ -34,10 +34,10 @@ cv::Mat norm_roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
     rect.position *= size;
     rect.size *= size;
 
-    return roi(img, rect.as<int32_t>());
+    return roi(img, rect.template as<int32_t>());
 }
 
-cv::Mat roi(cv::Mat& img, callisto::math::point2i left_top, callisto::math::point2i right_bottom)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::point2i& left_top, const callisto::math::point2i& right_bottom)
 {
     auto l = left_top.x;
     auto t = left_top.y;
@@ -60,10 +60,10 @@ cv::Mat norm_roi(
     left_top *= size;
     right_bottom *= size;
 
-    return roi(img, left_top.as<int32_t>(), right_bottom.as<int32_t>());
+    return roi(img, left_top.template as<int32_t>(), right_bottom.template as<int32_t>());
 }
 
-cv::Mat roi(cv::Mat& img, callisto::math::bbox2i box)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::bbox2i& box)
 {
     return roi(img, box.left_top(), box.right_bottom());
 }

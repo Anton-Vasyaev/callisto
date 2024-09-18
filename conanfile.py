@@ -190,7 +190,7 @@ class CallistoConan(ConanFile):
             transitive_headers=True,
         )
         self.dependency_graph.append_require(
-            'freetype', 'freetype/2.13.0', 
+            'freetype', 'freetype/2.13.2', 
             transitive_headers=True,
         )
         self.dependency_graph.append_require(
