@@ -33,38 +33,42 @@ struct point2op
         return std::sqrt(square_dist);
     }
 
-    template<typename type>
-    static constexpr auto rotate(const point2<type>& point, double angle) noexcept
+    template<
+        typename type,
+        typename calc_type = std::conditional_t<std::is_same_v<type, double>, double, float>>
+    static constexpr auto rotate(const point2<type>& point, calc_type angle) noexcept
     {
-        auto& x = point.x;
-        auto& y = point.y;
+        calc_type x = point.x;
+        calc_type y = point.y;
 
-        auto sin = std::sin(angle);
-        auto cos = std::cos(angle);
+        calc_type sin = std::sin(angle);
+        calc_type cos = std::cos(angle);
 
-        auto rot_x = x * cos - y * sin;
-        auto rot_y = x * sin + y * cos;
+        calc_type rot_x = x * cos - y * sin;
+        calc_type rot_y = x * sin + y * cos;
 
-        return point2d(rot_x, rot_y);
+        return point2<type>(rot_x, rot_y);
     }
 
-    template<typename type>
+    template<
+        typename type,
+        typename calc_type = std::conditional_t<std::is_same_v<type, double>, double, float>>
     static constexpr auto
-    rotate_anchor(const point2<type>& point, double angle, const point2<type>& anchor) noexcept
+    rotate_anchor(const point2<type>& point, calc_type angle, const point2<type>& anchor) noexcept
     {
-        auto x = point.x - anchor.x;
-        auto y = point.y - anchor.y;
+        calc_type x = point.x - anchor.x;
+        calc_type y = point.y - anchor.y;
 
-        auto sin = std::sin(angle);
-        auto cos = std::cos(angle);
+        calc_type sin = std::sin(angle);
+        calc_type cos = std::cos(angle);
 
-        auto rot_x = x * cos - y * sin;
-        auto rot_y = x * sin + y * cos;
+        calc_type rot_x = x * cos - y * sin;
+        calc_type rot_y = x * sin + y * cos;
 
         rot_x += anchor.x;
         rot_y += anchor.y;
 
-        return point2d(rot_x, rot_y);
+        return point2<type>(rot_x, rot_y);
     }
 
     template<typename type>
@@ -88,9 +92,9 @@ struct point2op
         return point2<type>(x, y);
     }
 
-    template<typename p2_type, typename bb2_type>
+    template<typename type>
     static constexpr auto
-    reverse_normalize(const point2<p2_type>& point, const bbox2<bb2_type>& bbox) noexcept
+    reverse_normalize(const point2<type>& point, const bbox2<type>& bbox) noexcept
     {
         auto contour_w = bbox.width();
         auto contour_h = bbox.height();
@@ -98,7 +102,7 @@ struct point2op
         auto x = point.x * contour_w + bbox.x1;
         auto y = point.y * contour_h + bbox.y1;
 
-        return point2<decltype(x)>(x, y);
+        return point2<type>(x, y);
     }
 
     template<typename type>

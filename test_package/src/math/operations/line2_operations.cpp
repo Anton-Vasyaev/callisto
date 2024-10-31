@@ -26,17 +26,17 @@ TEST(line2_operations, cross_point_test)
     auto line1   = c_m::line2f(4.0, -2.0, 7.0, 4.0);
     auto line2   = c_m::line2f(3.0, 3.0, -3.0, 5.0);
     auto cross_p = line2op::cross_point(line1, line2);
-    ASSERT_TRUE(rel_err_point2_equal(cross_p.as<float>(), c_m::point2f(6.0, 2.0), rel_float_acc));
+    ASSERT_TRUE(rel_err_point2_equal(cross_p, c_m::point2f(6.0, 2.0), rel_float_acc));
 
     line1   = c_m::line2f(5.0, 5.0, 2.0, 2.0);
     line2   = c_m::line2f(3.0, 1.0, 1.0, 3.0);
     cross_p = line2op::cross_point(line1, line2);
-    ASSERT_TRUE(rel_err_point2_equal(cross_p.as<float>(), c_m::point2f(2.0, 2.0), rel_float_acc));
+    ASSERT_TRUE(rel_err_point2_equal(cross_p, c_m::point2f(2.0, 2.0), rel_float_acc));
 
-    line1   = c_m::line2f(5.0, 5.0, -10.0, -10.0);
-    line2   = c_m::line2f(16.0, 32.0, 4.0, 8.0);
-    cross_p = line2op::cross_point(line1, line2);
-    ASSERT_TRUE(abs_err_point2_equal(cross_p.as<float>(), c_m::point2f::empty(), abs_float_acc));
+    auto line1_d   = c_m::line2d(5.0, 5.0, -10.0, -10.0);
+    auto line2_d   = c_m::line2d(16.0, 32.0, 4.0, 8.0);
+    auto cross_p_d = line2op::cross_point(line1_d, line2_d);
+    ASSERT_TRUE(abs_err_point2_equal(cross_p_d, c_m::point2d::empty(), abs_double_acc));
 }
 
 TEST(line2_operations, get_box_contour_test)

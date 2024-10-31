@@ -72,7 +72,7 @@ struct vector2op
     }
 
     template<typename type>
-    static constexpr std::conditional_t<std::is_same_v<type, double>, double, float>
+    static constexpr auto
     pseudo_scalar_product(const vector2<type>& vec1, const vector2<type>& vec2) noexcept
     {
         auto& x1 = vec1.x;

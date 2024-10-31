@@ -41,7 +41,7 @@ struct vector3op
         auto y = vector.y * scale;
         auto z = vector.z * scale;
 
-        return vector3<calc_type>(x, y, z);
+        return vector3<type>(x, y, z);
     }
 
     template<typename type>

@@ -11,29 +11,29 @@ struct line2op
 {
     template<typename type>
     static constexpr auto
-    cross_point(const line2<type>& line1, const line2<type>& line2, double eps = 1e-8) noexcept
+    cross_point(const line2<type>& line1, const line2<type>& line2, type eps = 1e-6) noexcept
     {
-        double x1 = line1.x1;
-        double y1 = line1.y1;
+        type x1 = line1.x1;
+        type y1 = line1.y1;
 
-        double x2 = line1.x2;
-        double y2 = line1.y2;
+        type x2 = line1.x2;
+        type y2 = line1.y2;
 
-        double x3 = line2.x1;
-        double y3 = line2.y1;
+        type x3 = line2.x1;
+        type y3 = line2.y1;
 
-        double x4 = line2.x2;
-        double y4 = line2.y2;
+        type x4 = line2.x2;
+        type y4 = line2.y2;
 
-        const double x_num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
-        const double y_num = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4);
+        const type x_num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
+        const type y_num = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4);
 
-        const double div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        const type div = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
-        const double x = x_num / (div + eps);
-        const double y = y_num / (div + eps);
+        const type x = x_num / (div + eps);
+        const type y = y_num / (div + eps);
 
-        return point2d(x, y);
+        return point2<type>(x, y);
     }
 
     template<typename type>
