@@ -33,11 +33,13 @@ struct throw_utils
     static stacktrace_error_tag_provider
     error_tag_trace(const char* function_name, const char* file_name, int file_line)
     {
-        return stacktrace_error_tag_provider { application_environment::exception_trace_flag,
-                                               application_environment::exception_location_flag,
-                                               function_name,
-                                               file_name,
-                                               file_line };
+        return stacktrace_error_tag_provider { .stacktrace_flag
+                                               = application_environment::exception_trace_flag,
+                                               .location_flag
+                                               = application_environment::exception_location_flag,
+                                               .function_name = function_name,
+                                               .file_name     = file_name,
+                                               .file_line     = file_line };
     }
 };
 

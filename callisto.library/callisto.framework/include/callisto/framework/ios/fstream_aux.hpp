@@ -14,7 +14,7 @@ struct fstream_aux
     /// @param fstream File stream.
     /// @return Size of file.
     template<typename fstream_type>
-    static size_t size_of_file(fstream_type& fstream)
+    static size_t size_of_file_stream(fstream_type& fstream)
     {
         auto current_pos = fstream.tellg();
         fstream.seekg(0, std::ios::end);

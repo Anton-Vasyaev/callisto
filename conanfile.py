@@ -133,7 +133,7 @@ class CallistoConan(ConanFile):
     dependency_graph : DependencyGraph
 
     name = 'callisto'
-    version = '0.4.1d5'
+    version = '0.4.1d6'
     license = 'BSD'
     package_typ='library'
     settings = 'os', 'compiler', 'build_type', 'arch'
@@ -190,7 +190,7 @@ class CallistoConan(ConanFile):
             transitive_headers=True,
         )
         self.dependency_graph.append_require(
-            'freetype', 'freetype/2.13.2', 
+            'freetype', 'freetype/2.13.0', 
             transitive_headers=True,
         )
         self.dependency_graph.append_require(
