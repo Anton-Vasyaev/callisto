@@ -61,7 +61,7 @@
     __CALLISTO_LIFETIME_MOVE_BODY(class_name);
 
 
-#define CALISTO_LIFETIME_REFERENCE(class_name)                                              \
+#define CALLISTO_LIFETIME_REFERENCE(class_name)                                              \
     class_name(const class_name&) = delete;                                                 \
                                                                                             \
     class_name(class_name&&) noexcept = delete;                                             \

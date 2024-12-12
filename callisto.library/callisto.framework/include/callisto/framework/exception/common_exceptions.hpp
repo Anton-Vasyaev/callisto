@@ -8,23 +8,28 @@
 namespace callisto::framework
 {
 
-/// @brief Present exception during runtime.
+/// @brief Presents exception during runtime.
 struct runtime_exception : public virtual exception
 {
 };
 
-/// @brief Present argument checking exception.
+/// @brief Presents argument checking exception.
 struct argument_exception : public virtual exception
 {
 };
 
-/// @brief Present not find resources exception.
+/// @brief Presents not find resources exception.
 struct not_find_exception : public virtual exception
 {
 };
 
-/// @brief Present not enough resources to allocation.
+/// @brief Presents not enough resources to allocation.
 struct bad_alloc_exception : public virtual exception
+{
+};
+
+/// @brief Presents situation when method, function or part of functionality is not implemented.
+struct not_implemented_exception : public virtual exception
 {
 };
 

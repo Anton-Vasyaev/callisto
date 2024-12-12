@@ -1,0 +1,598 @@
+// std
+#include <iostream>
+#include <memory>
+#include <codecvt>
+// 3rd party
+#include <callisto/framework/types/lifetime.hpp>
+#include <callisto/framework/concepts/core.hpp>
+
+#include "callisto_reflect.hpp"
+#include "json_reflector.hpp"
+
+#include "string_auxiliary_can.hpp"
+
+class placeholder_reflect_writer
+{
+public:
+    template<typename type>
+    void reflect(type& val, const wchar_t* name)
+    {
+        val.self_reflect(*this);
+    }
+
+    template<>
+    void reflect(std::string& val, const wchar_t* name)
+    {
+        val = std::string("value") + "c_str_placeholder_name";
+    };
+
+    template<>
+    void reflect(std::wstring& val, const wchar_t* name)
+    {
+        val = std::wstring(L"value:") + name;
+    }
+
+    template<callisto::framework::concept_integer int_type>
+    void reflect(int_type& val, const wchar_t* name)
+    {
+        val = 1024;
+    }
+
+    template<callisto::framework::concept_floating_point float_type>
+    void reflect(float_type& val, const wchar_t* name)
+    {
+        val = 3.14;
+    }
+
+    template<>
+    void reflect(bool& val, const wchar_t* name)
+    {
+        val = true;
+    }
+
+    template<typename type>
+    void reflect(std::unique_ptr<type>& ptr, const wchar_t* name)
+    {
+        if (ptr == nullptr)
+        {
+            ptr = std::make_unique<type>();
+        }
+        reflect(*ptr, name);
+    }
+};
+
+class reflection_streamer
+{
+public:
+    enum class str_quotes_type
+    {
+        none,
+        single,
+        double_
+    };
+
+private:
+    static constexpr char str_quotes_type_symbol(str_quotes_type type)
+    {
+        switch (type)
+        {
+            case str_quotes_type::single : return 39;
+            case str_quotes_type::double_ : return '"';
+            default : return 0;
+        }
+    }
+
+    std::wostream& __stream;
+
+    int32_t __tab_count;
+
+    bool __stream_names;
+
+    str_quotes_type __quotes_type;
+
+    const char* __sequence_separation_str;
+
+    bool __sequence_element_new_line;
+
+    bool __sequence_braces;
+
+    // private methods
+    void __print_tabs()
+    {
+        for (int32_t i = 0; i < __tab_count; i++)
+        {
+            __stream << "\t";
+        }
+    }
+
+    void __print_str(std::string& str) { __stream << callisto::framework::str2wide(str); }
+
+    void __print_str(std::wstring& str) { __stream << str; }
+
+    template<typename char_type>
+    void __print_type(std::basic_string<char_type>& str)
+    {
+        auto quote_symbol = str_quotes_type_symbol(__quotes_type);
+
+        if (quote_symbol != 0) __stream << quote_symbol;
+        __print_str(str);
+        if (quote_symbol != 0) __stream << quote_symbol;
+    }
+
+    template<typename type>
+    void __print_type(type& type)
+    {
+        __stream << type;
+    }
+
+    template<typename type>
+    void __print_primitive_vectors(std::vector<type>& vec)
+    {
+        if (__sequence_braces) __stream << "[";
+
+        for (size_t i = 0; i < vec.size(); i++)
+        {
+            if (__sequence_element_new_line)
+            {
+                __stream << "\n\t";
+                __print_tabs();
+            }
+
+            auto& val = vec[i];
+            __print_type(val);
+
+            if (i != vec.size() - 1) __stream << __sequence_separation_str;
+        }
+
+        if (__sequence_braces)
+        {
+            if (__sequence_element_new_line)
+            {
+                __stream << "\n";
+                __print_tabs();
+            }
+
+            __stream << "]";
+        }
+
+        __stream << "\n";
+    }
+
+    template<typename type>
+    void __print_class_vectors(std::vector<type>& vec)
+    {
+        if (__sequence_braces) __stream << "[";
+
+        for (size_t i = 0; i < vec.size(); i++)
+        {
+            __stream << "\n";
+            auto& val    = vec[i];
+            auto  new_el = reflection_streamer(
+                __stream,
+                __tab_count + 1,
+                __stream_names,
+                __quotes_type,
+                __sequence_separation_str,
+                __sequence_element_new_line,
+                __sequence_braces
+            );
+            new_el.print(val);
+        }
+
+        __stream << "]\n";
+    }
+
+public:
+    // construct and destruct
+    reflection_streamer(
+        std::wostream&  stream,
+        int32_t         tab_count                 = 0,
+        bool            stream_names              = true,
+        str_quotes_type quotes_type               = str_quotes_type::single,
+        const char*     sequence_separation_str   = " ",
+        bool            sequence_element_new_line = false,
+        bool            sequence_braces           = true
+    ) :
+        __stream(stream)
+    {
+        __tab_count = tab_count;
+
+        __stream_names = stream_names;
+
+        __quotes_type = quotes_type;
+
+        __sequence_separation_str = sequence_separation_str;
+
+        __sequence_element_new_line = sequence_element_new_line;
+
+        __sequence_braces = sequence_braces;
+    }
+
+    // methods
+    template<typename type>
+    void print(type& ob)
+    {
+        ob.self_reflect(*this);
+    }
+
+    // default implementation
+    template<typename type>
+    void reflect(type& val, const wchar_t* name)
+    {
+        if (__stream_names) __stream << name << ":\n";
+        auto new_el = reflection_streamer(
+            __stream,
+            __tab_count + 1,
+            __stream_names,
+            __quotes_type,
+            __sequence_separation_str,
+            __sequence_element_new_line,
+            __sequence_braces
+        );
+        new_el.print(val);
+    }
+
+    template<>
+    void reflect(std::string& val, const wchar_t* name)
+    {
+        namespace c_f = callisto::framework;
+
+        __print_tabs();
+
+        if (__stream_names) __stream << name << ": ";
+        __stream << c_f::str2wide(val) << "\n";
+    };
+
+    template<>
+    void reflect(std::wstring& val, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __stream << val << "\n";
+    }
+
+    template<callisto::framework::concept_arithmetic arithmetic_type>
+    void reflect(arithmetic_type& val, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __stream << val << "\n";
+    }
+
+    template<typename other_type>
+    void reflect(std::unique_ptr<other_type>& ptr, const wchar_t* name)
+    {
+        if (ptr == nullptr)
+        {
+            return;
+        }
+        reflect(*ptr, name);
+    }
+
+    template<typename other_type>
+    void reflect(std::shared_ptr<other_type>& ptr, const wchar_t* name)
+    {
+        if (ptr == nullptr)
+        {
+            return;
+        }
+        reflect(*ptr, name);
+    }
+
+    template<typename type>
+    void reflect(std::optional<type>& opt_val, const wchar_t* name)
+    {
+        if (!opt_val.has_value())
+        {
+            __print_tabs();
+            if (__stream_names) __stream << name << ": ";
+            __stream << "none\n";
+        }
+        else
+        {
+            auto& val = opt_val.value();
+            reflect(val, name);
+        }
+    }
+
+    template<callisto::framework::concept_integer arithmetic_type>
+    void reflect_arithmetic_span(std::vector<arithmetic_type>& vec, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __print_primitive_vectors(vec);
+    }
+
+    void reflect_str_span(std::vector<std::string>& vec, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __print_primitive_vectors(vec);
+    }
+
+    void reflect_wstr_span(std::vector<std::wstring>& vec, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __print_primitive_vectors(vec);
+    }
+
+    template<typename type>
+    void reflect_class_span(std::vector<type>& vec, const wchar_t* name)
+    {
+        __print_tabs();
+        if (__stream_names) __stream << name << ": ";
+        __print_class_vectors(vec);
+    }
+
+    template<typename type>
+    void reflect(std::vector<type>& vec, const wchar_t* name)
+    {
+        if constexpr (std::is_same_v<type, std::string>)
+        {
+            reflect_str_span(vec, name);
+        }
+        else if constexpr (std::is_same_v<type, std::wstring>)
+        {
+            reflect_wstr_span(vec, name);
+        }
+        else if constexpr (std::is_arithmetic_v<type>)
+        {
+            reflect_arithmetic_span(vec, name);
+        }
+        else
+        {
+            reflect_class_span(vec, name);
+        }
+    }
+};
+
+// clang-format off
+
+#define CALLISTO_REFLECT(reflect_ob, value) \
+    reflect_ob.reflect(value, L#value)
+
+// clang-format on
+
+struct custom_params_a
+{
+    std::wstring log_file;
+
+    bool log_status;
+
+    custom_params_a() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(custom_params_a);
+
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflect_ob)
+    {
+        CALLISTO_REFLECT(reflect_ob, log_file);
+        CALLISTO_REFLECT(reflect_ob, log_status);
+    }
+};
+
+struct custom_params_b
+{
+    std::string str_name;
+
+    std::wstring wstr_name;
+
+    int32_t int_val;
+
+    float float_val;
+
+    std::unique_ptr<custom_params_a> params_a1;
+
+    custom_params_a params_a2;
+
+    std::shared_ptr<custom_params_a> params_a3;
+
+    custom_params_b() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(custom_params_b);
+
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflect_ob)
+    {
+        CALLISTO_REFLECT(reflect_ob, str_name);
+        CALLISTO_REFLECT(reflect_ob, wstr_name);
+        CALLISTO_REFLECT(reflect_ob, int_val);
+        CALLISTO_REFLECT(reflect_ob, float_val);
+        CALLISTO_REFLECT(reflect_ob, params_a1);
+        CALLISTO_REFLECT(reflect_ob, params_a2);
+        CALLISTO_REFLECT(reflect_ob, params_a3);
+    }
+};
+
+void example_ptree()
+{
+    namespace pt = boost::property_tree;
+
+    pt::wptree root;
+
+    auto file = std::wfstream(L"resources/foo_bar.json");
+    file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+    std::wstringstream wss;
+    wss << file.rdbuf();
+
+    pt::read_json(wss, root);
+
+    auto el = root.get_child(L"status1");
+
+    auto val = el.get_value<std::wstring>();
+
+    std::wcout << "val:" << val << "\n";
+
+    auto b_val = el.get_value<bool>();
+    std::wcout << "b val:" << b_val << "\n";
+
+    auto el2    = root.get_child(L"status2");
+    auto b_val2 = el2.get_value<bool>();
+
+    std::wcout << "b val:" << b_val << "\n";
+
+    // auto el = root.get_child_optional(L"not_exist_field");
+}
+
+struct patterns_params
+{
+    // data
+    std::wstring name;
+
+    float cast_score;
+
+    // construct and destruct
+    patterns_params() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(patterns_params);
+
+    // reflection
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflection)
+    {
+        CALLISTO_REFLECT(reflection, name);
+
+        CALLISTO_REFLECT(reflection, cast_score);
+    };
+};
+
+struct additional_params
+{
+    // data
+    std::vector<int> indexes;
+
+    std::vector<std::wstring> video_types;
+
+    // construct and destruct
+    additional_params() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(additional_params);
+
+    // reflection
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflection)
+    {
+        CALLISTO_REFLECT(reflection, indexes);
+
+        CALLISTO_REFLECT(reflection, video_types);
+    }
+};
+
+struct foo_settings
+{
+    // data
+    std::wstring foo;
+
+    bool status1;
+
+    bool status2;
+
+    int age_value;
+
+    std::wstring name;
+
+    float skills;
+
+    additional_params additional_data1;
+
+    std::shared_ptr<additional_params> additional_data2;
+
+    std::unique_ptr<additional_params> additional_data3;
+
+    patterns_params major_pattern;
+
+    std::optional<patterns_params> minor_pattern;
+
+    std::optional<patterns_params> free_pattern;
+
+    std::vector<patterns_params> auxiliary_patterns;
+
+    // construct and destruct
+    foo_settings() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(foo_settings);
+
+    // reflection
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflection)
+    {
+        CALLISTO_REFLECT(reflection, foo);
+
+        CALLISTO_REFLECT(reflection, status1);
+
+        CALLISTO_REFLECT(reflection, status2);
+
+        CALLISTO_REFLECT(reflection, age_value);
+
+        CALLISTO_REFLECT(reflection, name);
+
+        CALLISTO_REFLECT(reflection, skills);
+
+        CALLISTO_REFLECT(reflection, additional_data1);
+
+        CALLISTO_REFLECT(reflection, additional_data2);
+
+        CALLISTO_REFLECT(reflection, additional_data3);
+
+        CALLISTO_REFLECT(reflection, major_pattern);
+
+        CALLISTO_REFLECT(reflection, minor_pattern);
+
+        CALLISTO_REFLECT(reflection, free_pattern);
+
+        CALLISTO_REFLECT(reflection, auxiliary_patterns);
+    }
+};
+
+void example_json_serialization()
+{
+    std::wcout << std::boolalpha;
+    namespace c_f = callisto::framework;
+
+    auto reader = c_f::json_reader::read_from_file(L"resources/foo_bar.json");
+
+    foo_settings settings;
+
+    reader.read_to(settings);
+
+    std::wcout << settings.additional_data2->video_types[0] << "\n";
+
+    auto printer = reflection_streamer(
+        std::wcout,
+        0,
+        true,
+        reflection_streamer::str_quotes_type::single,
+        "; ",
+        true,
+        true
+    );
+    printer.print(settings);
+
+    std::wstringstream wss;
+    auto               second_printer = reflection_streamer(wss, 0, false);
+    second_printer.print(settings);
+
+    std::cout << "\nwstringstream:\n";
+    std::wcout << wss.str() << "\n";
+
+    std::cout << "a\tb\tc\t";
+}
+
+int main()
+{
+    try
+    {
+        // example_placeholder();
+        // example_ptree();
+        example_json_serialization();
+
+        // example_str_can();
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    return 0;
+}

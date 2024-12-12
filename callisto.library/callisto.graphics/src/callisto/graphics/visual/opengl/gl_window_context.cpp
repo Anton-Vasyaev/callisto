@@ -194,6 +194,14 @@ gl_window_context::~gl_window_context()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
     if (this->window_handler != nullptr) glfwDestroyWindow(this->window_handler);
+
+    {
+        const std::lock_guard<std::mutex> locker(call_functions_mutex);
+        call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
+            this->window_handler,
+            this
+        ));
+    }
 }
 
 #pragma endregion

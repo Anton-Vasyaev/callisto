@@ -132,6 +132,9 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
     }
 
+    // getters and setters
+    GLuint get_handler() const { return __handler; }
+
     // operators
     gl_texture2d& operator=(const gl_texture2d&) = delete;
 
