@@ -4,7 +4,8 @@
 #include <memory>
 #include <string>
 #include <optional>
-
+#include <span>
+#include <vector>
 // 3rd party
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -20,7 +21,7 @@ namespace callisto::framework
 class json_reader_element
 {
 public:
-    friend class json_reader;
+    friend class json_reading_reflection;
 
 private:
     // data
@@ -125,57 +126,96 @@ public:
     }
 
     template<callisto::framework::concept_arithmetic arithmetic_type>
-    void reflect_arithmetic_vec(std::vector<arithmetic_type>& vec, const wchar_t* name)
+    void reflect_arithmetic_span(std::span<arithmetic_type> span, const wchar_t* name)
     {
+        size_t idx = 0;
         for (auto& child : __tree.get_child(name))
         {
-            auto val = child.second.get_value<arithmetic_type>();
-            vec.push_back(val);
+            auto val  = child.second.get_value<arithmetic_type>();
+            span[idx] = val;
+            idx++;
         }
     }
 
     // template<>
-    void reflect_str_vec(std::vector<std::string>& vec, const wchar_t* name)
+    void reflect_str_span(std::span<std::string> span, const wchar_t* name)
     {
         CALLISTO_THROW_EXCEPTION(callisto::framework::not_implemented_exception());
     }
 
     // template<>
-    void reflect_wstr_vec(std::vector<std::wstring>& vec, const wchar_t* name)
+    void reflect_wstr_span(std::span<std::wstring> span, const wchar_t* name)
     {
+        size_t idx = 0;
         for (auto& child : __tree.get_child(name))
         {
             auto str_val = child.second.get_value<std::wstring>();
-            vec.push_back(std::move(str_val));
+            span[idx]    = std::move(str_val);
+            idx++;
         }
     }
 
     template<typename type>
-    void reflect(std::vector<type>& vec, const wchar_t* name)
+    void reflect_span(std::span<type> span, const wchar_t* name)
     {
         if constexpr (std::is_same_v<type, std::string>)
         {
-            reflect_str_vec(vec, name);
+            reflect_str_span(span, name);
         }
         else if constexpr (std::is_same_v<type, std::wstring>)
         {
-            reflect_wstr_vec(vec, name);
+            reflect_wstr_span(span, name);
         }
         else if constexpr (std::is_arithmetic_v<type>)
         {
-            reflect_arithmetic_vec(vec, name);
+            reflect_arithmetic_span(span, name);
         }
         else
         {
+            size_t idx = 0;
             for (auto& child : __tree.get_child(name))
             {
                 type ob;
                 auto new_element = json_reader_element(child.second);
 
                 new_element.reflect_class_type(ob);
-                vec.push_back(std::move(ob));
+                span[idx] = std::move(ob);
+                idx++;
             }
         }
+    }
+
+    template<typename type>
+    void reflect(std::vector<type>& vec, const wchar_t* name)
+    {
+        auto arr_child = __tree.get_child(name);
+        vec.resize(arr_child.size());
+        auto span_handler = std::span<type>(vec);
+
+        reflect_span(span_handler, name);
+    }
+
+    template<typename type, size_t n>
+    void reflect(std::array<type, n>& arr, const wchar_t* name)
+    {
+        auto arr_child = __tree.get_child(name);
+        if (arr_child.size() != n)
+        {
+            // FUTURE add print path
+            CALLISTO_THROW_EXCEPTION(runtime_exception()) << error_tag_message_w(_wbs(
+                "std::array size != array size in json,"
+                " name: ",
+                name,
+                ". ",
+                n,
+                " != ",
+                arr_child.size(),
+                "."
+            ));
+        }
+        auto span_handler = std::span<type>(arr);
+
+        reflect_span(span_handler, name);
     }
 
     // methods
@@ -186,7 +226,7 @@ public:
     }
 };
 
-class json_reader
+class json_reading_reflection
 {
     boost::property_tree::wptree __root;
 
@@ -199,9 +239,9 @@ class json_reader
     }
 
 public:
-    CALLISTO_LIFETIME_REFERENCE(json_reader);
+    CALLISTO_LIFETIME_REFERENCE(json_reading_reflection);
 
-    explicit json_reader(const std::wstring& json_str)
+    explicit json_reading_reflection(const std::wstring& json_str)
     {
         std::wstringstream wss;
         wss << json_str;
@@ -209,26 +249,26 @@ public:
         __initialize_data(wss);
     }
 
-    explicit json_reader(std::wstringstream& wss) { __initialize_data(wss); }
+    explicit json_reading_reflection(std::wstringstream& wss) { __initialize_data(wss); }
 
-    static json_reader read_from_file(const wchar_t* path)
+    static json_reading_reflection read_from_file(const wchar_t* path)
     {
         auto file = std::wfstream(path);
         file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
         std::wstringstream wss;
         wss << file.rdbuf();
 
-        return json_reader(wss);
+        return json_reading_reflection(wss);
     }
 
-    static json_reader read_from_file(const char* path)
+    static json_reading_reflection read_from_file(const char* path)
     {
         auto file = std::wfstream(path);
         file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
         std::wstringstream wss;
         wss << file.rdbuf();
 
-        return json_reader(wss);
+        return json_reading_reflection(wss);
     }
 
     template<typename type>

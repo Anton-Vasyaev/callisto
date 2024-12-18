@@ -126,11 +126,11 @@ private:
     }
 
     template<typename type>
-    void __print_primitive_vectors(std::vector<type>& vec)
+    void __print_primitive_span(std::span<type> span)
     {
         if (__sequence_braces) __stream << "[";
 
-        for (size_t i = 0; i < vec.size(); i++)
+        for (size_t i = 0; i < span.size(); i++)
         {
             if (__sequence_element_new_line)
             {
@@ -138,10 +138,10 @@ private:
                 __print_tabs();
             }
 
-            auto& val = vec[i];
+            auto& val = span[i];
             __print_type(val);
 
-            if (i != vec.size() - 1) __stream << __sequence_separation_str;
+            if (i != span.size() - 1) __stream << __sequence_separation_str;
         }
 
         if (__sequence_braces)
@@ -159,14 +159,14 @@ private:
     }
 
     template<typename type>
-    void __print_class_vectors(std::vector<type>& vec)
+    void __print_class_span(std::span<type> span)
     {
         if (__sequence_braces) __stream << "[";
 
-        for (size_t i = 0; i < vec.size(); i++)
+        for (size_t i = 0; i < span.size(); i++)
         {
             __stream << "\n";
-            auto& val    = vec[i];
+            auto& val    = span[i];
             auto  new_el = reflection_streamer(
                 __stream,
                 __tab_count + 1,
@@ -319,54 +319,68 @@ public:
     }
 
     template<callisto::framework::concept_arithmetic arithmetic_type>
-    void reflect_arithmetic_span(std::vector<arithmetic_type>& vec, const wchar_t* name)
+    void reflect_arithmetic_span(std::span<arithmetic_type> span, const wchar_t* name)
     {
         __print_tabs();
         if (__stream_names) __stream << name << ": ";
-        __print_primitive_vectors(vec);
+        __print_primitive_span(span);
     }
 
-    void reflect_str_span(std::vector<std::string>& vec, const wchar_t* name)
+    void reflect_str_span(std::span<std::string> span, const wchar_t* name)
     {
         __print_tabs();
         if (__stream_names) __stream << name << ": ";
-        __print_primitive_vectors(vec);
+        __print_primitive_span(span);
     }
 
-    void reflect_wstr_span(std::vector<std::wstring>& vec, const wchar_t* name)
+    void reflect_wstr_span(std::span<std::wstring> span, const wchar_t* name)
     {
         __print_tabs();
         if (__stream_names) __stream << name << ": ";
-        __print_primitive_vectors(vec);
+        __print_primitive_span(span);
     }
 
     template<typename type>
-    void reflect_class_span(std::vector<type>& vec, const wchar_t* name)
+    void reflect_class_span(std::span<type> span, const wchar_t* name)
     {
         __print_tabs();
         if (__stream_names) __stream << name << ": ";
-        __print_class_vectors(vec);
+        __print_class_span(span);
+    }
+
+    template<typename type>
+    void reflect(std::span<type> span, const wchar_t* name)
+    {
+        if constexpr (std::is_same_v<type, std::string>)
+        {
+            reflect_str_span(span, name);
+        }
+        else if constexpr (std::is_same_v<type, std::wstring>)
+        {
+            reflect_wstr_span(span, name);
+        }
+        else if constexpr (std::is_arithmetic_v<type>)
+        {
+            reflect_arithmetic_span(span, name);
+        }
+        else
+        {
+            reflect_class_span(span, name);
+        }
     }
 
     template<typename type>
     void reflect(std::vector<type>& vec, const wchar_t* name)
     {
-        if constexpr (std::is_same_v<type, std::string>)
-        {
-            reflect_str_span(vec, name);
-        }
-        else if constexpr (std::is_same_v<type, std::wstring>)
-        {
-            reflect_wstr_span(vec, name);
-        }
-        else if constexpr (std::is_arithmetic_v<type>)
-        {
-            reflect_arithmetic_span(vec, name);
-        }
-        else
-        {
-            reflect_class_span(vec, name);
-        }
+        auto span_handler = std::span<type>(vec);
+        reflect(span_handler, name);
+    }
+
+    template<typename type, size_t n>
+    void reflect(std::array<type, n>& arr, const wchar_t* name)
+    {
+        auto span_handler = std::span<type>(arr);
+        reflect(span_handler, name);
     }
 };
 
@@ -452,6 +466,10 @@ void example_ptree()
 
     std::wcout << "b val:" << b_val << "\n";
 
+    auto aux_patt_el = root.get_child(L"auxiliary_patterns");
+    std::cout << "size:" << aux_patt_el.size() << "\n";
+    std::cout << "count:" << root.count(L"auxiliary_patterns") << "\n";
+
     // auto el = root.get_child_optional(L"not_exist_field");
 }
 
@@ -535,6 +553,10 @@ struct math_settings
 
     std::vector<point3d> auxiliary_points;
 
+    std::array<point3d, 2> two_points;
+
+    std::array<int, 4> four_values;
+
     math_settings() = default;
 
     CALLISTO_LIFETIME_MOVE_DEFAULT(math_settings);
@@ -543,7 +565,12 @@ struct math_settings
     void self_reflect(reflect_type& reflection)
     {
         CALLISTO_REFLECT(reflection, major_point);
+
         CALLISTO_REFLECT(reflection, auxiliary_points);
+
+        CALLISTO_REFLECT(reflection, two_points);
+
+        CALLISTO_REFLECT(reflection, four_values);
     }
 };
 
@@ -624,7 +651,7 @@ void example_json_serialization()
     std::wcout << std::boolalpha;
     namespace c_f = callisto::framework;
 
-    auto reader = c_f::json_reader::read_from_file(L"resources/foo_bar.json");
+    auto reader = c_f::json_reading_reflection::read_from_file(L"resources/foo_bar.json");
 
     foo_settings settings;
 
@@ -653,6 +680,8 @@ void example_json_serialization()
     std::cout << "a\tb\tc\t";
 }
 
+namespace c_f = callisto::framework;
+
 int main()
 {
     try
@@ -663,9 +692,19 @@ int main()
 
         // example_str_can();
     }
+    catch (const boost::exception& e)
+    {
+        std::cerr << "boost exception:" << boost::diagnostic_information(e) << "\n";
+
+        const auto* wstring_err_msg = boost::get_error_info<c_f::error_tag_message_w>(e);
+        if (wstring_err_msg != nullptr)
+        {
+            std::wcout << "wstring error message:" << *wstring_err_msg << "\n";
+        }
+    }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << "default std exception:" << e.what() << '\n';
     }
 
     return 0;
