@@ -14,8 +14,6 @@
 
 #include <string_auxiliary_can.hpp>
 
-#include <callisto/reflection/manual_parameter.hpp>
-
 namespace callisto::framework
 {
 
@@ -33,6 +31,20 @@ private:
 public:
     CALLISTO_LIFETIME_REFERENCE(json_reader_element);
 
+    template<typename type>
+    void reflect_class_type(type& val)
+    {
+        if constexpr (custom_reflection<type>::exist)
+        {
+            auto custom_reflect_handler = custom_reflection<type>(val);
+            custom_reflect_handler.self_reflect(*this);
+        }
+        else
+        {
+            val.self_reflect(*this);
+        }
+    }
+
     // default methods
     template<typename type>
     void reflect(type& val, const wchar_t* name)
@@ -41,7 +53,7 @@ public:
 
         auto new_element = json_reader_element(child_tree);
 
-        val.self_reflect(new_element);
+        new_element.reflect_class_type(val);
     }
 
     template<>
@@ -160,7 +172,7 @@ public:
                 type ob;
                 auto new_element = json_reader_element(child.second);
 
-                ob.self_reflect(new_element);
+                new_element.reflect_class_type(ob);
                 vec.push_back(std::move(ob));
             }
         }

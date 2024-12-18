@@ -120,9 +120,9 @@ private:
     }
 
     template<typename type>
-    void __print_type(type& type)
+    void __print_type(type& ob)
     {
-        __stream << type;
+        __stream << ob;
     }
 
     template<typename type>
@@ -179,7 +179,18 @@ private:
             new_el.print(val);
         }
 
-        __stream << "]\n";
+        if (__sequence_braces)
+        {
+            if (__sequence_element_new_line)
+            {
+                __stream << "\n";
+                __print_tabs();
+            }
+
+            __stream << "]";
+        }
+
+        __stream << "\n";
     }
 
 public:
@@ -212,14 +223,26 @@ public:
     template<typename type>
     void print(type& ob)
     {
-        ob.self_reflect(*this);
+        if constexpr (callisto::framework::custom_reflection<type>::exist)
+        {
+            auto reflection_handler = callisto::framework::custom_reflection<type>(ob);
+            reflection_handler.self_reflect(*this);
+        }
+        else
+        {
+            ob.self_reflect(*this);
+        }
     }
 
     // default implementation
     template<typename type>
     void reflect(type& val, const wchar_t* name)
     {
-        if (__stream_names) __stream << name << ":\n";
+        if (__stream_names)
+        {
+            __print_tabs();
+            __stream << name << ":\n";
+        }
         auto new_el = reflection_streamer(
             __stream,
             __tab_count + 1,
@@ -295,7 +318,7 @@ public:
         }
     }
 
-    template<callisto::framework::concept_integer arithmetic_type>
+    template<callisto::framework::concept_arithmetic arithmetic_type>
     void reflect_arithmetic_span(std::vector<arithmetic_type>& vec, const wchar_t* name)
     {
         __print_tabs();
@@ -347,13 +370,6 @@ public:
     }
 };
 
-// clang-format off
-
-#define CALLISTO_REFLECT(reflect_ob, value) \
-    reflect_ob.reflect(value, L#value)
-
-// clang-format on
-
 struct custom_params_a
 {
     std::wstring log_file;
@@ -374,6 +390,7 @@ struct custom_params_a
 
 struct custom_params_b
 {
+    // data ------------------------------------------------------------------------
     std::string str_name;
 
     std::wstring wstr_name;
@@ -388,14 +405,17 @@ struct custom_params_b
 
     std::shared_ptr<custom_params_a> params_a3;
 
+    // construct and lifetime  -----------------------------------------------------
     custom_params_b() = default;
 
     CALLISTO_LIFETIME_MOVE_DEFAULT(custom_params_b);
 
+    // reflection  -----------------------------------------------------------------
     template<typename reflect_type>
     void self_reflect(reflect_type& reflect_ob)
     {
         CALLISTO_REFLECT(reflect_ob, str_name);
+
         CALLISTO_REFLECT(reflect_ob, wstr_name);
         CALLISTO_REFLECT(reflect_ob, int_val);
         CALLISTO_REFLECT(reflect_ob, float_val);
@@ -479,6 +499,54 @@ struct additional_params
     }
 };
 
+struct point3d
+{
+    float x;
+    float y;
+    float z;
+
+    point3d() = default;
+};
+
+namespace callisto::framework
+{
+template<>
+struct custom_reflection<point3d>
+{
+    static constexpr bool exist = true;
+
+    point3d& point;
+
+    explicit custom_reflection(point3d& point) : point(point) {}
+
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflection)
+    {
+        reflection.reflect(point.x, L"x");
+        reflection.reflect(point.y, L"y");
+        reflection.reflect(point.z, L"z");
+    }
+};
+} // namespace callisto::framework
+
+struct math_settings
+{
+    point3d major_point;
+
+    std::vector<point3d> auxiliary_points;
+
+    math_settings() = default;
+
+    CALLISTO_LIFETIME_MOVE_DEFAULT(math_settings);
+
+    template<typename reflect_type>
+    void self_reflect(reflect_type& reflection)
+    {
+        CALLISTO_REFLECT(reflection, major_point);
+        CALLISTO_REFLECT(reflection, auxiliary_points);
+    }
+};
+
 struct foo_settings
 {
     // data
@@ -508,6 +576,8 @@ struct foo_settings
 
     std::vector<patterns_params> auxiliary_patterns;
 
+    math_settings math;
+
     // construct and destruct
     foo_settings() = default;
 
@@ -517,6 +587,7 @@ struct foo_settings
     template<typename reflect_type>
     void self_reflect(reflect_type& reflection)
     {
+
         CALLISTO_REFLECT(reflection, foo);
 
         CALLISTO_REFLECT(reflection, status1);
@@ -542,10 +613,13 @@ struct foo_settings
         CALLISTO_REFLECT(reflection, free_pattern);
 
         CALLISTO_REFLECT(reflection, auxiliary_patterns);
+
+        CALLISTO_REFLECT(reflection, math);
     }
 };
 
 void example_json_serialization()
+
 {
     std::wcout << std::boolalpha;
     namespace c_f = callisto::framework;
