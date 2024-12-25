@@ -79,3 +79,54 @@ TEST(framework_types, type_traits_is_any_test)
     is_any_test_example<float_vector, double, std::fstream, std::iostream>(false);
     is_any_test_example<float_vector, std::size_t, std::vector<float32_t>>(true);
 }
+
+TEST(framework_type, type_traits_std_classes)
+{
+    struct point
+    {
+        float x;
+        float y;
+    };
+
+    std::vector<float>   vec;
+    std::array<int, 5>   arr;
+    std::optional<point> optional_ob;
+
+    std::unique_ptr<std::vector<int>> unique_ptr;
+    std::shared_ptr<std::string>      shared_ptr;
+
+    std::string  str;
+    std::wstring wstr;
+
+    constexpr bool vec1 = c_f::is_std_vector_v<decltype(vec)>;
+    ASSERT_TRUE(vec1);
+    constexpr bool vec2 = c_f::is_std_vector_v<decltype(arr)>;
+    ASSERT_FALSE(vec2);
+
+    constexpr bool arr1 = c_f::is_std_array_v<decltype(arr)>;
+    ASSERT_TRUE(arr1);
+    constexpr bool arr2 = c_f::is_std_array_v<decltype(optional_ob)>;
+    ASSERT_FALSE(arr2);
+
+    constexpr bool opt1 = c_f::is_std_optional_v<decltype(optional_ob)>;
+    ASSERT_TRUE(opt1);
+    constexpr bool opt2 = c_f::is_std_optional_v<decltype(unique_ptr)>;
+    ASSERT_FALSE(opt2);
+
+    constexpr bool uniq1 = c_f::is_std_unique_ptr_v<decltype(unique_ptr)>;
+    ASSERT_TRUE(uniq1);
+    constexpr bool uniq2 = c_f::is_std_unique_ptr_v<decltype(shared_ptr)>;
+    ASSERT_FALSE(uniq2);
+
+    constexpr bool shar1 = c_f::is_std_shared_ptr_v<decltype(shared_ptr)>;
+    ASSERT_TRUE(shar1);
+    constexpr bool shar2 = c_f::is_std_shared_ptr_v<decltype(str)>;
+    ASSERT_FALSE(shar2);
+
+    constexpr bool str1 = c_f::is_std_basic_string_v<decltype(str)>;
+    ASSERT_TRUE(str1);
+    constexpr bool str2 = c_f::is_std_basic_string_v<decltype(wstr)>;
+    ASSERT_TRUE(str2);
+    constexpr bool str3 = c_f::is_std_basic_string_v<decltype(vec)>;
+    ASSERT_FALSE(str3);
+}
