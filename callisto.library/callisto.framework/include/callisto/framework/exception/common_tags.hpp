@@ -2,6 +2,8 @@
 
 // std
 #include "exception.hpp"
+
+#include <callisto/framework/string/build_string.hpp>
 // 3rd party
 #include <boost/current_function.hpp>
 #include <boost/stacktrace.hpp>
@@ -12,8 +14,20 @@ namespace callisto::framework
 /// @brief Present error tag with std::string message.
 using error_tag_message = boost::error_info<struct tag_message, std::string>;
 
+template<typename... args_type>
+inline auto build_error_tag_message(const args_type&... args)
+{
+    return error_tag_message(build_string<char>(args...));
+}
+
 /// @brief Present error tag with std::wstring message.
 using error_tag_message_w = boost::error_info<struct tag_message_w, std::wstring>;
+
+template<typename... args_type>
+inline auto build_error_tag_message_w(const args_type&... args)
+{
+    return error_tag_message_w(build_string<wchar_t>(args...));
+}
 
 /// @brief Present error tag with file name in which the exception is thrown.
 using error_tag_file_name = boost::error_info<struct tag_file_name, std::string>;

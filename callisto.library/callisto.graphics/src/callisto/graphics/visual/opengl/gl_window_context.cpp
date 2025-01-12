@@ -28,6 +28,7 @@ std::mutex gl_window_context::call_functions_mutex;
 
 #pragma region helpers
 
+/*
 // NOLINTBEGIN(misc-unused-parameters)
 void GLAPIENTRY opengl_debug_message_callback(
     GLenum        source,
@@ -49,6 +50,7 @@ void GLAPIENTRY opengl_debug_message_callback(
               << "siverity:" << gl_debug_severity_str(debug_severity) << "; "
               << "id:" << id << "]: " << message << "\n";
 }
+*/
 
 #pragma endregion
 
@@ -190,17 +192,16 @@ void gl_window_context::resize_processing(int width, int height)
 
 gl_window_context::~gl_window_context()
 {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    if (this->window_handler != nullptr) glfwDestroyWindow(this->window_handler);
-
+    if (this->window_handler != nullptr)
+    {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+        glfwDestroyWindow(this->window_handler);
+    }
     {
         const std::lock_guard<std::mutex> locker(call_functions_mutex);
-        call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
-            this->window_handler,
-            this
-        ));
+        call_functions.erase(this->window_handler);
     }
 }
 
@@ -310,9 +311,6 @@ void gl_window_context::start_processing()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(this->window_handler, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
-
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(opengl_debug_message_callback, nullptr);
 
     glfwSetKeyCallback(this->window_handler, gl_window_context::context_key_callback);
     glfwSetCursorPosCallback(
