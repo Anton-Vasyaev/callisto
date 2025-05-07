@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        example_triangle(argc, argv);
+        example_triangle();
     }
     catch (boost::exception& e)
     {

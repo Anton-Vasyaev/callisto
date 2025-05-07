@@ -5,10 +5,54 @@
 // project
 #include <callisto/framework/exception.hpp>
 
+#include <callisto/graphics/visual/opengl/data/gl_window_options.hpp>
+
 namespace c_f = callisto::framework;
 
 namespace callisto::graphics
 {
+
+#pragma region auxiliary_functions
+
+namespace
+{
+struct PRESENTS_OF_AUXILIARY_OPTIONS
+{
+    static constexpr std::string_view IMGUI = "imgui";
+};
+
+void check_and_get_auxiliary_options(
+    std::unordered_map<std::string_view, std::any>* auxiliary_options,
+    gl_window_options&                              options
+)
+
+{
+    if (auxiliary_options == nullptr)
+    {
+        return;
+    }
+    auto imgui_init_el = auxiliary_options->find(PRESENTS_OF_AUXILIARY_OPTIONS ::IMGUI);
+    if (imgui_init_el == auxiliary_options->end())
+    {
+        return;
+    }
+    auto& imgui_init = imgui_init_el->second;
+    if (imgui_init.type() != typeid(bool))
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
+            "Invalid type for field \'",
+            PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI,
+            "\': ",
+            imgui_init.type().name(),
+            "."
+        );
+    }
+
+    options.imgui = std::any_cast<bool>(imgui_init);
+}
+} // namespace
+
+#pragma endregion
 
 #pragma region construct_and_destruct
 
@@ -19,12 +63,12 @@ gl_monitor_context::gl_monitor_context(GLFWmonitor* monitor_handler)
     int                real_height = 0;
     glfwGetMonitorPhysicalSize(monitor_handler, &real_width, &real_height);
 
-    this->monitor_handler   = monitor_handler;
-    this->_size.width       = mode->width;
-    this->_size.height      = mode->height;
-    this->_real_size.width  = real_width;
-    this->_real_size.height = real_height;
-    this->_dpi = static_cast<float>(_size.width) / (static_cast<float>(real_height) / 25.4F);
+    __monitor_handler  = monitor_handler;
+    __size.width       = mode->width;
+    __size.height      = mode->height;
+    __real_size.width  = real_width;
+    __real_size.height = real_height;
+    __dpi = static_cast<float>(__size.width) / (static_cast<float>(real_height) / 25.4F);
 }
 
 gl_monitor_context::~gl_monitor_context() {}
@@ -33,66 +77,25 @@ gl_monitor_context::~gl_monitor_context() {}
 
 #pragma region implement_i_monitor_context
 
-callisto::math::size2i gl_monitor_context::size() const { return this->_size; }
+callisto::math::size2i gl_monitor_context::size() const { return __size; }
 
-callisto::math::size2i gl_monitor_context::real_size() const { return this->_real_size; }
+callisto::math::size2i gl_monitor_context::real_size() const { return __real_size; }
 
-float gl_monitor_context::dpi() const { return this->_dpi; }
+float gl_monitor_context::dpi() const { return __dpi; }
 
-std::unique_ptr<i_window_context> gl_monitor_context::create_window(window_options options)
+std::unique_ptr<i_window_context> gl_monitor_context::create_window(
+    window_options                                  options,
+    std::unordered_map<std::string_view, std::any>* auxiliary_options
+)
 {
-    auto window_position = options.area.position();
-    auto window_size     = options.area.size();
+    gl_window_options gl_win_options;
 
-    auto window_context = std::unique_ptr<i_window_context>();
-    window_context.reset(new gl_window_context());
+    check_and_get_auxiliary_options(auxiliary_options, gl_win_options);
 
-    GLFWwindow* window_handler = nullptr;
+    auto win_ptr = std::unique_ptr<i_window_context>();
+    win_ptr.reset(new gl_window_context(__monitor_handler, options, gl_win_options));
 
-    auto validate_glfw_window_nullptr = [](GLFWwindow* window_handler)
-    {
-        if (window_handler == nullptr)
-        {
-            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
-                << c_f::error_tag_message("cannot create glfw window");
-        }
-    };
-
-    if (options.mode == window_mode::fullscreen)
-    {
-        window_handler = glfwCreateWindow(
-            window_size.width,
-            window_size.height,
-            "",
-            this->monitor_handler,
-            nullptr
-        );
-        validate_glfw_window_nullptr(window_handler);
-    }
-    else if (options.mode == window_mode::borderless)
-    {
-        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        window_handler
-            = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
-        glfwDefaultWindowHints();
-    }
-    else if (options.mode == window_mode::windowed)
-    {
-        window_handler
-            = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
-        validate_glfw_window_nullptr(window_handler);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    }
-
-    glfwSetWindowPos(window_handler, window_position.x, window_position.y);
-
-    auto* window_ptr = reinterpret_cast<gl_window_context*>(window_context.get());
-
-    window_ptr->options                = options;
-    window_ptr->window_handler         = window_handler;
-    window_ptr->parent_monitor_handler = this->monitor_handler;
-
-    return window_context;
+    return win_ptr;
 }
 
 } // namespace callisto::graphics

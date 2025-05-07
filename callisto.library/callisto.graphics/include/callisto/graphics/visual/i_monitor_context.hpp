@@ -2,6 +2,8 @@
 
 // std
 #include <memory>
+#include <unordered_map>
+#include <any>
 // project
 #include <callisto/math/primitives.hpp>
 
@@ -23,7 +25,10 @@ public:
 
     virtual float dpi() const = 0;
 
-    virtual std::unique_ptr<i_window_context> create_window(window_options options) = 0;
+    virtual std::unique_ptr<i_window_context> create_window(
+        window_options                                  options,
+        std::unordered_map<std::string_view, std::any>* auxiliary_options = nullptr
+    ) = 0;
 };
 
 } // namespace callisto::graphics

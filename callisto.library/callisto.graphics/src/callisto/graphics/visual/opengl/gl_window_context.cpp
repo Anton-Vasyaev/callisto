@@ -22,9 +22,12 @@ namespace c_f = callisto::framework;
 namespace callisto::graphics
 {
 
-std::unordered_map<GLFWwindow*, gl_window_context*> gl_window_context::call_functions;
+namespace
+{
+std::mutex imgui_init_mutex;
 
-std::mutex gl_window_context::call_functions_mutex;
+bool imgui_init_flag = true;
+} // namespace
 
 #pragma region helpers
 
@@ -56,7 +59,7 @@ void GLAPIENTRY opengl_debug_message_callback(
 
 #pragma region static_callbacks
 
-void gl_window_context::context_key_callback(
+void gl_window_context::__context_key_callback(
     GLFWwindow* window,
     int         key,
     int         scancode,
@@ -64,48 +67,58 @@ void gl_window_context::context_key_callback(
     int         mods
 )
 {
-    gl_window_context* window_context = call_functions.at(window);
-    window_context->key_processing(key, scancode, action, mods);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+
+    window_context_ptr->__key_processing(key, scancode, action, mods);
 }
 
-void gl_window_context::context_cursor_position_callback(
+void gl_window_context::__context_cursor_position_callback(
     GLFWwindow* window,
     double      xpos,
     double      ypos
 )
 {
-    gl_window_context* window_context = call_functions.at(window);
-    window_context->cursor_position_processing(xpos, ypos);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+    window_context_ptr->__cursor_position_processing(xpos, ypos);
 }
 
-void gl_window_context::context_mouse_button_callback(
+void gl_window_context::__context_mouse_button_callback(
     GLFWwindow* window,
     int         button,
     int         action,
     int         mods
 )
 {
-    gl_window_context* window_context = call_functions.at(window);
-    window_context->mouse_button_processing(button, action, mods);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+    window_context_ptr->__mouse_button_processing(button, action, mods);
 }
 
-void gl_window_context::change_position_callback(GLFWwindow* window, int x_pos, int y_pos)
+void gl_window_context::__change_position_callback(GLFWwindow* window, int x_pos, int y_pos)
 {
-    auto* window_context = call_functions.at(window);
-    window_context->position_processing(x_pos, y_pos);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+    window_context_ptr->__position_processing(x_pos, y_pos);
 }
 
-void gl_window_context::resize_callback(GLFWwindow* window, int width, int height)
+void gl_window_context::__resize_callback(GLFWwindow* window, int width, int height)
 {
-    gl_window_context* window_context = call_functions.at(window);
-    window_context->resize_processing(width, height);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+    window_context_ptr->__resize_processing(width, height);
 }
 
-void gl_window_context::context_framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void gl_window_context::__context_framebuffer_size_callback(
+    GLFWwindow* window,
+    int         width,
+    int         height
+)
 {
-    auto* window_context = call_functions.at(window);
-
-    window_context->viewport_value = c_m::size2i(width, height);
+    auto* window_context_ptr
+        = reinterpret_cast<gl_window_context*>(glfwGetWindowUserPointer(window));
+    window_context_ptr->__viewport_value = c_m::size2i(width, height);
 
     glfwMakeContextCurrent(window);
     glViewport(0, 0, width, height);
@@ -115,93 +128,153 @@ void gl_window_context::context_framebuffer_size_callback(GLFWwindow* window, in
 
 #pragma region processing
 
-void gl_window_context::processing()
+void gl_window_context::__processing()
 {
-    while (this->processing_flag && !static_cast<bool>(glfwWindowShouldClose(this->window_handler)))
+    while (__processing_flag && !static_cast<bool>(glfwWindowShouldClose(__window_handler)))
     {
         glfwPollEvents();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        if (__gl_win_options.imgui)
+        {
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+        }
 
-        this->window_processor->process(*this);
-        this->processing_signal_handler(*this);
+        __window_processor->process(*this);
+        __processing_signal_handler(*this);
 
-        ImGui::Render();
-        auto* draw_data = ImGui::GetDrawData();
-        if (draw_data != nullptr) ImGui_ImplOpenGL3_RenderDrawData(draw_data);
+        if (__gl_win_options.imgui)
+        {
+            ImGui::Render();
+            auto* draw_data = ImGui::GetDrawData();
+            if (draw_data != nullptr) ImGui_ImplOpenGL3_RenderDrawData(draw_data);
+        }
 
-        glfwSwapBuffers(this->window_handler);
+        glfwSwapBuffers(__window_handler);
     }
 }
 
 // NOLINTNEXTLINE(misc-unused-parameters)
-void gl_window_context::key_processing(int key, int scancode, int action, int mods)
+void gl_window_context::__key_processing(int key, int scancode, int action, int mods)
 {
     key_event event;
     event.key    = static_cast<key_type>(key);
     event.action = input_types_auxiliary::get_input_action_from_glfw(action);
 
-    if (this->window_processor != nullptr) this->window_processor->on_key_event(event);
-    this->key_event_signal_handler(event);
+    if (__window_processor != nullptr) __window_processor->on_key_event(event);
+    __key_event_signal_handler(event);
 }
 
-void gl_window_context::cursor_position_processing(double xpos, double ypos)
+void gl_window_context::__cursor_position_processing(double xpos, double ypos)
 {
     cursor_event event;
     event.x = xpos;
     event.y = ypos;
 
-    if (this->window_processor != nullptr) this->window_processor->on_cursor_event(event);
-    this->cursor_event_signal_handler(event);
+    if (__window_processor != nullptr) __window_processor->on_cursor_event(event);
+    __cursor_event_signal_handler(event);
 }
 
 // NOLINTNEXTLINE(misc-unused-parameters)
-void gl_window_context::mouse_button_processing(int button, int action, int mods)
+void gl_window_context::__mouse_button_processing(int button, int action, int mods)
 {
     mouse_button_event event;
     event.button = static_cast<mouse_button>(button);
     event.action = input_types_auxiliary::get_input_action_from_glfw(action);
 
-    if (this->window_processor != nullptr) this->window_processor->on_mouse_button_event(event);
-    this->mouse_button_event_signal_handler(event);
+    if (__window_processor != nullptr) __window_processor->on_mouse_button_event(event);
+    __mouse_button_event_signal_handler(event);
 }
 
-void gl_window_context::position_processing(int x_pos, int y_pos)
+void gl_window_context::__position_processing(int x_pos, int y_pos)
 {
     auto pos = c_m::point2i { x_pos, y_pos };
-    this->options.area.set_position(pos);
+    __win_options.area.set_position(pos);
 
-    if (this->window_processor != nullptr) this->window_processor->on_change_position(pos);
-    this->change_position_signal_handler(pos);
+    if (__window_processor != nullptr) __window_processor->on_change_position(pos);
+    __change_position_signal_handler(pos);
 }
 
-void gl_window_context::resize_processing(int width, int height)
+void gl_window_context::__resize_processing(int width, int height)
 {
     auto size = c_m::size2i { width, height };
-    this->options.area.set_size(size);
+    __win_options.area.set_size(size);
 
-    if (this->window_processor != nullptr) this->window_processor->on_resize(size);
-    this->resize_signal_handler(size);
+    if (__window_processor != nullptr) __window_processor->on_resize(size);
+    __resize_signal_handler(size);
 }
 
 #pragma endregion
 
 #pragma region construct_and_destruct
 
+gl_window_context::gl_window_context(
+    GLFWmonitor*             monitor_handler,
+    const window_options&    win_options,
+    const gl_window_options& gl_win_options
+)
+{
+    __processing_flag = false;
+
+    auto window_position = win_options.area.position();
+    auto window_size     = win_options.area.size();
+
+    __win_options    = win_options;
+    __gl_win_options = gl_win_options;
+
+    __window_handler                  = nullptr;
+    __parent_monitor_handler          = monitor_handler;
+    auto validate_glfw_window_nullptr = [](GLFWwindow* window_handler)
+    {
+        if (window_handler == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+                << c_f::error_tag_message("cannot create glfw window");
+        }
+    };
+
+    if (win_options.mode == window_mode::fullscreen)
+    {
+        __window_handler = glfwCreateWindow(
+            window_size.width,
+            window_size.height,
+            "",
+            __parent_monitor_handler,
+            nullptr
+        );
+        validate_glfw_window_nullptr(__window_handler);
+    }
+    else if (win_options.mode == window_mode::borderless)
+    {
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+        __window_handler
+            = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
+        glfwDefaultWindowHints();
+    }
+    else if (win_options.mode == window_mode::windowed)
+    {
+        __window_handler
+            = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
+        validate_glfw_window_nullptr(__window_handler);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    }
+
+    glfwSetWindowPos(__window_handler, window_position.x, window_position.y);
+}
+
 gl_window_context::~gl_window_context()
 {
-    if (this->window_handler != nullptr)
+    if (__window_handler != nullptr)
     {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-        glfwDestroyWindow(this->window_handler);
-    }
-    {
-        const std::lock_guard<std::mutex> locker(call_functions_mutex);
-        call_functions.erase(this->window_handler);
+        if (__gl_win_options.imgui)
+        {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+
+            ImGui::DestroyContext();
+        }
+        glfwDestroyWindow(__window_handler);
     }
 }
 
@@ -209,78 +282,70 @@ gl_window_context::~gl_window_context()
 
 #pragma region interface_signals
 
-c_f::signal<void(key_event)>& gl_window_context::key_event_signal()
+c_f::signal<void(key_event)>& gl_window_context::get_key_event_signal()
 {
-    return this->key_event_signal_handler;
+    return __key_event_signal_handler;
 }
 
-c_f::signal<void(mouse_button_event)>& gl_window_context::mouse_button_event_signal()
+c_f::signal<void(mouse_button_event)>& gl_window_context::get_mouse_button_event_signal()
 {
-    return this->mouse_button_event_signal_handler;
+    return __mouse_button_event_signal_handler;
 }
 
-c_f::signal<void(cursor_event)>& gl_window_context::cursor_event_signal()
+c_f::signal<void(cursor_event)>& gl_window_context::get_cursor_event_signal()
 {
-    return this->cursor_event_signal_handler;
+    return __cursor_event_signal_handler;
 }
 
-c_f::signal<void(c_m::point2i)>& gl_window_context::change_position_signal()
+c_f::signal<void(c_m::point2i)>& gl_window_context::get_change_position_signal()
 {
-    return this->change_position_signal_handler;
+    return __change_position_signal_handler;
 }
 
-c_f::signal<void(c_m::size2i)>& gl_window_context::resize_signal()
+c_f::signal<void(c_m::size2i)>& gl_window_context::get_resize_signal()
 {
-    return this->resize_signal_handler;
+    return __resize_signal_handler;
 }
 
-c_f::signal<void(i_window_context&)>& gl_window_context::processing_signal()
+c_f::signal<void(i_window_context&)>& gl_window_context::get_processing_signal()
 {
-    return this->processing_signal_handler;
+    return __processing_signal_handler;
 }
 
 #pragma endregion
 
 #pragma region interface_impl
 
-c_m::rectangle_i gl_window_context::get_area() const { return this->options.area; }
+c_m::rectangle_i gl_window_context::get_area() const { return __win_options.area; }
 
-c_m::size2i gl_window_context::get_viewport() const { return this->viewport_value; }
+c_m::size2i gl_window_context::get_viewport() const { return __viewport_value; }
 
 window_mode gl_window_context::gl_window_context::get_window_mode() const
 {
-    return this->options.mode;
+    return __win_options.mode;
 }
 
 void gl_window_context::set_processor(std::shared_ptr<a_window_processor> processor)
 {
-    this->window_processor = processor;
+    __window_processor = processor;
 }
 
 void gl_window_context::start_processing()
 {
 
-    if (this->window_handler == nullptr)
+    if (__window_handler == nullptr)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message("GLFW window is not initialized");
     }
 
-    {
-        const std::lock_guard<std::mutex> locker(call_functions_mutex);
-        call_functions.insert(std::unordered_map<GLFWwindow*, gl_window_context*>::value_type(
-            this->window_handler,
-            this
-        ));
-    }
-
-    if (this->window_processor == nullptr)
+    if (__window_processor == nullptr)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message("Window processor is not setted.");
     }
 
-    glfwMakeContextCurrent(this->window_handler);
+    glfwMakeContextCurrent(__window_handler);
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
@@ -295,53 +360,59 @@ void gl_window_context::start_processing()
     // CHECK. для интеропа между GLFW и  IMGUI
     glfwSwapInterval(1);
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    const ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    if (__gl_win_options.imgui)
+    {
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        const ImGuiIO& io = ImGui::GetIO();
+        (void)io;
+        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsClassic();
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        // ImGui::StyleColorsClassic();
 
-    const char* glsl_version = "#version 410";
+        const char* glsl_version = "#version 410";
 
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(this->window_handler, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+        // Setup Platform/Renderer backends
+        ImGui_ImplGlfw_InitForOpenGL(__window_handler, true);
+        ImGui_ImplOpenGL3_Init(glsl_version);
+    }
 
-    glfwSetKeyCallback(this->window_handler, gl_window_context::context_key_callback);
+    // setups callbacks
+    glfwSetWindowUserPointer(__window_handler, static_cast<void*>(this));
+
+    glfwSetKeyCallback(__window_handler, gl_window_context::__context_key_callback);
     glfwSetCursorPosCallback(
-        this->window_handler,
-        gl_window_context::context_cursor_position_callback
+        __window_handler,
+        gl_window_context::__context_cursor_position_callback
     );
     glfwSetMouseButtonCallback(
-        this->window_handler,
-        gl_window_context::context_mouse_button_callback
+        __window_handler,
+        gl_window_context::__context_mouse_button_callback
     );
 
-    glfwSetWindowPosCallback(this->window_handler, gl_window_context::change_position_callback);
-    glfwSetWindowSizeCallback(this->window_handler, gl_window_context::resize_callback);
+    glfwSetWindowPosCallback(__window_handler, gl_window_context::__change_position_callback);
+    glfwSetWindowSizeCallback(__window_handler, gl_window_context::__resize_callback);
     glfwSetFramebufferSizeCallback(
-        this->window_handler,
-        gl_window_context::context_framebuffer_size_callback
+        __window_handler,
+        gl_window_context::__context_framebuffer_size_callback
     );
 
     int width;
     int height;
-    glfwGetFramebufferSize(this->window_handler, &width, &height);
+    glfwGetFramebufferSize(__window_handler, &width, &height);
     glViewport(0, 0, width, height);
-    this->viewport_value = c_m::size2i(width, height);
+    __viewport_value = c_m::size2i(width, height);
 
-    this->window_processor->init(*this);
+    __window_processor->init(*this);
 
-    this->processing_flag = true;
+    __processing_flag = true;
 
-    this->processing();
+    __processing();
 }
 
-void gl_window_context::stop_processing() { this->processing_flag = false; }
+void gl_window_context::stop_processing() { __processing_flag = false; }
 
 } // namespace callisto::graphics

@@ -65,7 +65,7 @@ find_package(Boost)
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::program_options)
 target_link_libraries(${TARGET_NAME} PRIVATE Boost::stacktrace)
 
-if(NOT MSVC)
+if(NOT WIN32)
     target_link_libraries(${TARGET_NAME} PRIVATE Boost::stacktrace_backtrace)
 endif()
 

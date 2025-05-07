@@ -19,18 +19,19 @@ class i_window_context
 {
 public:
     // handlers
-    virtual callisto::framework::signal<void(key_event)>& key_event_signal() = 0;
+    virtual callisto::framework::signal<void(key_event)>& get_key_event_signal() = 0;
 
-    virtual callisto::framework::signal<void(mouse_button_event)>& mouse_button_event_signal() = 0;
-
-    virtual callisto::framework::signal<void(cursor_event)>& cursor_event_signal() = 0;
-
-    virtual callisto::framework::signal<void(callisto::math::point2i)>& change_position_signal()
+    virtual callisto::framework::signal<void(mouse_button_event)>& get_mouse_button_event_signal()
         = 0;
 
-    virtual callisto::framework::signal<void(callisto::math::size2i)>& resize_signal() = 0;
+    virtual callisto::framework::signal<void(cursor_event)>& get_cursor_event_signal() = 0;
 
-    virtual callisto::framework::signal<void(i_window_context&)>& processing_signal() = 0;
+    virtual callisto::framework::signal<void(callisto::math::point2i)>& get_change_position_signal()
+        = 0;
+
+    virtual callisto::framework::signal<void(callisto::math::size2i)>& get_resize_signal() = 0;
+
+    virtual callisto::framework::signal<void(i_window_context&)>& get_processing_signal() = 0;
 
     // construct and destruct
     virtual ~i_window_context() = default;

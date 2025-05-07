@@ -1,3 +1,3 @@
 #pragma once
 
-void example_triangle(int argc, char* argv[]);
+void example_triangle();

@@ -1,6 +1,8 @@
 #pragma once
 
 // project
+#include <callisto/framework/types/lifetime.hpp>
+
 #include <callisto/graphics/visual/i_monitor_context.hpp>
 #include <callisto/graphics/visual/data/window_options.hpp>
 #include "gl_window_context.hpp"
@@ -14,30 +16,24 @@ class gl_monitor_context : public i_monitor_context
 
 private:
     // data
-    GLFWmonitor* monitor_handler;
+    GLFWmonitor* __monitor_handler;
 
-    callisto::math::size2i _size;
+    callisto::math::size2i __size;
 
-    callisto::math::size2i _real_size;
+    callisto::math::size2i __real_size;
 
-    float _dpi;
+    float __dpi;
 
     // construct and destruct
     explicit gl_monitor_context(GLFWmonitor* monitor_handler);
 
 public:
-    ~gl_monitor_context() override;
-
-    // deleted
+    // construct and destruct
     gl_monitor_context() = delete;
 
-    gl_monitor_context(const gl_monitor_context&) = delete;
+    ~gl_monitor_context() override;
 
-    gl_monitor_context(gl_monitor_context&&) = delete;
-
-    gl_monitor_context& operator=(const gl_monitor_context&) = delete;
-
-    gl_monitor_context& operator=(gl_monitor_context&&) = delete;
+    CALLISTO_LIFETIME_REFERENCE(gl_monitor_context);
 
     // implement i_monitor_context
     callisto::math::size2i size() const override;
@@ -46,7 +42,10 @@ public:
 
     float dpi() const override;
 
-    std::unique_ptr<i_window_context> create_window(window_options options) override;
+    std::unique_ptr<i_window_context> create_window(
+        window_options                                  options,
+        std::unordered_map<std::string_view, std::any>* auxiliary_options = nullptr
+    ) override;
 };
 
 } // namespace callisto::graphics
