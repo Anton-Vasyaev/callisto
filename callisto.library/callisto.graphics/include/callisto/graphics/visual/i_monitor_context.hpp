@@ -8,7 +8,6 @@
 #include <callisto/math/primitives.hpp>
 
 #include "data/window_options.hpp"
-#include "i_window_context.hpp"
 
 namespace callisto::graphics
 {
@@ -19,16 +18,17 @@ public:
     virtual ~i_monitor_context() = default;
 
     // methods
-    virtual callisto::math::size2i size() const = 0;
+    virtual const char* get_name() const = 0;
 
-    virtual callisto::math::size2i real_size() const = 0;
+    virtual callisto::math::size2i get_size() const = 0;
+
+    virtual callisto::math::size2i get_physical_size() const = 0;
+
+    virtual callisto::math::size2f get_content_scale() const = 0;
+
+    virtual callisto::math::rectangle_i get_work_area() const = 0;
 
     virtual float dpi() const = 0;
-
-    virtual std::unique_ptr<i_window_context> create_window(
-        window_options                                  options,
-        std::unordered_map<std::string_view, std::any>* auxiliary_options = nullptr
-    ) = 0;
 };
 
 } // namespace callisto::graphics

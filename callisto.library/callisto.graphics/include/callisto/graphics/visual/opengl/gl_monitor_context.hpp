@@ -3,12 +3,15 @@
 // project
 #include <callisto/framework/types/lifetime.hpp>
 
+#include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
+
 #include <callisto/graphics/visual/i_monitor_context.hpp>
 #include <callisto/graphics/visual/data/window_options.hpp>
-#include "gl_window_context.hpp"
 
 namespace callisto::graphics
 {
+
+class gl_main_context;
 
 class gl_monitor_context : public i_monitor_context
 {
@@ -18,14 +21,28 @@ private:
     // data
     GLFWmonitor* __monitor_handler;
 
+    std::int32_t __monitor_index;
+
+    gl_main_context* __main_context;
+
     callisto::math::size2i __size;
 
-    callisto::math::size2i __real_size;
+    callisto::math::size2i __physical_size;
+
+    callisto::math::size2f __content_scale;
+
+    callisto::math::rectangle_i __work_area;
+
+    const char* __name;
 
     float __dpi;
 
     // construct and destruct
-    explicit gl_monitor_context(GLFWmonitor* monitor_handler);
+    explicit gl_monitor_context(
+        GLFWmonitor*     monitor_handler,
+        std::int32_t     monitor_index,
+        gl_main_context* main_context
+    );
 
 public:
     // construct and destruct
@@ -35,17 +52,25 @@ public:
 
     CALLISTO_LIFETIME_REFERENCE(gl_monitor_context);
 
-    // implement i_monitor_context
-    callisto::math::size2i size() const override;
+    // getters and setters
+    GLFWmonitor* get_handler() { return __monitor_handler; }
 
-    callisto::math::size2i real_size() const override;
+    // implement i_monitor_context
+
+    const char* get_name() const override;
+
+    callisto::math::size2i get_size() const override;
+
+    callisto::math::size2i get_physical_size() const override;
+
+    callisto::math::size2f get_content_scale() const override;
+
+    callisto::math::rectangle_i get_work_area() const override;
 
     float dpi() const override;
 
-    std::unique_ptr<i_window_context> create_window(
-        window_options                                  options,
-        std::unordered_map<std::string_view, std::any>* auxiliary_options = nullptr
-    ) override;
+    // static methods
+    static gl_monitor_context* validate_and_cast_ptr(i_monitor_context* monitor_context);
 };
 
 } // namespace callisto::graphics

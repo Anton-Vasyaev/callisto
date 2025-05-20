@@ -8,6 +8,7 @@
 
 #include <callisto/graphics/input/data.hpp>
 
+#include "i_monitor_context.hpp"
 #include "a_window_processor.hpp"
 #include "data/window_options.hpp"
 #include "data/window_state.hpp"
@@ -48,6 +49,10 @@ public:
     virtual void start_processing() = 0;
 
     virtual void stop_processing() = 0;
+
+    virtual void
+    reset_window_options(window_options win_options, i_monitor_context* monitor_ptr = nullptr)
+        = 0;
 };
 
 } // namespace callisto::graphics

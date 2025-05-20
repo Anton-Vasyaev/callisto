@@ -15,14 +15,14 @@ class gl_main_context : public i_main_context
 {
 private:
     // data
-    std::vector<std::unique_ptr<i_monitor_context>> monitors;
+    std::vector<std::unique_ptr<gl_monitor_context>> __monitors;
 
-    std::unique_ptr<i_monitor_context> primary_monitor;
+    std::int32_t __primary_monitor_index;
 
     // initialize methods
-    void init_monitors();
+    void __init_monitors();
 
-    void init_primary_monitor();
+    static void __glfw_monitor_callback(GLFWmonitor* monitor, int event);
 
 public:
     // construct and destruct
@@ -40,9 +40,22 @@ public:
     gl_main_context& operator=(gl_main_context&&) = delete;
 
     // implement i_main_context
-    const std::vector<std::unique_ptr<i_monitor_context>>& get_monitors() override;
+    std::int32_t get_monitors_count() override;
+
+    std::int32_t get_primary_monitor_index() override;
+
+    i_monitor_context& get_monitor_by_index(std::int32_t index) override;
 
     i_monitor_context& get_primary_monitor() override;
+
+    std::unique_ptr<i_window_context> create_window(
+        window_options                                  options,
+        std::unordered_map<std::string_view, std::any>* auxiliary_options = nullptr,
+        i_monitor_context*                              monitor_context   = nullptr
+    ) override;
+
+    // getters and setters
+    std::vector<std::unique_ptr<gl_monitor_context>>& get_glfw_monitors();
 };
 
 } // namespace callisto::graphics

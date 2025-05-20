@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <stdexcept>
 // project
+#include "gl_monitor_context.hpp"
+
 #include <callisto/graphics/visual/i_window_context.hpp>
 
 #include "data/gl_window_options.hpp"
@@ -15,9 +17,11 @@
 namespace callisto::graphics
 {
 
+class gl_monitor_context;
+
 class gl_window_context : public i_window_context
 {
-    friend class gl_monitor_context;
+    friend class gl_main_context;
 
 private:
     // handlers
@@ -38,13 +42,13 @@ private:
     // data
     GLFWwindow* __window_handler = nullptr; // GLFW context
 
-    GLFWmonitor* __parent_monitor_handler = nullptr;
+    gl_monitor_context* __monitor = nullptr;
 
     bool __processing_flag; // processing status
 
     window_options __win_options; // window properties
 
-    gl_window_options __gl_win_options; // window proeprties for opengl
+    gl_window_options __gl_win_options; // window properties for opengl
 
     callisto::math::size2i __viewport_value;
 
@@ -84,9 +88,9 @@ private:
     gl_window_context() = default;
 
     gl_window_context(
-        GLFWmonitor*             monitor_handler,
         const window_options&    win_options,
-        const gl_window_options& gl_win_options
+        const gl_window_options& gl_win_options,
+        gl_monitor_context*      monitor = nullptr
     );
 
 public:
@@ -128,27 +132,15 @@ public:
 
     void stop_processing() override;
 
+    void reset_window_options(window_options win_options, i_monitor_context* monitor_ptr = nullptr)
+        override;
+
     // getters and setters
-    inline GLFWwindow* get_window_handler() const;
+    i_monitor_context* get_monitor();
 
-    inline GLFWmonitor* get_monitor_handler() const;
+    GLFWwindow* get_window_handler();
 
-    inline gl_window_options get_gl_win_options() const;
+    gl_window_options get_gl_win_options() const;
 };
-
-// inline implementations
-
-#pragma region getters_and_setters
-
-inline GLFWwindow* gl_window_context::get_window_handler() const { return __window_handler; }
-
-inline GLFWmonitor* gl_window_context::get_monitor_handler() const
-{
-    return __parent_monitor_handler;
-}
-
-inline gl_window_options gl_window_context::get_gl_win_options() const { return __gl_win_options; }
-
-#pragma endregion
 
 } // namespace callisto::graphics

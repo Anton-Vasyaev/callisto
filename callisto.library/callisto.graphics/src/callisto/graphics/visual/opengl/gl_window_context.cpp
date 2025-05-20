@@ -16,6 +16,8 @@
 
 #include <callisto/graphics/visual/opengl/auxiliary/input_auxiliary.hpp>
 
+#include <callisto/graphics/visual/opengl/gl_monitor_context.hpp>
+
 namespace c_m = callisto::math;
 namespace c_f = callisto::framework;
 
@@ -210,11 +212,13 @@ void gl_window_context::__resize_processing(int width, int height)
 #pragma region construct_and_destruct
 
 gl_window_context::gl_window_context(
-    GLFWmonitor*             monitor_handler,
     const window_options&    win_options,
-    const gl_window_options& gl_win_options
+    const gl_window_options& gl_win_options,
+    gl_monitor_context*      monitor
 )
 {
+    __monitor = monitor;
+
     __processing_flag = false;
 
     auto window_position = win_options.area.position();
@@ -223,8 +227,8 @@ gl_window_context::gl_window_context(
     __win_options    = win_options;
     __gl_win_options = gl_win_options;
 
-    __window_handler                  = nullptr;
-    __parent_monitor_handler          = monitor_handler;
+    __window_handler = nullptr;
+
     auto validate_glfw_window_nullptr = [](GLFWwindow* window_handler)
     {
         if (window_handler == nullptr)
@@ -234,33 +238,53 @@ gl_window_context::gl_window_context(
         }
     };
 
+    glfwDefaultWindowHints();
+
     if (win_options.mode == window_mode::fullscreen)
     {
+        if (__monitor == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
+                "not passed monitor context for create window in fullscreen mode."
+            );
+        }
         __window_handler = glfwCreateWindow(
             window_size.width,
             window_size.height,
             "",
-            __parent_monitor_handler,
+            __monitor->get_handler(),
             nullptr
         );
         validate_glfw_window_nullptr(__window_handler);
     }
     else if (win_options.mode == window_mode::borderless)
     {
+        if (__monitor == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
+                "not passed monitor context for create window in borderless mode."
+            );
+        }
+        auto monitor_size = __monitor->get_size();
+        auto monitor_pos  = __monitor->get_work_area().position();
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         __window_handler
-            = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
-        glfwDefaultWindowHints();
+            = glfwCreateWindow(monitor_size.width, monitor_size.height, "", nullptr, nullptr);
+        glfwSetWindowPos(__window_handler, monitor_pos.x, monitor_pos.y);
     }
     else if (win_options.mode == window_mode::windowed)
     {
         __window_handler
             = glfwCreateWindow(window_size.width, window_size.height, "", nullptr, nullptr);
         validate_glfw_window_nullptr(__window_handler);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwSetWindowPos(__window_handler, window_position.x, window_position.y);
     }
 
-    glfwSetWindowPos(__window_handler, window_position.x, window_position.y);
+    if (__window_handler == nullptr)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("error. cannot create GLFWWindow handler.");
+    }
 }
 
 gl_window_context::~gl_window_context()
@@ -414,5 +438,95 @@ void gl_window_context::start_processing()
 }
 
 void gl_window_context::stop_processing() { __processing_flag = false; }
+
+void gl_window_context::reset_window_options(
+    window_options     win_options,
+    i_monitor_context* monitor_ptr
+)
+{
+    glfwDefaultWindowHints();
+
+    __win_options = win_options;
+
+    auto window_position = win_options.area.position();
+    auto window_size     = win_options.area.size();
+
+    if (win_options.mode == window_mode::fullscreen)
+    {
+        if (monitor_ptr == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
+                "not passed monitor context for create window in fullscreen mode."
+            );
+        }
+
+        auto* gl_monitor_ptr = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
+
+        auto*              monitor_handler = gl_monitor_ptr->get_handler();
+        const GLFWvidmode* mode            = glfwGetVideoMode(monitor_handler);
+
+        glfwSetWindowMonitor(
+            __window_handler,
+            monitor_handler,
+            0,
+            0,
+            window_size.width,
+            window_size.height,
+            mode->refreshRate
+        );
+        __monitor = gl_monitor_ptr;
+    }
+    else if (win_options.mode == window_mode::borderless)
+    {
+        if (monitor_ptr == nullptr)
+        {
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
+                "not passed monitor context for create window in borderless mode."
+            );
+        }
+
+        auto* gl_monitor_ptr = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
+
+        auto monitor_size = gl_monitor_ptr->get_size();
+        auto monitor_pos  = gl_monitor_ptr->get_work_area().position();
+        glfwSetWindowMonitor(
+            __window_handler,
+            nullptr,
+            monitor_pos.x,
+            monitor_pos.y,
+            monitor_size.width,
+            monitor_size.height,
+            GLFW_DONT_CARE
+        );
+
+        glfwSetWindowAttrib(__window_handler, GLFW_DECORATED, GLFW_FALSE);
+
+        __monitor = gl_monitor_ptr;
+    }
+    else if (win_options.mode == window_mode::windowed)
+    {
+        glfwSetWindowMonitor(
+            __window_handler,
+            nullptr,
+            window_position.x,
+            window_position.y,
+            window_size.width,
+            window_size.height,
+            GLFW_DONT_CARE
+        );
+
+        __monitor = nullptr;
+    }
+}
+
+#pragma region getters_and_setters
+
+i_monitor_context* gl_window_context::get_monitor() { return __monitor; }
+
+GLFWwindow* gl_window_context::get_window_handler() { return __window_handler; }
+
+gl_window_options gl_window_context::get_gl_win_options() const { return __gl_win_options; }
+
+#pragma endregion
 
 } // namespace callisto::graphics
