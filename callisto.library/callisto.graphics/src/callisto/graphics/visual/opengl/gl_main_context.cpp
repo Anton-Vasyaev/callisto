@@ -23,7 +23,40 @@ namespace
 struct PRESENTS_OF_AUXILIARY_OPTIONS
 {
     static constexpr std::string_view IMGUI = "imgui";
+
+    static constexpr std::string_view GL_MULTISAMPLING = "gl_multisampling";
+
+    static constexpr std::string_view CANVAS_MULTISAMPLING = "gl_canvas_multisampling";
 };
+
+template<typename type>
+void get_option_from_dict(
+    std::string_view                                name,
+    std::unordered_map<std::string_view, std::any>* auxiliary_options,
+    type&                                           val
+)
+{
+    auto find_element = auxiliary_options->find(name);
+    if (find_element == auxiliary_options->end())
+    {
+        return;
+    }
+    auto& find_val = find_element->second;
+
+    if (find_val.type() != typeid(type))
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
+            "Invalid type for field \'",
+            PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI,
+            "\': ",
+            find_val.type().name(),
+            ". expected:",
+            typeid(type).name(),
+            "."
+        );
+    }
+    val = std::any_cast<type>(find_val);
+}
 
 void check_and_get_auxiliary_options(
     std::unordered_map<std::string_view, std::any>* auxiliary_options,
@@ -35,24 +68,17 @@ void check_and_get_auxiliary_options(
     {
         return;
     }
-    auto imgui_init_el = auxiliary_options->find(PRESENTS_OF_AUXILIARY_OPTIONS ::IMGUI);
-    if (imgui_init_el == auxiliary_options->end())
-    {
-        return;
-    }
-    auto& imgui_init = imgui_init_el->second;
-    if (imgui_init.type() != typeid(bool))
-    {
-        CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
-            "Invalid type for field \'",
-            PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI,
-            "\': ",
-            imgui_init.type().name(),
-            "."
-        );
-    }
 
-    options.imgui = std::any_cast<bool>(imgui_init);
+    get_option_from_dict(PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI, auxiliary_options, options.imgui);
+    get_option_from_dict(
+        PRESENTS_OF_AUXILIARY_OPTIONS::GL_MULTISAMPLING,
+        auxiliary_options,
+        options.gl_multisampling
+    );
+    get_option_from_dict(
+        PRESENTS_OF_AUXILIARY_OPTIONS::CANVAS_MULTISAMPLING,
+        options.canvas_multisampling
+    );
 }
 } // namespace
 
@@ -156,7 +182,7 @@ std::unique_ptr<i_window_context> gl_main_context::create_window(
     check_and_get_auxiliary_options(auxiliary_options, gl_win_options);
 
     std::unique_ptr<i_window_context> window_ptr;
-    window_ptr.reset(new gl_window_context(options, gl_win_options, gl_monitor_context_ptr));
+    window_ptr.reset(new gl_window_context(*this, options, gl_win_options, gl_monitor_context_ptr));
 
     return window_ptr;
 }

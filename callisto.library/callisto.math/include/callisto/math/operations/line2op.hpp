@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cmath>
 #include <algorithm>
 #include <callisto/math/primitives.hpp>
 
@@ -64,6 +65,29 @@ struct line2op
         auto norm_y2 = (y2 - contour.y1) / h;
 
         return line2<decltype(norm_x1)>(norm_x1, norm_y1, norm_x2, norm_y2);
+    }
+
+    // TODO need test
+    template<typename type>
+    static constexpr auto square_length(const line2<type>& line)
+    {
+        auto x_diff = line.x1 - line.x2;
+        auto y_diff = line.y1 - line.y2;
+
+        return x_diff * x_diff + y_diff * y_diff;
+    }
+
+    // TODO need test
+    template<typename type>
+    static constexpr auto length(const line2<type>& line)
+    {
+        return std::sqrt(square_length(line));
+    }
+
+    template<typename type>
+    static constexpr auto to_guide_vector(const line2<type> line)
+    {
+        return vector2<type>(line.x2 - line.x1, line.y2 - line.y1);
     }
 };
 

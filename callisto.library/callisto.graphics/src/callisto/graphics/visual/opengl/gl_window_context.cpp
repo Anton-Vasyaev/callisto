@@ -1,3 +1,4 @@
+#include <callisto/framework/native/platform_detect.h>
 // parent header
 #include <callisto/graphics/visual/opengl/gl_window_context.hpp>
 // std
@@ -5,7 +6,14 @@
 #include <exception>
 // 3rd party
 #include <imgui.h>
+
+#if defined(CALLISTO_OS_WINDOWS)
+    #define GLFW_EXPOSE_NATIVE_WIN32
+#endif
+
+#include <GLFW/glfw3native.h>
 // project
+
 #include <callisto/framework/exception.hpp>
 
 #include <callisto/graphics/input/data.hpp>
@@ -212,10 +220,12 @@ void gl_window_context::__resize_processing(int width, int height)
 #pragma region construct_and_destruct
 
 gl_window_context::gl_window_context(
+    gl_main_context&         main_context,
     const window_options&    win_options,
     const gl_window_options& gl_win_options,
     gl_monitor_context*      monitor
-)
+) :
+    __main_context(main_context)
 {
     __monitor = monitor;
 
@@ -239,6 +249,8 @@ gl_window_context::gl_window_context(
     };
 
     glfwDefaultWindowHints();
+
+    // TODO deleate after checking
 
     if (win_options.mode == window_mode::fullscreen)
     {
@@ -460,8 +472,7 @@ void gl_window_context::reset_window_options(
             );
         }
 
-        auto* gl_monitor_ptr = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
-
+        auto*              gl_monitor_ptr  = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
         auto*              monitor_handler = gl_monitor_ptr->get_handler();
         const GLFWvidmode* mode            = glfwGetVideoMode(monitor_handler);
 
@@ -485,10 +496,18 @@ void gl_window_context::reset_window_options(
             );
         }
 
-        auto* gl_monitor_ptr = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
+        auto*              gl_monitor_ptr  = gl_monitor_context::validate_and_cast_ptr(monitor_ptr);
+        auto*              monitor_handler = gl_monitor_ptr->get_handler();
+        const GLFWvidmode* mode            = glfwGetVideoMode(monitor_handler);
 
         auto monitor_size = gl_monitor_ptr->get_size();
         auto monitor_pos  = gl_monitor_ptr->get_work_area().position();
+
+#if defined(CALLISTO_OS_WINDOWS)
+        glfwSetWindowAttrib(__window_handler, GLFW_DECORATED, GLFW_FALSE);
+        HWND hwnd = glfwGetWin32Window(__window_handler);
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, mode->width, mode->height, SWP_SHOWWINDOW);
+#else
         glfwSetWindowMonitor(
             __window_handler,
             nullptr,
@@ -500,7 +519,7 @@ void gl_window_context::reset_window_options(
         );
 
         glfwSetWindowAttrib(__window_handler, GLFW_DECORATED, GLFW_FALSE);
-
+#endif
         __monitor = gl_monitor_ptr;
     }
     else if (win_options.mode == window_mode::windowed)
@@ -514,6 +533,7 @@ void gl_window_context::reset_window_options(
             window_size.height,
             GLFW_DONT_CARE
         );
+        glfwSetWindowAttrib(__window_handler, GLFW_DECORATED, GLFW_TRUE);
 
         __monitor = nullptr;
     }

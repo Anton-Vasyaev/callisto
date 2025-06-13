@@ -5,6 +5,7 @@
 // 3rd party
 #include <boost/current_function.hpp>
 
+#include <callisto/framework/types/lifetime.hpp>
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/string.hpp>
 #include <callisto/opencv.hpp>
@@ -17,13 +18,16 @@ namespace callisto::graphics
 
 class gl_texture2d
 {
-    GLuint __handler;
 
     struct conversion_formats
     {
         GLenum internal_format;
         GLenum format;
     };
+
+    GLuint __handler;
+
+    GLenum __format;
 
     // static methods
     static conversion_formats
@@ -55,30 +59,24 @@ class gl_texture2d
         }
     }
 
-    // private methods
-    void destruct() noexcept
-    {
-        if (__handler != 0)
-        {
-            glDeleteTextures(1, &(__handler));
-        }
-    }
-
-    void move_from(gl_texture2d&& texture) noexcept
-    {
-        __handler         = texture.__handler;
-        texture.__handler = 0;
-    }
-
     void __initialize_data(const cv::Mat& img, callisto::opencv::image_type img_type);
 
 public:
+    // static methods
+    static std::unique_ptr<gl_texture2d> create_color(size_t width, size_t height);
+
+    std::unique_ptr<gl_texture2d> create_depth(size_t width, size_t height, bool stencil = true);
+
     // construct and destruct
     gl_texture2d() : __handler(0) {}
 
-    gl_texture2d(const gl_texture2d&) = delete;
+    CALLISTO_LIFETIME_REFERENCE(gl_texture2d);
 
-    gl_texture2d(gl_texture2d&& texture) noexcept { move_from(std::move(texture)); }
+    explicit gl_texture2d(GLuint handler, GLenum format)
+    {
+        __handler = handler;
+        __format  = format;
+    }
 
     explicit gl_texture2d(
         const cv::Mat&               img,
@@ -95,7 +93,14 @@ public:
         __initialize_data(holder.mat(), holder.get_image_type());
     }
 
-    ~gl_texture2d() noexcept { destruct(); }
+    ~gl_texture2d() noexcept
+    {
+        if (__handler != 0)
+        {
+            glDeleteTextures(1, &(__handler));
+            __handler = 0;
+        }
+    }
 
     // methods
     void bind() { glBindTexture(GL_TEXTURE_2D, __handler); }
@@ -135,16 +140,7 @@ public:
     // getters and setters
     GLuint get_handler() const { return __handler; }
 
-    // operators
-    gl_texture2d& operator=(const gl_texture2d&) = delete;
-
-    gl_texture2d& operator=(gl_texture2d&& texture) noexcept
-    {
-        destruct();
-        move_from(std::move(texture));
-
-        return *this;
-    }
+    GLenum get_format() const { return __format; }
 };
 
 } // namespace callisto::graphics

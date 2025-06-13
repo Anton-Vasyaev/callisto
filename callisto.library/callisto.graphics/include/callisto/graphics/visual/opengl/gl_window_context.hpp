@@ -19,6 +19,8 @@ namespace callisto::graphics
 
 class gl_monitor_context;
 
+class gl_main_context;
+
 class gl_window_context : public i_window_context
 {
     friend class gl_main_context;
@@ -39,6 +41,7 @@ private:
 
     std::shared_ptr<a_window_processor> __window_processor;
 
+    gl_main_context& __main_context;
     // data
     GLFWwindow* __window_handler = nullptr; // GLFW context
 
@@ -85,9 +88,8 @@ private:
     void __resize_processing(int width, int height);
 
     // construct and destruct
-    gl_window_context() = default;
-
     gl_window_context(
+        gl_main_context&         main_context,
         const window_options&    win_options,
         const gl_window_options& gl_win_options,
         gl_monitor_context*      monitor = nullptr
@@ -96,14 +98,7 @@ private:
 public:
     ~gl_window_context() override;
 
-    // deleted
-    gl_window_context(const gl_window_context&) = delete;
-
-    gl_window_context(gl_window_context&&) = delete;
-
-    gl_window_context& operator=(const gl_window_context&) = delete;
-
-    gl_window_context& operator=(gl_window_context&&) = delete;
+    CALLISTO_LIFETIME_REFERENCE(gl_window_context);
 
     // interface signals
     callisto::framework::signal<void(key_event)>& get_key_event_signal() override;
