@@ -7,11 +7,14 @@
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/string/build_string.hpp>
 
+#include <callisto/math/functions.hpp>
+
 #include <callisto/graphics/visual/opengl/data/gl_window_options.hpp>
 
 #include <callisto/graphics/visual/opengl/gl_window_context.hpp>
 
 namespace c_f = callisto::framework;
+namespace c_m = callisto::math;
 
 namespace callisto::graphics
 {
@@ -20,14 +23,6 @@ namespace callisto::graphics
 
 namespace
 {
-struct PRESENTS_OF_AUXILIARY_OPTIONS
-{
-    static constexpr std::string_view IMGUI = "imgui";
-
-    static constexpr std::string_view GL_MULTISAMPLING = "gl_multisampling";
-
-    static constexpr std::string_view CANVAS_MULTISAMPLING = "gl_canvas_multisampling";
-};
 
 template<typename type>
 void get_option_from_dict(
@@ -47,7 +42,7 @@ void get_option_from_dict(
     {
         CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
             "Invalid type for field \'",
-            PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI,
+            name,
             "\': ",
             find_val.type().name(),
             ". expected:",
@@ -69,23 +64,29 @@ void check_and_get_auxiliary_options(
         return;
     }
 
-    get_option_from_dict(PRESENTS_OF_AUXILIARY_OPTIONS::IMGUI, auxiliary_options, options.imgui);
+    get_option_from_dict(gl_window_options::PRESENTS::IMGUI, auxiliary_options, options.imgui);
+
+    // get and check `gl_multisampling`
     get_option_from_dict(
-        PRESENTS_OF_AUXILIARY_OPTIONS::GL_MULTISAMPLING,
+        gl_window_options::PRESENTS::GL_MULTISAMPLING,
         auxiliary_options,
         options.gl_multisampling
     );
+
+    // get and check `canvas_multisampling`
     get_option_from_dict(
-        PRESENTS_OF_AUXILIARY_OPTIONS::CANVAS_MULTISAMPLING,
+        gl_window_options::PRESENTS::CANVAS_MULTISAMPLING,
+        auxiliary_options,
         options.canvas_multisampling
     );
 }
-} // namespace
 
 void glfw_error_callback(int error, const char* description)
 {
     std::cerr << "GLFW Error, code:" << error << ", description:" << description << "\n";
 }
+
+} // namespace
 
 void gl_main_context::__init_monitors()
 {

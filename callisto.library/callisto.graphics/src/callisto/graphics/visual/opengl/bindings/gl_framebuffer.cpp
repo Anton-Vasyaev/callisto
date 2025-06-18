@@ -56,6 +56,9 @@ void gl_framebuffer::bind_color_texture(int index, gl_texture2d& texture)
     auto attachment = validate_index_and_get_attachment(index);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.get_handler(), 0);
+    // TODO
+    auto err = glGetError();
+    std::cout << "error framebuffer, bind color texture" << err << "\n;";
 }
 
 void gl_framebuffer::unbind_color_texture(int index)
@@ -92,6 +95,9 @@ void gl_framebuffer::bind_depth_texture(gl_texture2d& texture)
     }
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.get_handler(), 0);
+    // TODO
+    auto err = glGetError();
+    std::cout << "error framebuffer, bind depth texture" << err << "\n;";
 }
 
 void gl_framebuffer::unbind_depth_texture()
@@ -101,7 +107,14 @@ void gl_framebuffer::unbind_depth_texture()
 
 void gl_framebuffer::bind_color_renderbuffer(int index, gl_renderbuffer& buffer)
 {
-    if (buffer.get_format() != GL_RGB)
+    bool validate = false;
+    auto format   = buffer.get_format();
+    if (format == GL_RGB8 || format == GL_RGBA8)
+    {
+        validate = true;
+    }
+
+    if (!validate)
     {
         CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
             "invalid format of renderbuffer for framebuffer binging, code:",
@@ -113,6 +126,9 @@ void gl_framebuffer::bind_color_renderbuffer(int index, gl_renderbuffer& buffer)
 
     glBindFramebuffer(GL_FRAMEBUFFER, __handler);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, buffer.get_handler());
+    // TODO
+    auto err = glGetError();
+    std::cout << "error framebuffer, bind color" << err << "\n;";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -149,7 +165,20 @@ void gl_framebuffer::bind_depth_buffer(gl_renderbuffer& buffer)
 
     glBindFramebuffer(GL_FRAMEBUFFER, __handler);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, buffer.get_handler());
+    // TODO
+    auto err = glGetError();
+    std::cout << "error framebuffer, bind depth" << err << "\n;";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void gl_framebuffer::check()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, __handler);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::build_error_tag_message("opengl Framebuffer is not complete.");
+    }
 }
 
 } // namespace callisto::graphics

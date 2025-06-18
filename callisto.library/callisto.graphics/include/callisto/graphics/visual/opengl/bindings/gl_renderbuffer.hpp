@@ -4,6 +4,9 @@
 
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
+// todo
+#include <iostream>
+
 namespace callisto::graphics
 {
 class gl_renderbuffer
@@ -13,18 +16,28 @@ class gl_renderbuffer
     GLenum __format;
 
 public:
-    gl_renderbuffer(GLenum format, size_t width, size_t height)
+    gl_renderbuffer(GLenum format, size_t width, size_t height, int samples)
     {
         __format = format;
 
         glGenRenderbuffers(1, &__handler);
         glBindRenderbuffer(GL_RENDERBUFFER, __handler);
-        glRenderbufferStorage(
+
+        glRenderbufferStorageMultisample(
             GL_RENDERBUFFER,
+            samples,
             format,
             static_cast<GLsizei>(width),
             static_cast<GLsizei>(height)
         );
+
+        // TODO
+        auto err = glGetError();
+        if (err)
+        {
+            std::cout << "err:"
+                      << "glRenderBufferStorageMultiSample err\n";
+        }
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 

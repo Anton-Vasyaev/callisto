@@ -17,9 +17,9 @@ class gl_framebuffer
 
 public:
     // lifetime
-    gl_framebuffer() { glGenBuffers(1, &__handler); }
+    gl_framebuffer() { glGenFramebuffers(1, &__handler); }
 
-    ~gl_framebuffer() { glDeleteBuffers(1, &__handler); }
+    ~gl_framebuffer() { glDeleteFramebuffers(1, &__handler); }
 
     CALLISTO_LIFETIME_REFERENCE(gl_framebuffer);
 
@@ -37,6 +37,11 @@ public:
     void bind_color_renderbuffer(int index, gl_renderbuffer& buffer);
 
     void bind_depth_buffer(gl_renderbuffer& buffer);
+
+    void check();
+
+    // getters and setters
+    GLuint get_handler() const { return __handler; }
 };
 
 } // namespace callisto::graphics

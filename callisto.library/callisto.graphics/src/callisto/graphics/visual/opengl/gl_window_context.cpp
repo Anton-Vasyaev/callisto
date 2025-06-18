@@ -13,8 +13,8 @@
 
 #include <GLFW/glfw3native.h>
 // project
-
 #include <callisto/framework/exception.hpp>
+#include <callisto/framework/containers/singleton.hpp>
 
 #include <callisto/graphics/input/data.hpp>
 
@@ -25,6 +25,7 @@
 #include <callisto/graphics/visual/opengl/auxiliary/input_auxiliary.hpp>
 
 #include <callisto/graphics/visual/opengl/gl_monitor_context.hpp>
+#include <callisto/graphics/visual/opengl/gl_info_provider.hpp>
 
 namespace c_m = callisto::math;
 namespace c_f = callisto::framework;
@@ -37,6 +38,43 @@ namespace
 std::mutex imgui_init_mutex;
 
 bool imgui_init_flag = true;
+
+void validate_samples_param(int value, int max_samples, std::string_view param_name)
+{
+    if (value > max_samples)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
+            "invalid value of parameter \'",
+            param_name,
+            "\'. value > max samples of opengl context in this hardware: ",
+            value,
+            " > ",
+            max_samples,
+            "."
+        );
+    }
+}
+
+void validate_and_process_gl_options(gl_window_options& options)
+{
+    auto max_samples = c_f::singleton<gl_info_provider>::get_instance().get_max_samples();
+    validate_samples_param(
+        options.gl_multisampling,
+        max_samples,
+        gl_window_options::PRESENTS::GL_MULTISAMPLING
+    );
+
+    validate_samples_param(
+        options.canvas_multisampling,
+        max_samples,
+        gl_window_options::PRESENTS::CANVAS_MULTISAMPLING
+    );
+    if (options.canvas_multisampling == -1)
+    {
+        options.canvas_multisampling = max_samples;
+    }
+}
+
 } // namespace
 
 #pragma region helpers
@@ -297,6 +335,15 @@ gl_window_context::gl_window_context(
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message("error. cannot create GLFWWindow handler.");
     }
+
+    glfwMakeContextCurrent(__window_handler);
+
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("Failed to initialize glew");
+    }
 }
 
 gl_window_context::~gl_window_context()
@@ -368,30 +415,16 @@ void gl_window_context::set_processor(std::shared_ptr<a_window_processor> proces
 
 void gl_window_context::start_processing()
 {
-
-    if (__window_handler == nullptr)
-    {
-        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
-            << c_f::error_tag_message("GLFW window is not initialized");
-    }
-
     if (__window_processor == nullptr)
     {
         CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
             << c_f::error_tag_message("Window processor is not setted.");
     }
 
-    glfwMakeContextCurrent(__window_handler);
-
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK)
-    {
-        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
-            << c_f::error_tag_message("Failed to initialize glew");
-    }
-
     std::cout << "Vendor name:" << glGetString(GL_VENDOR) << "\n";
     std::cout << "Version:" << glGetString(GL_VERSION) << "\n";
+
+    validate_and_process_gl_options(__gl_win_options);
 
     // CHECK. для интеропа между GLFW и  IMGUI
     glfwSwapInterval(1);
