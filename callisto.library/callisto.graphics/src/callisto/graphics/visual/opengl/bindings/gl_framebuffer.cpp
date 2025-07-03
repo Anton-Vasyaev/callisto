@@ -6,6 +6,8 @@
 
 #include <callisto/graphics/visual/opengl/gl_info_provider.hpp>
 
+#include <callisto/graphics/visual/opengl/gl_operation_error_exception.hpp>
+
 namespace callisto::graphics
 {
 
@@ -38,6 +40,19 @@ GLenum validate_index_and_get_attachment(int index)
 
 } // namespace
 
+#pragma region construct_and_destruct
+
+gl_framebuffer::gl_framebuffer()
+{
+    CALLISTO_GRAPHICS_WRAP_GL_OPERATION(glGenFramebuffers, 1, &__handler);
+}
+
+gl_framebuffer::~gl_framebuffer() { glDeleteFramebuffers(1, &__handler); }
+
+#pragma endregion
+
+#pragma methods
+
 void gl_framebuffer::bind_color_texture(int index, gl_texture2d& texture)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, __handler);
@@ -55,10 +70,14 @@ void gl_framebuffer::bind_color_texture(int index, gl_texture2d& texture)
 
     auto attachment = validate_index_and_get_attachment(index);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.get_handler(), 0);
-    // TODO
-    auto err = glGetError();
-    std::cout << "error framebuffer, bind color texture" << err << "\n;";
+    CALLISTO_GRAPHICS_WRAP_GL_OPERATION(
+        glFramebufferTexture2D,
+        GL_FRAMEBUFFER,
+        attachment,
+        GL_TEXTURE_2D,
+        texture.get_handler(),
+        0
+    );
 }
 
 void gl_framebuffer::unbind_color_texture(int index)
@@ -94,10 +113,14 @@ void gl_framebuffer::bind_depth_texture(gl_texture2d& texture)
             );
     }
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.get_handler(), 0);
-    // TODO
-    auto err = glGetError();
-    std::cout << "error framebuffer, bind depth texture" << err << "\n;";
+    CALLISTO_GRAPHICS_WRAP_GL_OPERATION(
+        glFramebufferTexture2D,
+        GL_FRAMEBUFFER,
+        attachment,
+        GL_TEXTURE_2D,
+        texture.get_handler(),
+        0
+    );
 }
 
 void gl_framebuffer::unbind_depth_texture()
@@ -125,10 +148,15 @@ void gl_framebuffer::bind_color_renderbuffer(int index, gl_renderbuffer& buffer)
     auto attachment = validate_index_and_get_attachment(index);
 
     glBindFramebuffer(GL_FRAMEBUFFER, __handler);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, buffer.get_handler());
-    // TODO
-    auto err = glGetError();
-    std::cout << "error framebuffer, bind color" << err << "\n;";
+
+    CALLISTO_GRAPHICS_WRAP_GL_OPERATION(
+        glFramebufferRenderbuffer,
+        GL_FRAMEBUFFER,
+        attachment,
+        GL_RENDERBUFFER,
+        buffer.get_handler()
+    );
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -164,10 +192,14 @@ void gl_framebuffer::bind_depth_buffer(gl_renderbuffer& buffer)
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, __handler);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, buffer.get_handler());
-    // TODO
-    auto err = glGetError();
-    std::cout << "error framebuffer, bind depth" << err << "\n;";
+
+    CALLISTO_GRAPHICS_WRAP_GL_OPERATION(
+        glFramebufferRenderbuffer,
+        GL_FRAMEBUFFER,
+        attachment,
+        GL_RENDERBUFFER,
+        buffer.get_handler()
+    );
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -180,5 +212,7 @@ void gl_framebuffer::check()
             << c_f::build_error_tag_message("opengl Framebuffer is not complete.");
     }
 }
+
+#pragma endregion
 
 } // namespace callisto::graphics

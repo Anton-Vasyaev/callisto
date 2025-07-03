@@ -164,7 +164,7 @@ processor_info::__static_init__::__static_init__()
 
     num_logical_cpus = data.num_logical_cpus;
 
-    total_logical_cpus;
+    total_logical_cpus = data.total_logical_cpus;
 
     l1_data_cache = data.l1_data_cache;
 

@@ -16,33 +16,12 @@ class gl_renderbuffer
     GLenum __format;
 
 public:
-    gl_renderbuffer(GLenum format, size_t width, size_t height, int samples)
-    {
-        __format = format;
+    // construct and destruct
+    gl_renderbuffer(GLenum format, size_t width, size_t height, int samples);
 
-        glGenRenderbuffers(1, &__handler);
-        glBindRenderbuffer(GL_RENDERBUFFER, __handler);
+    ~gl_renderbuffer();
 
-        glRenderbufferStorageMultisample(
-            GL_RENDERBUFFER,
-            samples,
-            format,
-            static_cast<GLsizei>(width),
-            static_cast<GLsizei>(height)
-        );
-
-        // TODO
-        auto err = glGetError();
-        if (err)
-        {
-            std::cout << "err:"
-                      << "glRenderBufferStorageMultiSample err\n";
-        }
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
-
-    ~gl_renderbuffer() { glDeleteRenderbuffers(1, &__handler); }
-
+    // lifetime
     CALLISTO_LIFETIME_REFERENCE(gl_renderbuffer);
 
     // getters

@@ -17,9 +17,9 @@ class gl_framebuffer
 
 public:
     // lifetime
-    gl_framebuffer() { glGenFramebuffers(1, &__handler); }
+    gl_framebuffer();
 
-    ~gl_framebuffer() { glDeleteFramebuffers(1, &__handler); }
+    ~gl_framebuffer();
 
     CALLISTO_LIFETIME_REFERENCE(gl_framebuffer);
 

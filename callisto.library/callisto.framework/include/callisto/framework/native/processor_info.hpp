@@ -5,6 +5,8 @@
 // project
 #include <callisto/framework/native/platform_detect.h>
 
+#include <callisto/framework/types/singleton.hpp>
+
 namespace callisto::framework
 {
 
