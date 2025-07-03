@@ -2,21 +2,26 @@
 
 // project
 #include <callisto/framework/types/lifetime.hpp>
+#include <callisto/framework/types/singleton.hpp>
 
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics
 {
 
-class gl_info_provider
+class gl_info_provider : public callisto::framework::singleton<gl_info_provider>
 {
+    friend class singleton<gl_info_provider>;
+
     GLint __max_color_attachments;
 
     GLint __max_samples;
 
+protected:
+    gl_info_provider();
+
 public:
     // lifetime
-    gl_info_provider();
 
     CALLISTO_LIFETIME_REFERENCE(gl_info_provider);
 

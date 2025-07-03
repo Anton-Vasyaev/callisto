@@ -2,8 +2,6 @@
 #include <callisto/graphics/visual/opengl/bindings/gl_framebuffer.hpp>
 
 // project
-#include <callisto/framework/containers/singleton.hpp>
-
 #include <callisto/graphics/visual/opengl/gl_info_provider.hpp>
 
 #include <callisto/graphics/visual/opengl/gl_operation_error_exception.hpp>

@@ -14,7 +14,7 @@
 #include <GLFW/glfw3native.h>
 // project
 #include <callisto/framework/exception.hpp>
-#include <callisto/framework/containers/singleton.hpp>
+#include <callisto/framework/types/singleton.hpp>
 
 #include <callisto/graphics/input/data.hpp>
 
@@ -57,7 +57,7 @@ void validate_samples_param(int value, int max_samples, std::string_view param_n
 
 void validate_and_process_gl_options(gl_window_options& options)
 {
-    auto max_samples = c_f::singleton<gl_info_provider>::get_instance().get_max_samples();
+    auto max_samples = gl_info_provider::get_instance().get_max_samples();
     validate_samples_param(
         options.gl_multisampling,
         max_samples,

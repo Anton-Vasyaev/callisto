@@ -7,9 +7,11 @@ template<typename type>
 class singleton
 {
 
+protected:
+    singleton() = default;
+
 public:
     // lifetime
-    singleton() = delete;
 
     singleton(const singleton&) = delete;
 
