@@ -30,14 +30,14 @@ private:
 
     void __copy_from(const mutable_array& array) noexcept
     {
-        std::copy_n(array.data_array, array.mutable_size, __data_array);
-        __mutable_size = array.mutable_size;
+        std::copy_n(array.__data_array, array.__mutable_size, __data_array);
+        __mutable_size = array.__mutable_size;
     }
 
     void __move_from(mutable_array&& array) noexcept
     {
         __copy_from(array);
-        array.mutable_size = 0;
+        array.__mutable_size = 0;
     }
 
 public:

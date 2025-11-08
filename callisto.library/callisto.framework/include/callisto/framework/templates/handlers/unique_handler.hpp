@@ -73,7 +73,7 @@ public:
     {
         this->destroy();
         this->data    = data;
-        this->hasData = true;
+        this->has_data = true;
     }
 
     data_type release()

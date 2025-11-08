@@ -49,7 +49,7 @@ gl_framebuffer::~gl_framebuffer() { glDeleteFramebuffers(1, &__handler); }
 
 #pragma endregion
 
-#pragma methods
+#pragma region methods
 
 void gl_framebuffer::bind_color_texture(int index, gl_texture2d& texture)
 {

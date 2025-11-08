@@ -4,12 +4,14 @@
 #include <cstdint>
 #include <limits>
 #include <vector>
+// project
+#include <callisto/framework/types/type_traits/enum_limits.hpp>
 
 namespace callisto::framework
 {
 
 /// @brief Provides fast access by key in the form of an enum.
-///        For enum must declare numeric_limits<_enum_type> class information with constexpr methods
+///        For enum must declare enum_limits<_enum_type> class information with constexpr methods
 ///        ::lowest() and ::max() and field is_specialized set to true.
 /// @tparam _enum_type  Type of enum key.
 /// @tparam _store_type Type of stored value.
@@ -25,10 +27,10 @@ public:
 
 private:
     static constexpr int64_t low_value
-        = static_cast<int64_t>(std::numeric_limits<enum_type>::lowest());
+        = static_cast<int64_t>(std::enum_limits<enum_type>::lowest());
 
     static constexpr int64_t max_value
-        = static_cast<int64_t>(std::numeric_limits<enum_type>::max());
+        = static_cast<int64_t>(std::enum_limits<enum_type>::max());
 
     static constexpr int64_t offset = -low_value;
 
@@ -44,12 +46,11 @@ public:
     /// @brief Constructs a new object of @ref enum_map
     enum_map()
     {
-        /*
         static_assert(
-            std::numeric_limits<enum_type>::is_specialized,
-            "need specialization std::numeric_limits for enum"
+            std::enum_limits<enum_type>::is_specialized,
+            "need specialization std::enum_limits for enum"
         );
-        */
+        
 
         __data.resize(size);
     }
