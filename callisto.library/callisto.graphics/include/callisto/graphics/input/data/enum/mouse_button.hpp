@@ -1,9 +1,12 @@
 #pragma once
 
+// std
+#include <cstdint>
+
 namespace callisto::graphics
 {
 
-enum class mouse_button
+enum class mouse_button : std::int8_t
 {
     uknown = -1,
     left   = 0,
@@ -16,7 +19,7 @@ enum class mouse_button
     _8     = 7
 };
 
-inline constexpr const char* mouse_button_str(mouse_button button)
+constexpr const char* mouse_button_str(mouse_button button)
 {
     switch (button)
     {

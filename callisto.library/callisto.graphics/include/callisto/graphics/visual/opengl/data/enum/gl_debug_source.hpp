@@ -1,11 +1,13 @@
 #pragma once
 
+// std
+#include <cstdint>
 // project
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics
 {
-enum class gl_debug_source
+enum class gl_debug_source : std::uint8_t
 {
     unknown,
     api,
@@ -16,7 +18,7 @@ enum class gl_debug_source
     other
 };
 
-inline constexpr gl_debug_source gl_debug_source_from_original(GLenum value) noexcept
+constexpr gl_debug_source gl_debug_source_from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -31,7 +33,7 @@ inline constexpr gl_debug_source gl_debug_source_from_original(GLenum value) noe
     }
 }
 
-inline constexpr GLenum gl_debug_source_to_original(gl_debug_source debug_source) noexcept
+constexpr GLenum gl_debug_source_to_original(gl_debug_source debug_source) noexcept
 {
     switch (debug_source)
     {
@@ -46,7 +48,7 @@ inline constexpr GLenum gl_debug_source_to_original(gl_debug_source debug_source
     }
 }
 
-inline constexpr const char* gl_debug_source_str(gl_debug_source debug_source) noexcept
+constexpr const char* gl_debug_source_str(gl_debug_source debug_source) noexcept
 {
     switch (debug_source)
     {

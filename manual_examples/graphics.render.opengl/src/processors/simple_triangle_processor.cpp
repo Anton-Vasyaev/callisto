@@ -79,7 +79,7 @@ void simple_triangle_processor::init(c_g::i_window_context& context)
 
     _shader_program = c_g::gl_shader_program(vertex_shader, fragment_shader);
 
-    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stagea");
+    _rotate_stage_location = _shader_program.get_uniform_location("rotate_stage");
     _offset_location       = _shader_program.get_uniform_location("offset");
 
     auto data = std::vector<float> { 0.0f, 0.5f, 1.0f,  0.0f,  0.0f, 0.5f, -0.5f, 0.0f,
@@ -131,7 +131,7 @@ void simple_triangle_processor::process(c_g::i_window_context& context)
 
     _shader_program.use();
 
-    _rotate_stage_location.uniform_1f(_rotate_stage);
+    _rotate_stage_location.uniform_1f(_rotate_stage.value());
     _offset_location.uniform_2f(_offset_position);
 
     glBindVertexArray(_vao);
@@ -157,8 +157,8 @@ void simple_triangle_processor::on_mouse_button_event(c_g::mouse_button_event da
 
 void simple_triangle_processor::on_cursor_event(c_g::cursor_event data) {}
 
-void simple_triangle_processor::on_change_position(c_m::point2i position) {}
+void simple_triangle_processor::on_change_position(const c_m::point2i& position) {}
 
-void simple_triangle_processor::on_resize(c_m::size2i size) {}
+void simple_triangle_processor::on_resize(const c_m::size2i& size) {}
 
 #pragma endregion

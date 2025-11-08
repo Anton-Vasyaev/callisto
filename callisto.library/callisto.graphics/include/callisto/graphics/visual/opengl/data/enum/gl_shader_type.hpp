@@ -1,18 +1,21 @@
 #pragma once
 
+// std
+#include <cstdint>
+// project
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics
 {
 
-enum class gl_shader_type
+enum class gl_shader_type : std::uint8_t
 {
     unknown,
     vertex,
     fragment
 };
 
-inline constexpr gl_shader_type gl_shader_type_from_original(GLenum value) noexcept
+constexpr gl_shader_type gl_shader_type_from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -22,7 +25,7 @@ inline constexpr gl_shader_type gl_shader_type_from_original(GLenum value) noexc
     }
 }
 
-inline constexpr GLenum gl_shader_type_to_original(gl_shader_type shader_type) noexcept
+constexpr GLenum gl_shader_type_to_original(gl_shader_type shader_type) noexcept
 {
     switch (shader_type)
     {
@@ -32,7 +35,7 @@ inline constexpr GLenum gl_shader_type_to_original(gl_shader_type shader_type) n
     }
 }
 
-inline constexpr const char* gl_shader_type_str(gl_shader_type shader_type) noexcept
+constexpr const char* gl_shader_type_str(gl_shader_type shader_type) noexcept
 {
     switch (shader_type)
     {

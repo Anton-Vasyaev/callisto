@@ -7,8 +7,6 @@
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/types/type_traits.hpp>
 
-namespace c_f = callisto::framework;
-
 namespace callisto::math
 {
 
@@ -36,16 +34,20 @@ struct sequence_metrics
     template<typename sequence_type_1, typename sequence_type_2>
     static auto normalize_function(const sequence_type_1& f_func, const sequence_type_2& g_func)
     {
+        namespace c_f = callisto::framework;
+
         using value_type
-            = c_f::senior_conversion_t<sequence_type_1::value_type, sequence_type_2::value_type>;
+            = c_f::senior_conversion_t<typename sequence_type_1::value_type, typename sequence_type_2::value_type>;
 
         std::vector<value_type> g_new;
         g_new.reserve(g_func.size());
 
-        double f_mean, f_var;
+        double f_mean;
+        double f_var;
         sequence_metrics::mean_var(f_func, &f_mean, &f_var);
 
-        double g_mean, g_var;
+        double g_mean;
+        double g_var;
         sequence_metrics::mean_var(g_func, &g_mean, &g_var);
 
         auto alpha = g_var / f_var * f_mean - g_mean;

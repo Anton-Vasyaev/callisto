@@ -3,27 +3,25 @@
 // 3rd party
 #include <callisto/framework/exception.hpp>
 
+namespace c_f = callisto::framework;
+
 namespace callisto::opencv
 {
 
-void match_image_type(const cv::Mat& mat, image_type img_type, const char* function_name)
+void match_image_type(const cv::Mat& mat, image_type img_type)
 {
     auto mat_channels      = type_channels(mat.type());
     auto img_type_channels = image_type_channels(img_type);
 
     if (mat_channels != img_type_channels)
     {
-        auto error = c_f::argument_exception();
-        error << c_f::error_tag_message(c_f::_bs(
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
             "img type channels != mat channels:",
             img_type_channels,
             " != ",
             mat_channels,
             "."
         ));
-        if (function_name != nullptr) { error << c_f::error_tag_function_name(function_name); }
-
-        throw error;
     }
 }
 
@@ -38,7 +36,7 @@ image_type default_image_type(const cv::Mat& mat)
         case 4 : return image_type::bgra;
 
         default :
-            throw c_f::argument_exception() << c_f::error_tag_message(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
                 c_f::_bs("not exist default image_type for cv::Mat channels:", channels)
             );
     }

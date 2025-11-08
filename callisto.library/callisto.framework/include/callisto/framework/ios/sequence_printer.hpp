@@ -13,12 +13,12 @@ class sequence_printer
 private:
     const type& _sequential;
 
+public:
     sequence_printer() = delete;
 
-public:
     /// @brief Creates @see sequence_printer.
     /// @param sequential sequence.
-    sequence_printer(const type& sequential) : _sequential(sequential) {}
+    explicit sequence_printer(const type& sequential) : _sequential(sequential) {}
 
     /// @brief Operator << of ostream and sequence_printer.
     /// @tparam ostream_type Data type of ostream.

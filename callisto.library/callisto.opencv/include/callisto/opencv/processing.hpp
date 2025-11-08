@@ -9,11 +9,6 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 void resize_frame(
     cv::InputArray  src,
     cv::OutputArray dst,
@@ -21,60 +16,60 @@ void resize_frame(
     int             interpolation = cv::INTER_AREA
 );
 
-template<typename rectangle_type>
-cv::Mat roi(cv::Mat& img, c_m::rectangle<rectangle_type> rect)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::rectangle_i& rect)
 {
-    auto x = (int)rect.position.x;
-    auto y = (int)rect.position.y;
-    auto w = (int)rect.size.width;
-    auto h = (int)rect.size.height;
+    auto x = rect.x;
+    auto y = rect.y;
+    auto w = rect.width;
+    auto h = rect.height;
 
     return img({ x, y, w, h });
 }
 
 template<typename rectangle_type>
-cv::Mat norm_roi(cv::Mat& img, c_m::rectangle<rectangle_type> rect)
+cv::Mat norm_roi(cv::Mat& img, callisto::math::rectangle<rectangle_type> rect)
 {
     auto size = mat_size(img);
 
     rect.position *= size;
     rect.size *= size;
 
-    return roi(img, rect);
+    return roi(img, rect.template as<int32_t>());
 }
 
-template<typename lt_type, typename rb_type>
-cv::Mat roi(cv::Mat& img, c_m::alg_tuple2<lt_type> left_top, c_m::alg_tuple2<rb_type> right_bottom)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::point2i& left_top, const callisto::math::point2i& right_bottom)
 {
-    auto l = (int)left_top.x;
-    auto t = (int)left_top.y;
+    auto l = left_top.x;
+    auto t = left_top.y;
 
-    auto r = (int)right_bottom.x;
-    auto b = (int)right_bottom.y;
+    auto r = right_bottom.x;
+    auto b = right_bottom.y;
 
     return img({ t, b }, { l, r });
 }
 
 template<typename lt_type, typename rb_type>
-cv::Mat
-norm_roi(cv::Mat& img, c_m::alg_tuple2<lt_type> left_top, c_m::alg_tuple2<rb_type> right_bottom)
+cv::Mat norm_roi(
+    cv::Mat&                            img,
+    callisto::math::alg_tuple2<lt_type> left_top,
+    callisto::math::alg_tuple2<rb_type> right_bottom
+)
 {
     auto size = mat_size(img);
 
     left_top *= size;
     right_bottom *= size;
 
-    return roi(img, left_top, right_bottom);
+    return roi(img, left_top.template as<int32_t>(), right_bottom.template as<int32_t>());
 }
 
-template<typename box_type>
-cv::Mat roi(cv::Mat& img, c_m::bbox2<box_type> box)
+inline cv::Mat roi(cv::Mat& img, const callisto::math::bbox2i& box)
 {
     return roi(img, box.left_top(), box.right_bottom());
 }
 
 template<typename box_type>
-cv::Mat norm_roi(cv::Mat& img, c_m::bbox2<box_type> box)
+cv::Mat norm_roi(cv::Mat& img, callisto::math::bbox2<box_type> box)
 {
     return norm_roi(img, box.left_top(), box.right_bottom());
 }

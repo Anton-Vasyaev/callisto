@@ -6,11 +6,11 @@ namespace callisto::opencv
 
 void hsv2rgb(double h, double s, double v, double& r, double& g, double& b)
 {
-    double h_i = std::fmod(h / 60.0, 6.0);
+    const double h_i = std::fmod(h / 60.0, 6.0);
 
     double v_min = (100 - s) * v / 100.0;
 
-    double a = (v - v_min) * (std::fmod(h, 60.0) / 60.0);
+    const double a = (v - v_min) * (std::fmod(h, 60.0) / 60.0);
 
     double v_inc = v_min + a;
     double v_dec = v - a;

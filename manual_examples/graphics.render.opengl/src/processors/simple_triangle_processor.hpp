@@ -1,6 +1,7 @@
 // 3rd party
 #include <glm/glm.hpp>
 // project
+// #include <callisto/framework/types/lifetime.hpp>
 #include <callisto/framework/utility/delta_timer.hpp>
 #include <callisto/framework/containers.hpp>
 
@@ -36,6 +37,8 @@ class simple_triangle_processor : public c_g::a_window_processor
     void process_control();
 
 public:
+    // CALLISTO_LIFETIME_REFERENCE(simple_triangle_processor);
+
     // construct and destruct
     inline simple_triangle_processor() {}
 
@@ -52,7 +55,7 @@ public:
 
     virtual void on_cursor_event(c_g::cursor_event data) override;
 
-    virtual void on_change_position(c_m::point2i position) override;
+    virtual void on_change_position(const c_m::point2i& position) override;
 
-    virtual void on_resize(c_m::size2i size) override;
+    virtual void on_resize(const c_m::size2i& size) override;
 };

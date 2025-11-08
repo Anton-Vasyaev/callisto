@@ -2,11 +2,14 @@
 
 // std
 #include <limits>
+#include <cstdint>
+// project
+#include <callisto/framework/types/type_traits/enum_limits.hpp>
 
 namespace callisto::graphics
 {
 
-enum class key_type
+enum class key_type : std::uint16_t
 {
     unknown       = 0,
     space         = 32,
@@ -133,7 +136,7 @@ enum class key_type
     menu          = 348,
 };
 
-inline constexpr const char* key_type_str(key_type key)
+constexpr const char* key_type_str(key_type key)
 {
     switch (key)
     {
@@ -265,25 +268,24 @@ inline constexpr const char* key_type_str(key_type key)
 
         default : return "unknown";
     }
+};
 }
 
-} // namespace callisto::graphics
-
-namespace std
+namespace callisto::framework
 {
 
 template<>
-struct numeric_limits<callisto::graphics::key_type>
+struct enum_limits<callisto::graphics::key_type>
 {
-    using type = callisto::graphics::key_type;
-
     static constexpr bool is_specialized = true;
 
-    inline static constexpr int min() { return static_cast<int>(type::unknown); }
+    static constexpr int min_value() { 
+        return static_cast<int>(callisto::graphics::key_type::unknown);
+    }
 
-    inline static constexpr int lowest() { return static_cast<int>(type::unknown); }
-
-    inline static constexpr int max() { return static_cast<int>(type::menu); }
+    static constexpr int max_value() { 
+        return static_cast<int>(callisto::graphics::key_type::menu);
+    }
 };
 
 } // namespace std

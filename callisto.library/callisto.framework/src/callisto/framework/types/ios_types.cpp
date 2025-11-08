@@ -10,11 +10,10 @@ std::ostream& ios_types<char>::std_cerr() { return std::cerr; }
 
 std::istream& ios_types<char>::std_cin() { return std::cin; }
 
-
 std::wostream& ios_types<wchar_t>::std_cout() { return std::wcout; }
 
 std::wostream& ios_types<wchar_t>::std_cerr() { return std::wcerr; }
 
 std::wistream& ios_types<wchar_t>::std_cin() { return std::wcin; }
 
-}
+} // namespace callisto::framework

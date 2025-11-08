@@ -1,11 +1,14 @@
 #pragma once
 
+// std
+#include <cstdint>
+// project
 #include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
 
 namespace callisto::graphics
 {
 
-enum class gl_debug_type
+enum class gl_debug_type : std::uint8_t
 {
     unknown,
     error,
@@ -19,7 +22,7 @@ enum class gl_debug_type
     other
 };
 
-inline constexpr gl_debug_type gl_debug_type_from_original(GLenum value) noexcept
+constexpr gl_debug_type gl_debug_type_from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -37,7 +40,7 @@ inline constexpr gl_debug_type gl_debug_type_from_original(GLenum value) noexcep
     }
 }
 
-inline constexpr GLenum gl_debug_type_to_original(gl_debug_type debug_type) noexcept
+constexpr GLenum gl_debug_type_to_original(gl_debug_type debug_type) noexcept
 {
     switch (debug_type)
     {
@@ -55,7 +58,7 @@ inline constexpr GLenum gl_debug_type_to_original(gl_debug_type debug_type) noex
     }
 }
 
-inline constexpr const char* gl_debug_type_str(gl_debug_type debug_type) noexcept
+constexpr const char* gl_debug_type_str(gl_debug_type debug_type) noexcept
 {
     switch (debug_type)
     {

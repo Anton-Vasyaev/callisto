@@ -13,28 +13,21 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 class gl_shader
 {
-    static constexpr size_t INFO_LOG_SIZE = 1024;
+    GLuint __handler;
 
-    GLuint handler;
-
-    inline void move_from(gl_shader&& shader)
+    void move_from(gl_shader&& shader) noexcept
     {
-        this->handler  = shader.handler;
-        shader.handler = 0;
+        __handler        = shader.__handler;
+        shader.__handler = 0;
     }
 
-    inline void destruct()
+    void destruct() noexcept
     {
-        if (this->handler != 0)
+        if (__handler != 0)
         {
-            glDeleteShader(this->handler);
+            glDeleteShader(__handler);
         }
     }
 
@@ -44,12 +37,14 @@ public:
     template<typename str_type>
     static gl_shader load_from_file(str_type& shader_path, gl_shader_type shader_type)
     {
+        namespace c_f = callisto::framework;
+
         std::fstream file(shader_path);
 
         if (!file.is_open())
         {
-            throw c_f::exception() << c_f::error_tag_message_w(
-                c_f::_wbs("failed to open file with shader:", shader_path)
+            CALLISTO_THROW_EXCEPTION(c_f::not_find_exception()
+            ) << c_f::error_tag_message_w(c_f::_wbs("failed to open file with shader:", shader_path)
             );
         }
         std::stringstream ss;
@@ -66,22 +61,22 @@ public:
     gl_shader& operator=(const gl_shader&) = delete;
 
     // construct and destruct
-    gl_shader() : handler(0) {}
+    gl_shader() : __handler(0) {}
 
-    inline gl_shader(gl_shader&& shader) { this->move_from(std::move(shader)); }
+    gl_shader(gl_shader&& shader) noexcept { move_from(std::move(shader)); }
 
     gl_shader(const char* source, gl_shader_type shader_type);
 
-    inline ~gl_shader() { this->destruct(); }
+    ~gl_shader() noexcept { destruct(); }
 
     // getters and setters
-    inline GLuint get_handler() const { return this->handler; }
+    GLuint get_handler() const { return __handler; }
 
     // operators
-    inline gl_shader& operator=(gl_shader&& shader)
+    gl_shader& operator=(gl_shader&& shader) noexcept
     {
-        this->destruct();
-        this->move_from(std::move(shader));
+        destruct();
+        move_from(std::move(shader));
 
         return *this;
     }

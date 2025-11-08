@@ -11,22 +11,19 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 struct validation
 {
 
     template<typename string_type_1 = const char*, typename string_type_2 = const char*>
-    inline static void is_equal_dimensions(
+    static void is_equal_dimensions(
         const cv::Mat&       mat_1,
         const cv::Mat&       mat_2,
         const string_type_1& argument_name_1 = "m1",
         const string_type_2& argument_name_2 = "m2"
     )
     {
+        namespace c_f = callisto::framework;
+
         auto w1 = mat_1.cols;
         auto h1 = mat_1.rows;
         auto c1 = mat_channels(mat_1);
@@ -37,7 +34,7 @@ struct validation
 
         if (w1 != w2 || h1 != h2 || c1 != c2)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "dimensions of \'",
                 argument_name_1,
                 "\' and \'",
@@ -61,13 +58,15 @@ struct validation
     }
 
     template<typename string_type_1 = const char*, typename string_type_2 = const char*>
-    inline static void is_equal_sizes(
+    static void is_equal_sizes(
         const cv::Mat&       mat_1,
         const cv::Mat&       mat_2,
         const string_type_1& argument_name_1 = "m1",
         const string_type_2& argument_name_2 = "m2"
     )
     {
+        namespace c_f = callisto::framework;
+
         auto w1 = mat_1.cols;
         auto h1 = mat_1.rows;
 
@@ -76,7 +75,7 @@ struct validation
 
         if (w1 != w2 || h1 != h2)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "sizes of \'",
                 argument_name_1,
                 "\' and \'",
@@ -96,33 +95,37 @@ struct validation
     }
 
     template<typename string_type = const char*>
-    inline static void
+    static void
     is_equal_channels(const cv::Mat& mat, int channels, const string_type& argument_name = "m")
     {
+        namespace c_f = callisto::framework;
+
         auto mat_c = mat_channels(mat);
 
         if (channels != mat_c)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(
                 c_f::_bs("channels of mat \'", argument_name, "\' != ", channels, ": ", mat_c, ".")
             );
         }
     }
 
     template<typename string_type_1 = const char*, typename string_type_2 = const char*>
-    inline static void is_equal_channels(
+    static void is_equal_channels(
         const cv::Mat&       mat1,
         const cv::Mat&       mat2,
         const string_type_1& argument_name_1 = "m1",
         const string_type_2& argument_name_2 = "m2"
     )
     {
+        namespace c_f = callisto::framework;
+
         auto mat1_channels = mat_channels(mat1);
         auto mat2_channels = mat_channels(mat2);
 
         if (mat1_channels != mat2_channels)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "channels in mats \'",
                 argument_name_1,
                 "\' and \'",
@@ -138,16 +141,18 @@ struct validation
 
     template<typename string_type = const char*>
     static void is_numeric_type(
-        const cv::Mat&     mat,
-        c_f::numeric_type  num_type,
-        const string_type& argument_name = "m"
+        const cv::Mat&                    mat,
+        callisto::framework::numeric_type num_type,
+        const string_type&                argument_name = "m"
     )
     {
+        namespace c_f = callisto::framework;
+
         auto mat_num_type = mat_numeric_type(mat);
 
         if (mat_num_type != num_type)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "numeric type of mat \'",
                 argument_name,
                 "\' != ",
@@ -167,9 +172,11 @@ struct validation
         const string_type_2& argument_name_2 = "m2"
     )
     {
+        namespace c_f = callisto::framework;
+
         if (mat1.cols < mat2.cols || mat1.rows < mat2.rows)
         {
-            throw c_f::argument_exception() << c_f::error_tag_message(c_f::_bs(
+            CALLISTO_THROW_EXCEPTION(c_f::runtime_exception()) << c_f::error_tag_message(c_f::_bs(
                 "size of \'",
                 argument_name_1,
                 "\' (",

@@ -1,9 +1,12 @@
 #pragma once
 
+// std
+#include <cstdint>
+
 namespace callisto::graphics
 {
 
-enum class window_mode
+enum class window_mode : std::uint8_t
 {
     unknown,
     fullscreen,

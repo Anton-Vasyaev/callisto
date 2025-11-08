@@ -1,127 +1,103 @@
-#ifndef CALLISTO_FRAMEWORK_UNIQUE_SCOPE_HANDLER_HPP
-#define CALLISTO_FRAMEWORK_UNIQUE_SCOPE_HANDLER_HPP
+#pragma once
 
 // std
 #include <utility>
 // project
 #include "default_disposer.hpp"
 
-
 namespace callisto::framework
 {
-    template<
-        typename _data_type, 
-        typename _disposer_type=default_disposer<_data_type>>
-    class unique_handler
+template<typename _data_type, typename _disposer_type = default_disposer<_data_type>>
+class unique_handler
+{
+private:
+    using data_type = _data_type;
+
+    using disposer_type = _disposer_type;
+
+    bool has_data = false;
+
+    data_type data;
+
+    disposer_type disposer;
+
+#pragma region private_methods
+
+    void destroy() noexcept
     {
-    private:
-        using data_type = _data_type;
-
-        using disposer_type = _disposer_type;
-
-
-        bool has_data = false;
-
-        data_type data;
-
-        disposer_type disposer;
-
-        #pragma region private_methods
-
-        inline void destroy()
+        if (this->has_data)
         {
-            if(this->has_data)
-            {
-                this->disposer(this->data);
-                this->has_data = false;
-            }
-        }
-
-        inline void move_from_other(
-            unique_handler&& other_handler
-        )
-        {
-            this->destroy();
-            this->disposer = other_handler.disposer;
-            this->data = other_handler.data;
-            this->has_data = other_handler.has_data;
-            other_handler.has_data = false;
-        }
-
-        #pragma endregion
-
-    public:
-        #pragma region construct_and_destruct
-
-        unique_handler() { }
-
-        ~unique_handler()
-        {
-            this->destroy();
-        }
-
-        unique_handler(
-            data_type data
-        ) 
-        { 
-            this->data = data;
-            this->has_data = true;
-        }
-
-        unique_handler(
-            const unique_handler&
-        ) = delete;
-
-        unique_handler(
-            unique_handler&& other_handler
-        )
-        {
-            this->move_from_other(std::move(other_handler));
-        }
-
-        #pragma endregion
-
-
-        #pragma region methods
-
-        void dispose() { this->destroy(); }
-
-        void reset(data_type data)
-        {
-            this->destroy();
-            this->data = data;
-            this->hasData = true;
-        }
-
-        data_type release()
-        {
-            auto release_data = this->data;
+            this->disposer(this->data);
             this->has_data = false;
-            return release_data;
         }
+    }
 
-        #pragma endregion
+    void move_from_other(unique_handler&& other_handler) noexcept
+    {
+        this->destroy();
+        this->disposer         = other_handler.disposer;
+        this->data             = other_handler.data;
+        this->has_data         = other_handler.has_data;
+        other_handler.has_data = false;
+    }
 
+#pragma endregion
 
-        #pragma region operators
+public:
+#pragma region construct_and_destruct
 
-        void operator=(unique_handler&) = delete;
+    unique_handler() = default;
 
-        void operator=(
-            unique_handler&& other_handler
-        )
-        {
-            this->move_from_other(std::move(other_handler));
-        }
+    ~unique_handler() { this->destroy(); }
 
-        #pragma endregion
+    explicit unique_handler(data_type data)
+    {
+        this->data     = data;
+        this->has_data = true;
+    }
 
+    unique_handler(const unique_handler&) = delete;
 
-        #pragma region getters_and_setters
+    unique_handler(unique_handler&& other_handler) noexcept
+    {
+        this->move_from_other(std::move(other_handler));
+    }
 
-        #pragma endregion
-    };
-}
+#pragma endregion
 
+#pragma region methods
 
-#endif
+    void dispose() { this->destroy(); }
+
+    void reset(data_type data)
+    {
+        this->destroy();
+        this->data    = data;
+        this->has_data = true;
+    }
+
+    data_type release()
+    {
+        auto release_data = this->data;
+        this->has_data    = false;
+        return release_data;
+    }
+
+#pragma endregion
+
+#pragma region operators
+
+    void operator=(unique_handler&) = delete;
+
+    unique_handler& operator=(unique_handler&& other_handler) noexcept
+    {
+        this->move_from_other(std::move(other_handler));
+    }
+
+#pragma endregion
+
+#pragma region getters_and_setters
+
+#pragma endregion
+};
+} // namespace callisto::framework

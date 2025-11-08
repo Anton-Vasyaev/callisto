@@ -8,57 +8,52 @@
 namespace callisto::math
 {
 
-namespace
-{
-    namespace c_f = callisto::framework;
-}
-
 /// @brief Provides automatically value looping on assignment.
 /// @tparam _value_type Arithmetic data type of looped value.
-template<c_f::concept_arithmetic _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 class value_looper
 {
 public:
     using value_type = _value_type;
 
 private:
-    value_type _value;
-    
-    value_type _start;
-    
-    value_type _size;
+    value_type __value;
 
-    constexpr inline void set_value(value_type value)
+    value_type __start;
+
+    value_type __size;
+
+    constexpr void __set_value(value_type value)
     {
-        auto mod_res = tmod(value, _size);
-        _value = mod_res < 0 ? _size - mod_res : mod_res;
+        value        = value - __start;
+        auto mod_res = tmod(value, __size);
+        __value      = mod_res > 0.0 ? __start + mod_res : __start + __size + mod_res;
     }
+
 public:
-    constexpr inline value_looper() { }
+    constexpr value_looper() = default;
 
     /// @brief Constructs a new value looper.
     /// @param value Loop value.
     /// @param start Start of loop.
     /// @param end End of loop.
-    constexpr inline value_looper(
-        value_type value,
-        value_type start,
-        value_type end
-    )
+    constexpr value_looper(value_type value, value_type start, value_type end)
     {
-        _value = value;
-        _start = start;
-        _size = end - start;
+        __value = value;
+        __start = start;
+        __size  = end - start;
     }
 
-        /// @brief operator=
+    constexpr value_type value() const noexcept { return __value; }
+
+    /// @brief operator=
     /// @tparam other_value_type
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    constexpr inline value_looper& operator=(other_value_type v)
+    constexpr value_looper& operator=(other_value_type v)
     {
-        set_value(v);
+        __set_value(v);
 
         return *this;
     }
@@ -68,9 +63,9 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    constexpr inline value_looper& operator+=(other_value_type v)
+    constexpr value_looper& operator+=(other_value_type v)
     {
-        set_value(_value + v);
+        __set_value(__value + v);
 
         return *this;
     }
@@ -80,9 +75,9 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    constexpr inline value_looper& operator-=(other_value_type v)
+    constexpr value_looper& operator-=(other_value_type v)
     {
-        set_value(_value - v);
+        __set_value(__value - v);
 
         return *this;
     }
@@ -92,9 +87,9 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    constexpr inline value_looper& operator*=(other_value_type v)
+    constexpr value_looper& operator*=(other_value_type v)
     {
-        set_value(_value * v);
+        __set_value(__value * v);
 
         return *this;
     }
@@ -104,16 +99,12 @@ public:
     /// @param v Value.
     /// @return value_looper&
     template<typename other_value_type>
-    constexpr inline value_looper& operator/=(other_value_type v)
+    constexpr value_looper& operator/=(other_value_type v)
     {
-        set_value(_value / v);
+        __set_value(__value / v);
 
         return *this;
     }
-
-    /// @brief casting operator to @ref value_type.
-    constexpr inline operator value_type() const { return _value; }
 };
 
-
-}
+} // namespace callisto::math

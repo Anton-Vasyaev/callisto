@@ -9,20 +9,15 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 inline static font_symbol_metrics create_metrics_from_freetype(FT_Glyph_Metrics metrics)
 {
-    float hori_bearing_x = metrics.horiBearingX / 64.0;
-    float hori_bearing_y = metrics.horiBearingY / 64.0;
-    float hori_advance   = metrics.horiAdvance / 64.0;
+    const float hori_bearing_x = static_cast<float>(metrics.horiBearingX) / 64.0F;
+    const float hori_bearing_y = static_cast<float>(metrics.horiBearingY) / 64.0F;
+    const float hori_advance   = static_cast<float>(metrics.horiAdvance) / 64.0F;
 
-    float vert_bearing_x = metrics.vertBearingX / 64.0;
-    float vert_bearing_y = metrics.vertBearingY / 64.0;
-    float vert_advance   = metrics.vertAdvance / 64.0;
+    const float vert_bearing_x = static_cast<float>(metrics.vertBearingX) / 64.0F;
+    const float vert_bearing_y = static_cast<float>(metrics.vertBearingY) / 64.0F;
+    const float vert_advance   = static_cast<float>(metrics.vertAdvance) / 64.0F;
 
     return { hori_bearing_x, hori_bearing_y, hori_advance, vert_bearing_x,
              vert_bearing_y, vert_advance,   true };

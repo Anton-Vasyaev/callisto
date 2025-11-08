@@ -18,7 +18,7 @@ TEST(framework_ios, table_printer_placeholder_test)
     auto table_printer = c_f::wtable_printer {
         r1,
         r2,
-        {"mars", "sosiska", 512, "kaban", "pig", 15.14f, "city"}
+        c_f::wtable_printer_row {"mars", "sosiska", 512, "kaban", "pig", 15.14F, "city"}
     };
 
     table_printer.append_row(std::move(c_f::wtable_printer_row(L"adolf", 5, L"rudolf", 243, L"|%|"))
@@ -26,7 +26,12 @@ TEST(framework_ios, table_printer_placeholder_test)
     table_printer.append_row(std::move(c_f::wtable_printer_row()));
     table_printer.append_row(std::move(c_f::wtable_printer_row("jonny")));
 
-    table_printer.append_row({ "maslo", "apple", 1023, 5.05, "ekaterinburg" });
+    table_printer.append_row(
+        c_f::wtable_printer_row { "maslo", "apple", 1023, 5.05, "ekaterinburg" }
+    );
 
-    for (auto& line : table_printer.get_print_lines(4)) { c_f::gtest_console::wprint_line(line); }
+    for (const auto& line : table_printer.get_print_lines(4))
+    {
+        c_f::gtest_console::wprint_line(line);
+    }
 }

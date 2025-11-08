@@ -18,15 +18,19 @@ private:
 
 public:
     // construct and destruct
-    graphics_context();
+    graphics_context() = default;
 
-    // deleted
     graphics_context(const graphics_context&) = delete;
 
-    graphics_context& operator=(graphics_context&) = delete;
+    graphics_context(graphics_context&&) = delete;
 
     // methods
     i_main_context& get_context(const char* context_name);
+
+    // operators
+    graphics_context& operator=(graphics_context&) = delete;
+
+    graphics_context& operator=(graphics_context&&) = delete;
 };
 
 } // namespace callisto::graphics

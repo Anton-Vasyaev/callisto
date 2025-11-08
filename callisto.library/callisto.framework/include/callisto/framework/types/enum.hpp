@@ -10,7 +10,7 @@ namespace callisto::framework
 /// @param value Value of enum.
 /// @return Underlying value.
 template<typename enum_type>
-inline constexpr auto enum_utype(enum_type value) noexcept
+constexpr auto enum_utype(enum_type value) noexcept
 {
     return static_cast<std::underlying_type_t<enum_type>>(value);
 }

@@ -6,8 +6,70 @@
 namespace callisto::graphics
 {
 
-gl_texture2d::gl_texture2d(const cv::Mat& img, c_cv::image_type img_type)
+#pragma region static_methods
+
+static std::unique_ptr<gl_texture2d> create_color(size_t width, size_t height)
 {
+    auto format = GL_RGB;
+
+    GLuint texture_handler;
+    glGenTextures(1, &texture_handler);
+
+    glBindTexture(GL_TEXTURE_2D, texture_handler);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        format,
+        static_cast<GLsizei>(width),
+        static_cast<GLsizei>(height),
+        0,
+        format,
+        GL_UNSIGNED_BYTE,
+        nullptr
+    );
+    return std::make_unique<gl_texture2d>(texture_handler, format);
+}
+
+std::unique_ptr<gl_texture2d> gl_texture2d::create_depth(size_t width, size_t height, bool stencil)
+{
+    GLint  internal_format = GL_DEPTH_COMPONENT24;
+    GLenum format          = GL_DEPTH;
+    GLenum type            = GL_UNSIGNED_INT;
+
+    if (stencil)
+    {
+        internal_format = GL_DEPTH24_STENCIL8;
+        format          = GL_DEPTH_STENCIL;
+        type            = GL_UNSIGNED_INT_24_8;
+    }
+
+    GLuint texture_handler;
+    glGenTextures(1, &texture_handler);
+
+    glBindTexture(GL_TEXTURE_2D, texture_handler);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        internal_format,
+        static_cast<GLsizei>(width),
+        static_cast<GLsizei>(height),
+        0,
+        format,
+        type,
+        nullptr
+    );
+
+    return std::make_unique<gl_texture2d>(texture_handler, format);
+}
+
+#pragma endregion
+
+void gl_texture2d::__initialize_data(const cv::Mat& img, callisto::opencv::image_type img_type)
+{
+    namespace c_f  = callisto::framework;
+    namespace c_cv = callisto::opencv;
     if (img_type == c_cv::image_type::unknown)
     {
         img_type = c_cv::default_image_type(img);
@@ -35,13 +97,13 @@ gl_texture2d::gl_texture2d(const cv::Mat& img, c_cv::image_type img_type)
 
     auto [internal_format, format] = gl_texture2d::get_format_from_img_type(img_type);
 
-    glGenTextures(1, &(this->handler));
-    glBindTexture(GL_TEXTURE_2D, this->handler);
+    glGenTextures(1, &(__handler));
+    glBindTexture(GL_TEXTURE_2D, __handler);
 
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        internal_format,
+        static_cast<GLint>(internal_format),
         img.cols,
         img.rows,
         0,
@@ -51,6 +113,8 @@ gl_texture2d::gl_texture2d(const cv::Mat& img, c_cv::image_type img_type)
     );
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    __format = format;
 }
 
 } // namespace callisto::graphics

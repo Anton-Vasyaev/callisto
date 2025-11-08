@@ -4,11 +4,14 @@ cmake_minimum_required(VERSION 3.19)
 project(callisto.library)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
+
 option(CALLISTO_MATH_ENABLE "Build callisto.math" ON)
+option(CALLISTO_UTILITY_ENABLE "Build callisto.utility" ON)
 option(CALLISTO_OPENCV_ENABLE "Build callisto.opencv" ON)
 option(CALLISTO_GRAPHICS_ENABLE "Build callisto.graphics" ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(CALLISTO_SHARED)
     set(LIBRARY_TYPE SHARED)
@@ -25,11 +28,13 @@ endif()
 
 # configure conan and 3rdparty libaries *******************************************************************************
 set(CONAN_DIR "")
+
 if(DEFINED CREATE_PACKAGE)
-    set(CONAN_DIR ${CMAKE_BINARY_DIR}/..)
+    set(CONAN_DIR ${CMAKE_BINARY_DIR}/generators)
 else()
     set(CONAN_DIR ${CMAKE_CURRENT_LIST_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
+
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})
 
@@ -78,6 +83,21 @@ if(CALLISTO_MATH_ENABLE)
     target_link_libraries(${MATH_TARGET} PUBLIC callisto_framework)
 endif()
 
+# callisto.utility
+if(CALLISTO_UTILITY_ENABLE)
+    set(UTILITY_TARGET callisto_utility)
+    file(GLOB_RECURSE CALLISTO_UTILITY_SRC "callisto.utility/src/*./c" "callisto.utility/src/*.cpp")
+    add_library(${UTILITY_TARGET} ${LIBRARY_TYPE} ${CALLISTO_UTILITY_SRC})
+
+    target_include_directories(${UTILITY_TARGET} PUBLIC  callisto.utility/include)
+    target_include_directories(${UTILITY_TARGET} PRIVATE callisto.utility/src)
+
+
+    target_link_libraries(${UTILITY_TARGET} PUBLIC callisto_framework)
+    target_link_libraries(${UTILITY_TARGET} PUBLIC callisto_math)
+endif()
+
+
 # callisto.opencv
 if(CALLISTO_OPENCV_ENABLE)
     set(OPENCV_TARGET callisto_opencv)
@@ -112,12 +132,12 @@ if(CALLISTO_GRAPHICS_ENABLE)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC Boost::headers)
 
     if(CALLISTO_SHARED)
-        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::glew)
+        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::GLEW)
     else()
-        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::glew_s)
+        target_link_libraries(${GRAPHICS_TARGET} PUBLIC GLEW::GLEW)
     endif()
 
-    target_link_libraries(${GRAPHICS_TARGET} PUBLIC glfw::glfw)
+    target_link_libraries(${GRAPHICS_TARGET} PUBLIC glfw)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC imgui::imgui)
     target_link_libraries(${GRAPHICS_TARGET} PUBLIC glm::glm)
 endif()

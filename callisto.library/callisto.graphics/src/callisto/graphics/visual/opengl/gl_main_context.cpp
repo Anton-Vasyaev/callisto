@@ -2,48 +2,129 @@
 #include <callisto/graphics/visual/opengl/gl_main_context.hpp>
 // std
 #include <iostream>
+#include <thread>
+// project
+#include <callisto/framework/exception.hpp>
+#include <callisto/framework/string/build_string.hpp>
+
+#include <callisto/math/functions.hpp>
+
+#include <callisto/graphics/visual/opengl/data/gl_window_options.hpp>
+
+#include <callisto/graphics/visual/opengl/gl_window_context.hpp>
+
+namespace c_f = callisto::framework;
+namespace c_m = callisto::math;
 
 namespace callisto::graphics
 {
 
-void glfw_error_callback(int error, const char* description)
+#pragma region auxiliary_functions
+
+namespace
 {
-    std::cerr << "GLFW Error, code:" << error << ", description:" << description << std::endl;
+
+template<typename type>
+void get_option_from_dict(
+    std::string_view                                name,
+    std::unordered_map<std::string_view, std::any>* auxiliary_options,
+    type&                                           val
+)
+{
+    auto find_element = auxiliary_options->find(name);
+    if (find_element == auxiliary_options->end())
+    {
+        return;
+    }
+    auto& find_val = find_element->second;
+
+    if (find_val.type() != typeid(type))
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::argument_exception()) << c_f::build_error_tag_message(
+            "Invalid type for field \'",
+            name,
+            "\': ",
+            find_val.type().name(),
+            ". expected:",
+            typeid(type).name(),
+            "."
+        );
+    }
+    val = std::any_cast<type>(find_val);
 }
 
-#pragma region initialize_methods
+void check_and_get_auxiliary_options(
+    std::unordered_map<std::string_view, std::any>* auxiliary_options,
+    gl_window_options&                              options
+)
 
-void gl_main_context::init_monitors()
+{
+    if (auxiliary_options == nullptr)
+    {
+        return;
+    }
+
+    get_option_from_dict(gl_window_options::PRESENTS::IMGUI, auxiliary_options, options.imgui);
+
+    // get and check `gl_multisampling`
+    get_option_from_dict(
+        gl_window_options::PRESENTS::GL_MULTISAMPLING,
+        auxiliary_options,
+        options.gl_multisampling
+    );
+
+    // get and check `canvas_multisampling`
+    get_option_from_dict(
+        gl_window_options::PRESENTS::CANVAS_MULTISAMPLING,
+        auxiliary_options,
+        options.canvas_multisampling
+    );
+}
+
+void glfw_error_callback(int error, const char* description)
+{
+    std::cerr << "GLFW Error, code:" << error << ", description:" << description << "\n";
+}
+
+} // namespace
+
+void gl_main_context::__init_monitors()
 {
     int           count            = 0;
     GLFWmonitor** monitor_handlers = glfwGetMonitors(&count);
-    this->monitors.reserve(count);
+
+    auto* primary_monitor_handler = glfwGetPrimaryMonitor();
+
+    __monitors.reserve(count);
     for (int i = 0; i < count; i++)
     {
-        this->monitors.push_back(
-            std::unique_ptr<i_monitor_context>(new gl_monitor_context(monitor_handlers[i]))
-        );
+        if (monitor_handlers[i] == primary_monitor_handler)
+        {
+            __primary_monitor_index = i;
+        }
+        __monitors.push_back(std::unique_ptr<gl_monitor_context>(
+            new gl_monitor_context(monitor_handlers[i], i, this)
+        ));
     }
 }
 
-void gl_main_context::init_primary_monitor()
+void gl_main_context::__glfw_monitor_callback(GLFWmonitor* monitor, int event)
 {
-    auto primary_monitor_handler = glfwGetPrimaryMonitor();
-    if (primary_monitor_handler == nullptr)
-        throw std::runtime_error("GLFW: failed to get primary monitor");
-    this->primary_monitor
-        = std::unique_ptr<i_monitor_context>(new gl_monitor_context(primary_monitor_handler));
+    std::cout << "disconnect monitor:" << monitor << ", thread id:" << std::this_thread::get_id()
+              << ", event:" << event << ".\n";
 }
-
-#pragma endregion
 
 #pragma region construct_and_destruct
 
 gl_main_context::gl_main_context()
 {
     glfwSetErrorCallback(glfw_error_callback);
-    int glfw_status = glfwInit();
-    if (glfw_status != GLFW_TRUE) throw std::runtime_error("GLFW: failed to initialization");
+    const int glfw_status = glfwInit();
+    if (glfw_status != GLFW_TRUE)
+    {
+        CALLISTO_THROW_EXCEPTION(c_f::runtime_exception())
+            << c_f::error_tag_message("GLFW: failed to initialization");
+    }
 
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -54,8 +135,9 @@ gl_main_context::gl_main_context()
     ); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    init_primary_monitor();
-    init_monitors();
+    __init_monitors();
+
+    glfwSetMonitorCallback(gl_main_context::__glfw_monitor_callback);
 }
 
 gl_main_context::~gl_main_context() { glfwTerminate(); }
@@ -64,12 +146,56 @@ gl_main_context::~gl_main_context() { glfwTerminate(); }
 
 #pragma region implement_i_main_context
 
-const std::vector<std::unique_ptr<i_monitor_context>>& gl_main_context::get_monitors()
+std::int32_t gl_main_context::get_monitors_count()
 {
-    return this->monitors;
+    return static_cast<std::int32_t>(__monitors.size());
 }
 
-i_monitor_context& gl_main_context::get_primary_monitor() { return *(this->primary_monitor); }
+std::int32_t gl_main_context::get_primary_monitor_index()
+{
+    return static_cast<std::int32_t>(__primary_monitor_index);
+}
+
+i_monitor_context& gl_main_context::get_monitor_by_index(std::int32_t index)
+{
+    return *__monitors[index];
+}
+
+i_monitor_context& gl_main_context::get_primary_monitor()
+{
+    return *(__monitors[__primary_monitor_index]);
+}
+
+std::unique_ptr<i_window_context> gl_main_context::create_window(
+    window_options                                  options,
+    std::unordered_map<std::string_view, std::any>* auxiliary_options,
+    i_monitor_context*                              monitor_context
+)
+{
+    gl_monitor_context* gl_monitor_context_ptr = nullptr;
+    if (monitor_context != nullptr)
+    {
+        gl_monitor_context_ptr = gl_monitor_context::validate_and_cast_ptr(monitor_context);
+    }
+
+    gl_window_options gl_win_options;
+
+    check_and_get_auxiliary_options(auxiliary_options, gl_win_options);
+
+    std::unique_ptr<i_window_context> window_ptr;
+    window_ptr.reset(new gl_window_context(*this, options, gl_win_options, gl_monitor_context_ptr));
+
+    return window_ptr;
+}
+
+#pragma endregion
+
+#pragma region getters_and_setters
+
+std::vector<std::unique_ptr<gl_monitor_context>>& gl_main_context::get_glfw_monitors()
+{
+    return __monitors;
+}
 
 #pragma endregion
 

@@ -10,19 +10,15 @@
 
 namespace callisto::math
 {
-namespace
-{
-namespace c_f = callisto::framework;
-}
 
-template<c_f::concept_fundamental value_type, c_f::concept_fundamental min_type>
-inline constexpr auto min_f(value_type value, min_type min) noexcept
+template<callisto::framework::concept_arithmetic type>
+constexpr auto min_f(type value, type min) noexcept
 {
     return value < min ? value : min;
 }
 
-template<c_f::concept_fundamental value_type, c_f::concept_fundamental max_type>
-inline constexpr auto max_f(value_type value, max_type max) noexcept
+template<callisto::framework::concept_arithmetic type>
+constexpr auto max_f(type value, type max) noexcept
 {
     return value > max ? value : max;
 }
@@ -35,11 +31,8 @@ inline constexpr auto max_f(value_type value, max_type max) noexcept
 /// @param min_val min value of clamping.
 /// @param max_val max value of clamping.
 /// @return Clamped value.
-template<
-    c_f::concept_fundamental value_type,
-    c_f::concept_fundamental min_type,
-    c_f::concept_fundamental max_type>
-inline constexpr auto clamp_f(value_type value, min_type min_val, max_type max_val) noexcept
+template<callisto::framework::concept_arithmetic type>
+constexpr auto clamp_f(type value, type min_val, type max_val) noexcept
 {
     return min_f(max_val, max_f(min_val, value));
 }
@@ -52,19 +45,16 @@ inline constexpr auto clamp_f(value_type value, min_type min_val, max_type max_v
 /// @param left Left border of range.
 /// @param right Right border of range.
 /// @return Range value.
-template<
-    c_f::concept_fundamental value_type,
-    c_f::concept_fundamental left_type,
-    c_f::concept_fundamental right_type>
-inline constexpr auto norm_on_range(value_type value, left_type left, right_type right) noexcept
+template<callisto::framework::concept_arithmetic type>
+constexpr auto norm_on_range(type value, type left, type right) noexcept
 {
     return left + value * (right - left);
 }
 
-template<c_f::concept_fundamental value_type, c_f::concept_fundamental mod_type>
-inline constexpr auto tmod(value_type value, mod_type module) noexcept
+template<callisto::framework::concept_arithmetic type>
+constexpr auto tmod(type value, type module) noexcept
 {
-    if constexpr (std::is_floating_point_v<c_f::senior_conversion_t<value_type, mod_type>>)
+    if constexpr (std::is_floating_point_v<type>)
     {
         return std::fmod(value, module);
     }
@@ -74,14 +64,14 @@ inline constexpr auto tmod(value_type value, mod_type module) noexcept
     }
 }
 
-template<c_f::concept_fundamental value_type>
-inline constexpr auto deg2rad(value_type degree)
+template<callisto::framework::concept_arithmetic type>
+constexpr auto deg2rad(type degree)
 {
     return degree / degree_per_radian;
 }
 
-template<c_f::concept_fundamental value_type>
-inline constexpr auto rad2deg(value_type radian)
+template<callisto::framework::concept_arithmetic type>
+constexpr auto rad2deg(type radian)
 {
     return radian / radian_per_degree;
 }

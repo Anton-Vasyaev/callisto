@@ -14,6 +14,14 @@ inline stream_type& operator<<(stream_type& stream, const c_m::alg_tuple2<type>&
 }
 
 template<typename stream_type, typename type>
+inline stream_type& operator<<(stream_type& stream, const c_m::alg_tuple3<type>& values)
+{
+    stream << "(" << values.v1 << ", " << values.v2 << ", " << values.v3 << ")";
+
+    return stream;
+}
+
+template<typename stream_type, typename type>
 inline stream_type& operator<<(stream_type& stream, const c_m::line2<type>& line)
 {
     stream << "[" << line.x1 << ", " << line.y1 << ", " << line.x2 << ", " << line.y2 << "]";

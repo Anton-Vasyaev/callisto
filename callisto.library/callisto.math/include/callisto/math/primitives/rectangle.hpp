@@ -1,100 +1,113 @@
 #pragma once
 
+// project
+#include <callisto/framework/concepts.hpp>
 #include "alg_tuple2.hpp"
 
 namespace callisto::math
 {
 
-template<typename _type>
+template<callisto::framework::concept_arithmetic _value_type>
 struct rectangle
 {
-    using type = _type;
+    using value_type = _value_type;
 
-    using position_type = point2<type>;
-    
-    using size_type = size2<type>;
+    using position_type = point2<value_type>;
 
-    position_type position;
+    using size_type = size2<value_type>;
 
-    size_type size;
+    value_type x;
+
+    value_type y;
+
+    value_type width;
+
+    value_type height;
 
 #pragma region static_methods
 
-    static inline constexpr rectangle empty()
-    {
-        return rectangle(0, 0, 0, 0);
-    }
+    static constexpr rectangle empty() noexcept { return rectangle(0, 0, 0, 0); }
 
 #pragma endregion
 
 #pragma region construct_and_destruct
 
-    inline constexpr rectangle() { }
+    constexpr rectangle() = default;
 
-    template<typename x_type, typename y_type, typename w_type, typename h_type>
-    inline constexpr rectangle(
-        x_type x, 
-        y_type y,
-        w_type width,
-        h_type height
-    )
+    constexpr rectangle(value_type x, value_type y, value_type width, value_type height) noexcept
     {
-        this->position.x = x;
-        this->position.y = y;
+        this->x = x;
+        this->y = y;
 
-        this->size.width = width;
-        this->size.height = height;
+        this->width  = width;
+        this->height = height;
     }
 
-    template<typename position_type, typename size_type>
-    inline constexpr rectangle(
-        const position_type& position,
-        const size_type&     size
-    )
+    constexpr rectangle(const point2<value_type>& position, const size2<value_type>& size) noexcept
     {
-        this->position = position;
-        this->size     = size;
+        x = position.x;
+        y = position.y;
+
+        width  = size.width;
+        height = size.height;
     }
 
 #pragma endregion
 
+#pragma region methods
+
+    template<callisto::framework::concept_arithmetic cast_type>
+    constexpr auto as() const noexcept
+    {
+        return rectangle<cast_type>(x, y, width, height);
+    }
+
+    constexpr point2<value_type> center() const noexcept
+    {
+        auto x_c = x + width / 2;
+        auto y_c = y + height / 2;
+
+        return point2<value_type>(x_c, y_c);
+    }
+
+    constexpr point2<value_type> position() const noexcept { return point2<value_type>(x, y); }
+
+    void set_position(const point2<value_type>& point) noexcept
+    {
+        x = point.x;
+        y = point.y;
+    }
+
+    constexpr size2<value_type> size() const noexcept { return size2<value_type>(width, height); }
+
+    void set_size(const size2<value_type> size) noexcept
+    {
+        width  = size.width;
+        height = size.height;
+    }
+
+#pragma endregion
 
 #pragma region operators
 
-    template<typename other_type>
-    inline constexpr bool operator==(const rectangle<other_type>& other_rect)
+    constexpr bool operator==(const rectangle& other) const noexcept
     {
-        return this->position == other_rect.position && this->size == other_rect.size;
+        return x == other.x && y == other.y && other.width == width && other.height == height;
     }
 
-    template<typename other_type>
-    inline constexpr bool operator!=(const rectangle<other_type>& other_rect)
+    constexpr bool operator!=(const rectangle& other) const noexcept
     {
-        return this->position != other_rect.position || this->size != other_rect.size;
+        return x != other.x || y != other.y || width != width || height != height;
     }
 
 #pragma endregion
-
 };
 
-template<
-    typename x_type,
-    typename y_type,
-    typename w_type,
-    typename h_type
->
-rectangle(x_type, y_type, w_type, h_type) -> rectangle<
-    c_f::senior_conversion_t<x_type, y_type, w_type, h_type>
->;
+template<callisto::framework::concept_arithmetic type>
+rectangle(type, type, type, type) -> rectangle<type>;
 
-template<typename position_type, typename size_type>
-rectangle(position_type, size_type) -> rectangle<
-    c_f::senior_conversion_t<
-        typename position_type::value_type,
-        typename size_type::value_type
-    >
->;
-
+template<typename alg_tuple2_type>
+rectangle(alg_tuple2_type, alg_tuple2_type) -> rectangle<alg_tuple2_type>;
 
 using rectangle_i = rectangle<int32_t>;
 
@@ -104,4 +117,4 @@ using rectangle_f = rectangle<float>;
 
 using rectangle_d = rectangle<double>;
 
-}
+} // namespace callisto::math

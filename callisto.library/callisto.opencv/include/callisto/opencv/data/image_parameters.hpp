@@ -11,14 +11,9 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
 struct image_parameters
 {
-    c_f::numeric_type num_type;
+    callisto::framework::numeric_type num_type;
 
     image_type img_type;
 
@@ -28,7 +23,7 @@ struct image_parameters
 
     size_t stride;
 
-    inline static image_parameters from_mat(cv::Mat mat, image_type img_type = image_type::unknown)
+    static image_parameters from_mat(const cv::Mat& mat, image_type img_type = image_type::unknown)
     {
         auto mat_type = mat.type();
 
@@ -40,9 +35,9 @@ struct image_parameters
 
         return image_parameters { numeric_type,
                                   img_type,
-                                  (size_t)mat.cols,
-                                  (size_t)mat.rows,
-                                  (size_t)mat.step };
+                                  static_cast<size_t>(mat.cols),
+                                  static_cast<size_t>(mat.rows),
+                                  static_cast<size_t>(mat.step) };
     }
 };
 

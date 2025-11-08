@@ -1,14 +1,17 @@
 #pragma once
 
 // project
+#include <callisto/framework/types/lifetime.hpp>
+
+#include <callisto/graphics/visual/opengl/third_party/include_gl.hpp>
+
 #include <callisto/graphics/visual/i_monitor_context.hpp>
 #include <callisto/graphics/visual/data/window_options.hpp>
-#include "gl_window_context.hpp"
-
-namespace c_m = callisto::math;
 
 namespace callisto::graphics
 {
+
+class gl_main_context;
 
 class gl_monitor_context : public i_monitor_context
 {
@@ -16,39 +19,58 @@ class gl_monitor_context : public i_monitor_context
 
 private:
     // data
-    GLFWmonitor* monitor_handler;
+    GLFWmonitor* __monitor_handler;
 
-    c_m::size2i _size;
+    std::int32_t __monitor_index;
 
-    c_m::size2i _real_size;
+    gl_main_context* __main_context;
 
-    float _dpi;
+    callisto::math::size2i __size;
+
+    callisto::math::size2i __physical_size;
+
+    callisto::math::size2f __content_scale;
+
+    callisto::math::rectangle_i __work_area;
+
+    const char* __name;
+
+    float __dpi;
 
     // construct and destruct
-    gl_monitor_context(GLFWmonitor* monitor_handler);
+    explicit gl_monitor_context(
+        GLFWmonitor*     monitor_handler,
+        std::int32_t     monitor_index,
+        gl_main_context* main_context
+    );
 
 public:
-    virtual ~gl_monitor_context();
-
-    // deleted
+    // construct and destruct
     gl_monitor_context() = delete;
 
-    gl_monitor_context(const gl_monitor_context&) = delete;
+    ~gl_monitor_context() override;
 
-    gl_monitor_context(gl_monitor_context&&) = delete;
+    CALLISTO_LIFETIME_REFERENCE(gl_monitor_context);
 
-    gl_monitor_context& operator=(const gl_monitor_context&) = delete;
-
-    gl_monitor_context& operator=(gl_monitor_context&&) = delete;
+    // getters and setters
+    GLFWmonitor* get_handler() { return __monitor_handler; }
 
     // implement i_monitor_context
-    virtual c_m::size2i size() const override;
 
-    virtual c_m::size2i real_size() const override;
+    const char* get_name() const override;
 
-    virtual float dpi() const override;
+    callisto::math::size2i get_size() const override;
 
-    virtual std::unique_ptr<i_window_context> create_window(window_options options) override;
+    callisto::math::size2i get_physical_size() const override;
+
+    callisto::math::size2f get_content_scale() const override;
+
+    callisto::math::rectangle_i get_work_area() const override;
+
+    float dpi() const override;
+
+    // static methods
+    static gl_monitor_context* validate_and_cast_ptr(i_monitor_context* monitor_context);
 };
 
 } // namespace callisto::graphics

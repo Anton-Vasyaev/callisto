@@ -5,7 +5,7 @@
 namespace callisto::opencv
 {
 
-enum class image_type : uint32_t
+enum class image_type : std::uint8_t
 {
     unknown,
     rgb,
@@ -24,7 +24,7 @@ enum class image_type : uint32_t
     channels_8
 };
 
-inline constexpr const char* image_type_str(image_type type) noexcept
+constexpr const char* image_type_str(image_type type) noexcept
 {
     switch (type)
     {
@@ -49,12 +49,12 @@ inline constexpr const char* image_type_str(image_type type) noexcept
     }
 }
 
-inline static constexpr image_type image_type_unspecified_from_channels(uint64_t channels)
+constexpr image_type image_type_unspecified_from_channels(uint64_t channels)
 {
-    return (image_type)(int(image_type::channels_1) + channels - 1);
+    return static_cast<image_type>(static_cast<int>(image_type::channels_1) + channels - 1);
 }
 
-inline static constexpr int image_type_channels(image_type type) noexcept
+constexpr int image_type_channels(image_type type) noexcept
 {
     switch (type)
     {
@@ -77,7 +77,7 @@ inline static constexpr int image_type_channels(image_type type) noexcept
         case image_type::channels_7 : return 7;
         case image_type::channels_8 : return 8;
 
-        default : return int(type) - int(image_type::channels_1) + 1;
+        default : return static_cast<int>(type) - static_cast<int>(image_type::channels_1) + 1;
     }
 }
 

@@ -1,13 +1,16 @@
 .vs
 .vscode
 .main_cache
+.idea
 
 build
 out
 build_result
 subproject
 packages
+test_package.build
 
+CMakeUserPresets.json
 CMakeSettings.json
 *.pdb
 

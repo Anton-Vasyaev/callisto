@@ -57,13 +57,13 @@ private:
         return data;
     }
 
-    inline void move_from(basic_table_printer_row&& row)
+    void move_from(basic_table_printer_row&& row) noexcept
     {
         _ss    = std::move(row._ss);
         _cells = std::move(row._cells);
     }
 
-    inline void copy_from(const basic_table_printer_row& row)
+    void copy_from(const basic_table_printer_row& row)
     {
         _ss.str(__table_printer_empty_str__<char_type>());
         _ss << row._ss.str();
@@ -73,25 +73,25 @@ private:
 
 public:
     /// @brief Constructor basic_table_printer_row.
-    inline basic_table_printer_row() {}
+    basic_table_printer_row() = default;
 
     /// @brief Copy-constructor of basic_table_printer_row.
     /// @param row Row that stored string values.
-    inline basic_table_printer_row(const basic_table_printer_row& row) { copy_from(row); }
+    basic_table_printer_row(const basic_table_printer_row& row) { copy_from(row); }
 
     /// @brief Move-constructor of basic_table_printer_row.
     /// @param row Row that stored string values.
-    inline basic_table_printer_row(basic_table_printer_row&& row) { move_from(std::move(row)); }
+    basic_table_printer_row(basic_table_printer_row&& row) noexcept { move_from(std::move(row)); }
 
     /// @brief Constructor of basic_table_printer_row.
     /// @param size Count of row values.
-    basic_table_printer_row(size_t size) { _cells.resize(size); }
+    explicit basic_table_printer_row(size_t size) { _cells.resize(size); }
 
     /// @brief Cosntructor of basic_table_printer_row for variadic values.
     /// @tparam ...args_type Parameter pack type of variadic values.
     /// @param ...args Variadic values.
     template<typename... args_type>
-    basic_table_printer_row(const args_type&... args)
+    explicit basic_table_printer_row(const args_type&... args)
     {
         ((_cells.push_back(this->to_string(args))), ...);
     }
@@ -139,7 +139,10 @@ public:
     /// @brief Move-operator.
     /// @param row other row.
     /// @return Reference to *this.
-    basic_table_printer_row& operator=(basic_table_printer_row&& row) { move_from(std::move(row)); }
+    basic_table_printer_row& operator=(basic_table_printer_row&& row) noexcept
+    {
+        move_from(std::move(row));
+    }
 };
 
 /// @brief Provides formatting table-style printing.
@@ -168,6 +171,9 @@ private:
 
     static std::vector<size_t> get_max_cells_sizes(const rows_array_type& table)
     {
+        // FUTURE fix for collision min/max word in Windows
+        auto max_lambda_f = [](size_t a, size_t b) { return a > b ? a : b; };
+
         std::vector<size_t> max_cell_sizes;
 
         for (size_t row_i = 0; row_i < table.size(); row_i++)
@@ -177,7 +183,7 @@ private:
 
             for (size_t cell_i = 0; cell_i < row.size(); cell_i++)
             {
-                max_cell_sizes[cell_i] = std::max(max_cell_sizes[cell_i], row[cell_i].length());
+                max_cell_sizes[cell_i] = max_lambda_f(max_cell_sizes[cell_i], row[cell_i].length());
             }
         }
 
@@ -197,40 +203,43 @@ public:
 
     /// @brief Constructor. Constructs table with the given counts of rows.
     /// @param size Counts of rows.
-    basic_table_printer(size_t size) { _rows.resize(size); }
+    explicit basic_table_printer(size_t size) { _rows.resize(size); }
 
     /// @brief Consturctor. Constructs table with rows listed via initializer list.
     /// @param rows_list
     basic_table_printer(std::initializer_list<row_type> rows_list)
     {
-        for (auto& row : rows_list) { _rows.push_back(std::move(row)); }
+        for (auto& row : rows_list)
+        {
+            _rows.push_back(std::move(row));
+        }
     }
 
     /// @brief Appends new row to table.
     /// @param row Row of string cells.
-    inline void append_row(const row_type& row) { _rows.push_back(row); }
+    void append_row(const row_type& row) { _rows.push_back(row); }
 
     /// @brief Move-semantic append row to table.
     /// @param row Row of string cells.
-    inline void append_row(row_type&& row) { _rows.push_back(std::move(row)); }
+    void append_row(row_type&& row) { _rows.push_back(std::move(row)); }
 
     /// @brief Returns reference to array of rows.
     /// @return Reference to array of rows.
-    inline rows_array_type& get_rows() noexcept { return _rows; }
+    rows_array_type& get_rows() noexcept { return _rows; }
 
     /// @brief Returns const reference to array of rows.
     /// @return Const reference to array of rows.
-    inline const rows_array_type& get_rows() const noexcept { return _rows; }
+    const rows_array_type& get_rows() const noexcept { return _rows; }
 
     /// @brief Returns reference to row by-index.
     /// @param index Index of row.
     /// @return Reference to row.
-    inline row_type& get_row(size_t index) noexcept { return _rows[index]; }
+    row_type& get_row(size_t index) noexcept { return _rows[index]; }
 
     /// @brief Returns const reference to row by-index.
     /// @param index Index of row.
     /// @return Reference to row.
-    inline const row_type& get_row(size_t index) const noexcept { return _rows[index]; }
+    const row_type& get_row(size_t index) const noexcept { return _rows[index]; }
 
     /// @brief Forms printing lines for table-formatting printing.
     /// @param space_count Count of space between string cells.
@@ -266,7 +275,7 @@ public:
                 prev_space_buffer_null_idx               = added_space_count;
 
                 ss << str_cell;
-                ss << (char_type*)space_buffer.data();
+                ss << reinterpret_cast<char_type*>(space_buffer.data());
             }
 
             lines.push_back(std::move(ss.str()));

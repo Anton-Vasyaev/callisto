@@ -7,21 +7,14 @@
 namespace callisto::graphics
 {
 
-namespace
-{
-namespace c_f = callisto::framework;
-
-namespace c_m = callisto::math;
-} // namespace
-
 class i_window_context;
 
 class a_window_processor
 {
 public:
-    inline a_window_processor() {}
+    a_window_processor() = default;
 
-    virtual ~a_window_processor();
+    virtual ~a_window_processor() = default;
 
     virtual void init(i_window_context& context) = 0;
 
@@ -33,9 +26,9 @@ public:
 
     virtual void on_cursor_event(cursor_event data);
 
-    virtual void on_change_position(c_m::point2i position);
+    virtual void on_change_position(const callisto::math::point2i& position);
 
-    virtual void on_resize(c_m::size2i size);
+    virtual void on_resize(const callisto::math::size2i& size);
 };
 
 } // namespace callisto::graphics

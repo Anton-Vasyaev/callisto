@@ -3,6 +3,8 @@
 // project
 #include <callisto/framework/concepts/core.hpp>
 
+// clang-format off
+
 namespace callisto::framework
 {
 
@@ -116,4 +118,6 @@ public:
 template<concept_arithmetic... rest_type>
 using senior_conversion_t = typename senior_conversion<rest_type...>::type;
 
-}
+} // namespace callisto::framework
+
+// clang-format on

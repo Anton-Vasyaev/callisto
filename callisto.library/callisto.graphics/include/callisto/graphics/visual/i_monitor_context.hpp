@@ -2,33 +2,33 @@
 
 // std
 #include <memory>
+#include <unordered_map>
+#include <any>
 // project
 #include <callisto/math/primitives.hpp>
 
 #include "data/window_options.hpp"
-#include "i_window_context.hpp"
 
 namespace callisto::graphics
 {
-namespace
-{
-namespace c_m = callisto::math;
-}
-
 class i_monitor_context
 {
 public:
     // construct and destruct
-    virtual ~i_monitor_context() {}
+    virtual ~i_monitor_context() = default;
 
     // methods
-    virtual c_m::size2i size() const = 0;
+    virtual const char* get_name() const = 0;
 
-    virtual c_m::size2i real_size() const = 0;
+    virtual callisto::math::size2i get_size() const = 0;
+
+    virtual callisto::math::size2i get_physical_size() const = 0;
+
+    virtual callisto::math::size2f get_content_scale() const = 0;
+
+    virtual callisto::math::rectangle_i get_work_area() const = 0;
 
     virtual float dpi() const = 0;
-
-    virtual std::unique_ptr<i_window_context> create_window(window_options options) = 0;
 };
 
 } // namespace callisto::graphics

@@ -2,6 +2,8 @@
 
 // std
 #include "exception.hpp"
+
+#include <callisto/framework/string/build_string.hpp>
 // 3rd party
 #include <boost/current_function.hpp>
 #include <boost/stacktrace.hpp>
@@ -12,19 +14,28 @@ namespace callisto::framework
 /// @brief Present error tag with std::string message.
 using error_tag_message = boost::error_info<struct tag_message, std::string>;
 
+template<typename... args_type>
+inline auto build_error_tag_message(const args_type&... args)
+{
+    return error_tag_message(build_string<char>(args...));
+}
+
 /// @brief Present error tag with std::wstring message.
 using error_tag_message_w = boost::error_info<struct tag_message_w, std::wstring>;
+
+template<typename... args_type>
+inline auto build_error_tag_message_w(const args_type&... args)
+{
+    return error_tag_message_w(build_string<wchar_t>(args...));
+}
 
 /// @brief Present error tag with file name in which the exception is thrown.
 using error_tag_file_name = boost::error_info<struct tag_file_name, std::string>;
 
-/// @brief Present error tage with number of line in which the exception is thrown.
-using error_tag_line = boost::error_info<struct tag_line, int>;
-
-/// @brief Present error tag with function name in which the exception is thrown.
-using error_tag_function_name = boost::error_info<struct tag_function_name, std::string>;
-
 /// @brief Present error tag witch stacktrace in wthich exception is thrown.
 using error_tag_trace = boost::error_info<struct tag_trace, boost::stacktrace::stacktrace>;
+
+/// @brief Present error tag with location in which the exception is thrown.
+using error_tag_location = boost::error_info<struct tag_location, std::string>;
 
 } // namespace callisto::framework

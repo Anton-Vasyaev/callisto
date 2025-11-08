@@ -5,13 +5,13 @@
 // 3rd party
 #include <boost/current_function.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include <opencv2/opencv.hpp>
 
 #include <callisto/framework/exception.hpp>
 #include <callisto/framework/ios/fstream_aux.hpp>
 #include <callisto/framework/string.hpp>
-#include <callisto/framework/exception.hpp>
 #include <callisto/framework/native/numeric_type.hpp>
 // project
 #include "auxiliary.hpp"
@@ -20,13 +20,7 @@
 namespace callisto::opencv
 {
 
-namespace
-{
-namespace b_fs = boost::filesystem;
-namespace c_f  = callisto::framework;
-} // namespace
-
-cv::Mat imdecode(const void* buffer_ptr, size_t buffer_size, int flags = cv::IMREAD_UNCHANGED);
+cv::Mat imdecode(const void* buffer_ptr, int buffer_size, int flags = cv::IMREAD_UNCHANGED);
 
 std::vector<uint8_t>
 imencode(cv::Mat img, const char* ext, const std::vector<int>& params = std::vector<int>());
@@ -34,15 +28,16 @@ imencode(cv::Mat img, const char* ext, const std::vector<int>& params = std::vec
 template<typename path_type>
 cv::Mat imread(path_type* path, int flags = cv::IMREAD_UNCHANGED)
 {
-    b_fs::ifstream file_handler(path, std::ios::binary);
+    namespace b_fs = boost::filesystem;
+    namespace c_f  = callisto::framework;
+
+    auto file_handler = b_fs::ifstream(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {
-        throw read_write_exception()
-            << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION)
-            << c_f::error_tag_message_w(
-                   c_f::_wbs(L"imread failed. img on path \'", path, L"\' not opened.")
-               );
+        CALLISTO_THROW_EXCEPTION(read_write_exception()) << c_f::error_tag_message_w(
+            c_f::_wbs(L"imread failed. img on path \'", path, L"\' not opened.")
+        );
     }
 
     auto file_size = b_fs::file_size(path);
@@ -63,15 +58,16 @@ cv::Mat imread(path_type&& path, int flags = cv::IMREAD_UNCHANGED)
 template<typename path_type>
 void imwrite(path_type* path, const cv::Mat& img)
 {
-    b_fs::ofstream file_handler(path, std::ios::binary);
+    namespace b_fs = boost::filesystem;
+    namespace c_f  = callisto::framework;
+
+    auto file_handler = b_fs::ofstream(path, std::ios::binary);
 
     if (!file_handler.is_open())
     {
-        throw read_write_exception()
-            << c_f::error_tag_function_name(BOOST_CURRENT_FUNCTION)
-            << c_f::error_tag_message_w(
-                   c_f::_wbs(L"imwrite failed. file handler on path \'", path, L"\' not opened.")
-               );
+        CALLISTO_THROW_EXCEPTION(read_write_exception()) << c_f::error_tag_message_w(
+            c_f::_wbs(L"imwrite failed. file handler on path \'", path, L"\' not opened.")
+        );
     }
 
     auto ext = boost::filesystem::path(path).extension().string();
@@ -86,7 +82,10 @@ void imwrite(path_type* path, const cv::Mat& img)
 
     cv::imencode(ext, img, encoded_data);
 
-    file_handler.write((const char*)encoded_data.data(), encoded_data.size());
+    file_handler.write(
+        reinterpret_cast<const char*>(encoded_data.data()),
+        static_cast<std::streamsize>(encoded_data.size())
+    );
 }
 
 template<typename path_type>

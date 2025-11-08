@@ -7,7 +7,7 @@
 
 namespace callisto::graphics
 {
-enum class gl_debug_severity
+enum class gl_debug_severity : std::uint8_t
 {
     unknown,
     high,
@@ -16,7 +16,7 @@ enum class gl_debug_severity
     notification
 };
 
-inline constexpr gl_debug_severity gl_debug_severity_from_original(GLenum value) noexcept
+constexpr gl_debug_severity gl_debug_severity_from_original(GLenum value) noexcept
 {
     switch (value)
     {
@@ -29,7 +29,7 @@ inline constexpr gl_debug_severity gl_debug_severity_from_original(GLenum value)
     }
 }
 
-inline constexpr GLenum gl_debug_severity_to_original(gl_debug_severity severity) noexcept
+constexpr GLenum gl_debug_severity_to_original(gl_debug_severity severity) noexcept
 {
     switch (severity)
     {
@@ -42,7 +42,7 @@ inline constexpr GLenum gl_debug_severity_to_original(gl_debug_severity severity
     }
 }
 
-inline constexpr const char* gl_debug_severity_str(gl_debug_severity severity) noexcept
+constexpr const char* gl_debug_severity_str(gl_debug_severity severity) noexcept
 {
     switch (severity)
     {

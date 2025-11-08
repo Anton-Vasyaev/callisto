@@ -8,27 +8,27 @@ namespace callisto::framework
 
 /// @brief Provides a buffer based on ring-queue.
 /// @tparam _type Type of stored value.
-template<typename _type>
+template<typename type_t>
 class ring_buffer
 {
 public:
     /// @brief Type of stored value.
-    using type = _type;
+    using type = type_t;
 
 private:
-    std::vector<type> _buffer;
+    std::vector<type> __buffer;
 
-    size_t _head = 0;
+    size_t __head = 0;
 
-    size_t _tail = 0;
+    size_t __tail = 0;
 
-    inline void increment_head() { _head = (_head + 1) % _buffer.size(); }
+    void increment_head() { __head = (__head + 1) % __buffer.size(); }
 
-    inline void increment_tail()
+    void increment_tail()
     {
-        _tail = (_tail + 1) % _buffer.size();
+        __tail = (__tail + 1) % __buffer.size();
 
-        if (_tail == _head) increment_head();
+        if (__tail == __head) increment_head();
     }
 
 public:
@@ -36,32 +36,32 @@ public:
 
     /// @brief Constructs a new object of @ref ring_buffer
     /// @param size Size of buffer.
-    inline ring_buffer(size_t size) { _buffer.resize(size + 1); }
+    explicit ring_buffer(size_t size) { __buffer.resize(size + 1); }
 
     /// @brief Copies the data to the buffer's last position.
     /// @param value Reference to the data.
-    inline void add_value(const type& value)
+    void add_value(const type& value)
     {
-        _buffer[_tail] = value;
+        __buffer[__tail] = value;
         increment_tail();
     }
 
     /// @brief Moves r-value data to the buffer's last position.
     /// @param value R-value reference to the data.
-    inline void add_value(type&& value)
+    void add_value(type&& value)
     {
-        _buffer[_tail] = std::move(value);
+        __buffer[__tail] = std::move(value);
         increment_tail();
     }
 
     /// @brief Copies data on first position  and remove him from buffer.
     /// @param value Reference, where data will be copied.
     /// @return Copy status. @c true if data was copied, else @c false .
-    inline bool get_value(type& value)
+    bool get_value(type& value)
     {
-        if (_head == _tail) return false;
+        if (__head == __tail) return false;
 
-        value = _buffer[_head];
+        value = __buffer[__head];
 
         increment_head();
 
@@ -71,11 +71,11 @@ public:
     /// @brief Moves data on first position
     /// @param value Reference, where data will be moved.
     /// @return Move status. @c true if data was copied, else @c false .
-    inline bool get_and_move_value(type& value)
+    bool get_and_move_value(type& value)
     {
-        if (_head == _tail) return false;
+        if (__head == __tail) return false;
 
-        value = std::move(_buffer[_head]);
+        value = std::move(__buffer[__head]);
         increment_head();
 
         return true;

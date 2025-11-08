@@ -8,53 +8,50 @@
 namespace callisto::math
 {
 
-namespace
-{
-    namespace c_f = callisto::framework;
-}
-
 /// @brief Provides automatically value clamping on assignment.
 /// @tparam _value_type Arithmetic data type of clamped value.
-template<c_f::concept_arithmetic _value_type>
+template<callisto::framework::concept_arithmetic _value_type>
 class value_clamper
 {
 public:
     using value_type = _value_type;
 
 private:
-    value_type _value;
+    value_type __value;
 
-    value_type _min;
+    value_type __min;
 
-    value_type _max;
+    value_type __max;
 
-    constexpr inline void set_value(value_type other_value)
+    constexpr void set_value(value_type other_value)
     {
-        _value = std::clamp<value_type>(other_value, _min, _max);
+        __value = std::clamp<value_type>(other_value, __min, __max);
     }
 
 public:
     /// @brief Constructs a new value clamper.
-    constexpr inline value_clamper() {}
+    constexpr value_clamper() = default;
 
     /// @brief Constructs a new value clamper.
     /// @param value Fixed value.
     /// @param min   Min value of clamping.
     /// @param max   Max value of clamping.
-    constexpr inline value_clamper(value_type value, value_type min, value_type max)
+    constexpr value_clamper(value_type value, value_type min, value_type max)
     {
-        _min = min;
-        _max = max;
+        __min = min;
+        __max = max;
 
         set_value(value);
     }
 
+    /// @brief Returns value.
+    /// @return value.
+    constexpr value_type value() const noexcept { return __value; }
+
     /// @brief operator=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr inline value_clamper& operator=(other_value_type v)
+    constexpr value_clamper& operator=(value_type v) noexcept
     {
         set_value(v);
 
@@ -62,55 +59,44 @@ public:
     }
 
     /// @brief operator+=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr inline value_clamper& operator+=(other_value_type v)
+    constexpr value_clamper& operator+=(value_type v) noexcept
     {
-        set_value(_value + v);
+        set_value(__value + v);
 
         return *this;
     }
 
     /// @brief operator-=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr inline value_clamper& operator-=(other_value_type v)
+    constexpr value_clamper& operator-=(value_type v) noexcept
     {
-        set_value(_value - v);
+        set_value(__value - v);
 
         return *this;
     }
 
     /// @brief operator*=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr inline value_clamper& operator*=(other_value_type v)
+    constexpr value_clamper& operator*=(value_type v) noexcept
     {
-        set_value(_value * v);
+        set_value(__value * v);
 
         return *this;
     }
 
     /// @brief operator/=
-    /// @tparam other_value_type
     /// @param v Value.
     /// @return value_clamper&
-    template<typename other_value_type>
-    constexpr inline value_clamper& operator/=(other_value_type v)
+    constexpr value_clamper& operator/=(value_type v) noexcept
     {
-        set_value(_value / v);
+        set_value(__value / v);
 
         return *this;
     }
-
-    /// @brief casting operator to @ref value_type.
-    constexpr inline operator value_type() const { return _value; }
 };
 
-} // namespace callisto::framework
+} // namespace callisto::math

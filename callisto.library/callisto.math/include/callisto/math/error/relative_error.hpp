@@ -8,45 +8,38 @@
 namespace callisto::math
 {
 
-// imports
-namespace
-{
-namespace c_f = callisto::framework;
-}
-
-template<typename _numeric_type>
+template<typename numeric_type_t>
 class relative_error
 {
 public:
-    using numeric_type = _numeric_type;
+    using numeric_type = numeric_type_t;
 
 private:
-    numeric_type _min;
-    numeric_type _max;
+    numeric_type __min;
+    numeric_type __max;
 
 public:
-    inline constexpr relative_error(numeric_type value, numeric_type percent)
+    constexpr relative_error(numeric_type value, numeric_type percent)
     {
         auto distance = std::abs(value) * percent;
-        _min          = value - distance;
-        _max          = value + distance;
+        __min         = value - distance;
+        __max         = value + distance;
     }
 
     template<typename other_type>
-    inline constexpr bool operator==(other_type value)
+    constexpr bool operator==(other_type value)
     {
-        return _min < value && value < _max;
+        return __min < value && value < __max;
     }
 
     template<typename other_type>
-    inline constexpr bool operator!=(other_type value)
+    constexpr bool operator!=(other_type value)
     {
-        return value < _min || _max < value;
+        return value < __min || __max < value;
     }
 };
 
-template<typename value_type, typename error_type>
-relative_error(value_type, error_type)
-    -> relative_error<c_f::senior_conversion_t<value_type, error_type>>;
+template<typename value_type>
+relative_error(value_type, value_type) -> relative_error<value_type>;
 
 } // namespace callisto::math
