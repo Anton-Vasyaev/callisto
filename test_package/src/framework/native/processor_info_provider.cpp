@@ -1,5 +1,5 @@
 // test
-#include <callisto/framework/native/processor_info.hpp>
+#include <callisto/framework/native/processor_info_provider.hpp>
 // 3rd party
 #include <gtest/gtest.h>
 // project
@@ -12,18 +12,18 @@ namespace c_f = callisto::framework;
 #define LOG_LINE_PROCESSOR_INFO_PROPERTY(property_name)                                             \
     c_f::gtest_console::print_line(                                                                 \
         "[processor_info] ", #property_name, ":",                                                   \
-        c_f::processor_info::get_##property_name()                                                  \
+        c_f::processor_info_provider::get_instance().get_##property_name()                                   \
     );
 
 // clang-format on
 
 TEST(framework_native, processor_info_placeholder_test_1)
 {
-    if (!c_f::processor_info::is_init())
+    if (!c_f::processor_info_provider::get_instance().is_init())
     {
         c_f::gtest_console::print_line(
             "processor info cannot initialize:",
-            c_f::processor_info::get_not_init_error_message()
+            c_f::processor_info_provider::get_instance().get_not_init_error_message()
         );
     }
     else

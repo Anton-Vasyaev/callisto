@@ -30,6 +30,8 @@ else()
     set(CONAN_DIR ${CMAKE_SOURCE_DIR}/../.main_cache/conan/x64/${CMAKE_BUILD_TYPE})
 endif()
 
+message("DEBUG:${CMAKE_BUILD_TYPE}")
+
 set(CMAKE_PREFIX_PATH ${CONAN_DIR})
 set(CMAKE_MODULE_PATH ${CONAN_DIR})
 

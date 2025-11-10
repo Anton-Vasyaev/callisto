@@ -276,6 +276,11 @@ processor_info_provider::~processor_info_provider() {}
 
 #pragma region getters
 
+bool processor_info_provider::is_init() noexcept
+{
+    return __inner_data_ptr->is_init_flag;
+}
+
 const std::string& processor_info_provider::get_not_init_error_message() noexcept
 {
     return __inner_data_ptr->not_init_error_message;
