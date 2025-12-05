@@ -4,7 +4,12 @@
 namespace callisto::opencv
 {
 
-void resize_frame(cv::InputArray src, cv::OutputArray dst, const cv::Size& dsize, int interpolation)
+void resize_frame(
+    cv::InputArray  src,
+    cv::OutputArray dst,
+    cv::Size        dsize,
+    int             interpolation
+)
 {
     auto im_h = static_cast<float>(src.rows());
     auto im_w = static_cast<float>(src.cols());

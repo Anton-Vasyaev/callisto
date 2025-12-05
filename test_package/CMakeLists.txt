@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.19)
+#--------------------------------------------------------------------------------------------------
+# configure project
+project(callisto.test CXX)
+
+
 
 #--------------------------------------------------------------------------------------------------
 # list of libraries names
 set(CALLISTO_LIBRARIES framework math utility opencv graphics)
-
-#--------------------------------------------------------------------------------------------------
-# configure project
-project(callisto.test CXX)
 
 option(CALLISTO_SHARED "Build the shared library" OFF)
 
