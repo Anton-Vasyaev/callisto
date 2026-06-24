@@ -169,10 +169,12 @@ class CallistoConan(ConanFile):
         self.dependency_graph = DependencyGraph()
         
         # Append 3rd party requires
-        self.dependency_graph.append_require(
-            'libcpuid', 
-            'libcpuid/0.5.1'
-        )
+        # TODO
+        if self.settings.arch == 'x86_64':
+            self.dependency_graph.append_require(
+                'libcpuid', 
+                'libcpuid/0.5.1'
+            )
 
         self.dependency_graph.append_require(
             'nameof', 
@@ -217,10 +219,16 @@ class CallistoConan(ConanFile):
         # Append libraries with dependencies-------------------------------------------------------
         
         # framework
+        framework_deps = [
+            'boost::exception'
+        ]
+        if self.settings.arch == 'x86_64':
+            framework_deps.append('libcpuid::libcpuid')
+            
         self.dependency_graph.append_library(
             'framework', 
             [], 
-            ['boost::exception', 'libcpuid::libcpuid']
+            framework_deps
         )
         
         # math
